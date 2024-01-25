@@ -1,12 +1,10 @@
 {
   "*.ts": [
     "yarn lint",
-    "next lint",
     "yarn format"
   ],
   "*.tsx": [
     "yarn lint",
-    "next lint",
     "yarn format"
   ]
 }

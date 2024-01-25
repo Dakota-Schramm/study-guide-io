@@ -6,9 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "format": "yarn dlx @biomejs/biome format ./src",
-    "format:help": "yarn dlx @biomejs/biome format --help",
+    "format": "npx @biomejs/biome format ./src",
+    "format:fix": "npx @biomejs/biome format --write ./src",
+    "format:help": "npx @biomejs/biome format --help",
     "lint": "biome lint ./src",
+    "lint:fix": "biome lint --apply ./src",
     "prepare": "husky install"
   },
   "dependencies": {
