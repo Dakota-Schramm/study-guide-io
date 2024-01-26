@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Document, Page } from "react-pdf";
 
 import PDFViewer from "../pdf_uploader";
 
@@ -18,13 +17,7 @@ const STEM = () => {
       <form
         id="pdf-submit"
         className="flex flex-col"
-        method="post"
         onChange={(ev) => {
-          const urls = [];
-          for (const file of ev.target.files) {
-            urls.push(URL.createObjectURL(file));
-          }
-          // setUrls(urls)
           setUrls(ev.target.files);
         }}
       >
