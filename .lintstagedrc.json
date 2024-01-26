@@ -1,10 +1,4 @@
 {
-  "*.ts": [
-    "yarn lint",
-    "yarn format"
-  ],
-  "*.tsx": [
-    "yarn lint",
-    "yarn format"
-  ]
+  "*.ts": "pnpm biome:check",
+  "*.tsx": "pnpm biome:check"
 }
