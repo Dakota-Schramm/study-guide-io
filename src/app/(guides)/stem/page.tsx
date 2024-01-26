@@ -29,7 +29,6 @@ const STEM = () => {
         }}
       >
         <input type="file" accept="application/pdf" multiple />
-        <button type="submit">Start your guide</button>
       </form>
       {urls && <PDFViewer filePath={urls[0]} />}
     </>
