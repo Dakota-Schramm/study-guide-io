@@ -10,9 +10,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "format": "npx @biomejs/biome format",
-    "format:fix": "npx @biomejs/biome format --write",
-    "format:help": "npx @biomejs/biome format --help",
+    "lint-staged:comment": "/* figure out how to get lint staged to work better? */",
+    "format": "pnpm dlx @biomejs/biome format ./src",
+    "format:fix": "pnpm dlx @biomejs/biome format --write ./src",
+    "format:help": "pnpm dlx @biomejs/biome format --help ./src",
     "lint": "biome lint",
     "lint:fix": "biome lint --apply",
     "prepare": "husky install"
