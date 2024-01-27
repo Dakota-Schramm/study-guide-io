@@ -26,6 +26,4 @@ const AdditionalAttachments = forwardRef(
   },
 );
 
-module.exports = {
-  AdditionalAttachments,
-};
+export default AdditionalAttachments;

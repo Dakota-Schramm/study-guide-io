@@ -3,7 +3,7 @@
 import React, { useRef, useState } from "react";
 import PdfUploader from "./pdf/PdfUploader";
 import { Finalize } from "./Finalize";
-import { AdditionalAttachments } from "./AdditionalAttachments";
+import AdditionalAttachments from "./AdditionalAttachments";
 
 const Start = ({ hidden, handleNextStep }) => {
   return (
@@ -51,6 +51,15 @@ const GuideCreationProcess = () => {
 
   function handleSubmit() {
     console.log("submitted =>", { pdfRef, attachmentRef });
+    if (!pdfRef?.current || !attachmentRef?.current) return;
+
+    const pdfFiles = pdfRef.current.files;
+    const attachmentFiles = attachmentRef.current.files;
+
+    console.log("Submitted files: ", [
+      ...Array.from(pdfFiles),
+      ...Array.from(attachmentFiles),
+    ]);
   }
 
   return (
