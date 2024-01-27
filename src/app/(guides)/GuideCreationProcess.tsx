@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import PdfWizard from "./PdfWizard";
-import PdfBuilder from "./PdfBuilder";
 
 const Start = ({ hidden, handleNextStep }) => {
   return (

@@ -1,24 +1,34 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import PDFViewer from "./PdfViewer";
 
-const PdfWizard = () => {
+const PdfWizard = ({ hidden, handleNextStep }) => {
   const [urls, setUrls] = useState(undefined);
 
+  console.log(`PdfWizard hidden: ${hidden}`);
+
   return (
-    <>
-      <form
-        id="pdf-submit"
-        className="flex flex-col"
+    <div className={hidden && "invisible"}>
+      <input
+        name="pdf"
+        type="file"
+        accept=".pdf"
+        multiple
         onChange={(ev) => {
+          console.log(ev.target);
           setUrls(ev.target.files);
         }}
-      >
-        <input type="file" accept="application/pdf" multiple />
-      </form>
-      {urls && <PDFViewer filePath={urls[0]} />}
-    </>
+      />
+      {urls && (
+        <>
+          <PDFViewer filePath={urls[0]} />
+          <button type="button" onClick={handleNextStep}>
+            Next
+          </button>
+        </>
+      )}
+    </div>
   );
 };
 
