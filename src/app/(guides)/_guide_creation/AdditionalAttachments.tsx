@@ -6,7 +6,7 @@ const AdditionalAttachments = forwardRef(
     const { hidden, handlePrevStep, handleNextStep } = props;
 
     return (
-      <div className={hidden ? "invisible" : undefined}>
+      <div className={hidden ? "invisible absolute" : undefined}>
         <h2>Add any additional attachments</h2>
         <input
           ref={ref}
