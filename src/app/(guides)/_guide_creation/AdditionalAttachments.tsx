@@ -9,7 +9,7 @@ export const AdditionalAttachments = ({
   console.log(`AdditionalAttachments hidden: ${hidden}`);
 
   return (
-    <div className={hidden && "invisible"}>
+    <div className={hidden ? "invisible" : undefined}>
       <h2>Add any additional attachments</h2>
       <input name="attachments" type="file" accept="image/*" multiple />
       <button type="button" onClick={handlePrevStep}>

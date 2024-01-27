@@ -9,7 +9,7 @@ const PdfUploader = ({ hidden, handleNextStep }) => {
   console.log(`PdfWizard hidden: ${hidden}`);
 
   return (
-    <div className={hidden && "invisible"}>
+    <div className={hidden ? "invisible" : undefined}>
       <input
         name="pdf"
         type="file"
