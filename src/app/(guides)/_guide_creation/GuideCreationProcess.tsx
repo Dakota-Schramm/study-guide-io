@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import PdfWizard from "./PdfWizard";
+import { Finalize } from "./Finalize";
 
 const Start = ({ hidden, handleNextStep }) => {
   return (
@@ -31,29 +32,15 @@ const AdditionalAttachments = ({ hidden, handlePrevStep, handleNextStep }) => {
   );
 };
 
-const Finalize = ({ hidden, handlePrevStep, handleSubmit }) => {
-  console.log(`Finalize hidden: ${hidden}`);
-  return (
-    <div className={hidden && "invisible"}>
-      <h2>Finalize</h2>
-      <p>Does this look good to you? If so, click "Complete"</p>
-      <button type="button" onClick={handlePrevStep}>
-        Previous
-      </button>
-      <button type="button" onClick={handleSubmit}>
-        {" "}
-        Complete{" "}
-      </button>
-    </div>
-  );
-};
-
 const TOTAL_STEPS = 4;
 
 const StepStatus = ({
   currentStep,
   totalSteps,
-}: { currentStep: number; totalSteps: number }) => {
+}: {
+  currentStep: number;
+  totalSteps: number;
+}) => {
   return (
     <>
       {Array.from(new Array(totalSteps), (_, index) => (

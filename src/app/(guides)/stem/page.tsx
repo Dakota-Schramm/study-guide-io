@@ -1,4 +1,4 @@
-import GuideCreationProcess from "../GuideCreationProcess";
+import GuideCreationProcess from "../_guide_creation/GuideCreationProcess";
 
 const STEM = () => {
   return (
