@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import PdfWizard from "./PdfWizard";
+import PdfWizard from "./pdf/PdfWizard";
 import { Finalize } from "./Finalize";
 
 const Start = ({ hidden, handleNextStep }) => {
