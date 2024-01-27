@@ -37,26 +37,32 @@ type LoadedPDF =
 type PDFProps = {
   filePath: string;
   handleDocumentLoadSuccess: (arg0: number) => void;
+  currentPage?: number;
   pageTotal?: number;
 };
 
 const PDF = ({
   filePath,
   handleDocumentLoadSuccess,
+  currentPage = 0,
   pageTotal = 0,
 }: PDFProps) => {
   console.log({ filePath });
 
   if (!filePath) return;
 
+  // TODO: Add better handling here for large pdfs
+  // TODO: Add drag-and-drop support for reordering pages of pdf
   return (
-    // <Document file={filePath} onLoadSuccess={handleDocumentLoadSuccess}>
-    //   {Array(pageTotal).map((_, pg) => (
-    //     <Page pageNumber={pg + 1} />
-    //   ))}
-    // </Document>
     <Document file={filePath} onLoadSuccess={handleDocumentLoadSuccess}>
-      <Page width={200} height={200} pageNumber={1} />
+      {Array.from(new Array(pageTotal), (_, index) => (
+        <Page
+          //! key={`base_ordering_${index}`} Replace with crypto hash at creation?
+          width={200}
+          height={200}
+          pageNumber={index + 1}
+        />
+      ))}
     </Document>
   );
 };
