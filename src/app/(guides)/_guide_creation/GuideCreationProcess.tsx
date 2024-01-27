@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import PdfWizard from "./pdf/PdfWizard";
+import PdfUploader from "./pdf/PdfUploader";
 import { Finalize } from "./Finalize";
 import { AdditionalAttachments } from "./AdditionalAttachments";
 
@@ -56,7 +56,9 @@ const GuideCreationProcess = () => {
       <form id="pdf-create" className="flex flex-col">
         {/* Steps */}
         <Start hidden={step !== 0} {...{ handleNextStep }} />
-        {1 <= step && <PdfWizard hidden={2 <= step} {...{ handleNextStep }} />}
+        {1 <= step && (
+          <PdfUploader hidden={2 <= step} {...{ handleNextStep }} />
+        )}
         {2 <= step && (
           <AdditionalAttachments
             hidden={3 <= step}

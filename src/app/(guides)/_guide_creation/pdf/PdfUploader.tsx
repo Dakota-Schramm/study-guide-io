@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import PDFViewer from "./PdfViewer";
 
-const PdfWizard = ({ hidden, handleNextStep }) => {
+const PdfUploader = ({ hidden, handleNextStep }) => {
   const [urls, setUrls] = useState(undefined);
 
   console.log(`PdfWizard hidden: ${hidden}`);
@@ -32,4 +32,4 @@ const PdfWizard = ({ hidden, handleNextStep }) => {
   );
 };
 
-export default PdfWizard;
+export default PdfUploader;
