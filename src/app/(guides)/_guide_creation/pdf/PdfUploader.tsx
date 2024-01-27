@@ -1,28 +1,20 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { forwardRef, useEffect, useState } from "react";
 import PDFViewer from "./PdfViewer";
 
-const PdfUploader = ({ hidden, handleNextStep }) => {
-  const [urls, setUrls] = useState(undefined);
+const PdfUploader = forwardRef(function PdfUploader(props, ref) {
+  const { hidden, handleNextStep } = props;
+  const filePath = ref?.current?.files?.[0];
 
   console.log(`PdfWizard hidden: ${hidden}`);
 
   return (
     <div className={hidden ? "invisible" : undefined}>
-      <input
-        name="pdf"
-        type="file"
-        accept=".pdf"
-        multiple
-        onChange={(ev) => {
-          console.log(ev.target);
-          setUrls(ev.target.files);
-        }}
-      />
-      {urls && (
+      <input ref={ref} name="pdf" type="file" accept=".pdf" multiple />
+      {filePath && (
         <>
-          <PDFViewer filePath={urls[0]} />
+          <PDFViewer {...{ filePath }} />
           <button type="button" onClick={handleNextStep}>
             Next
           </button>
@@ -30,6 +22,6 @@ const PdfUploader = ({ hidden, handleNextStep }) => {
       )}
     </div>
   );
-};
+});
 
 export default PdfUploader;

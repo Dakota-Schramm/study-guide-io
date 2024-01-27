@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import PdfUploader from "./pdf/PdfUploader";
 import { Finalize } from "./Finalize";
 import { AdditionalAttachments } from "./AdditionalAttachments";
@@ -38,6 +38,8 @@ const StepStatus = ({
 
 const GuideCreationProcess = () => {
   const [step, setStep] = useState<number>(0);
+  const pdfRef = useRef(null);
+  const attachmentRef = useRef(null);
 
   function handlePrevStep() {
     setStep((s) => s - 1);
@@ -48,7 +50,7 @@ const GuideCreationProcess = () => {
   }
 
   function handleSubmit() {
-    console.log("submitted!");
+    console.log("submitted =>", { pdfRef, attachmentRef });
   }
 
   return (
@@ -57,10 +59,15 @@ const GuideCreationProcess = () => {
         {/* Steps */}
         <Start hidden={step !== 0} {...{ handleNextStep }} />
         {1 <= step && (
-          <PdfUploader hidden={2 <= step} {...{ handleNextStep }} />
+          <PdfUploader
+            ref={pdfRef}
+            hidden={2 <= step}
+            {...{ handleNextStep }}
+          />
         )}
         {2 <= step && (
           <AdditionalAttachments
+            ref={attachmentRef}
             hidden={3 <= step}
             {...{ handlePrevStep, handleNextStep }}
           />

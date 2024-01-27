@@ -1,23 +1,31 @@
 "use client";
-import React from "react";
+import React, { forwardRef } from "react";
 
-export const AdditionalAttachments = ({
-  hidden,
-  handlePrevStep,
-  handleNextStep,
-}) => {
-  console.log(`AdditionalAttachments hidden: ${hidden}`);
+const AdditionalAttachments = forwardRef(
+  function AdditionalAttachments(props, ref) {
+    const { hidden, handlePrevStep, handleNextStep } = props;
 
-  return (
-    <div className={hidden ? "invisible" : undefined}>
-      <h2>Add any additional attachments</h2>
-      <input name="attachments" type="file" accept="image/*" multiple />
-      <button type="button" onClick={handlePrevStep}>
-        Previous
-      </button>
-      <button type="button" onClick={handleNextStep}>
-        Next
-      </button>
-    </div>
-  );
+    return (
+      <div className={hidden ? "invisible" : undefined}>
+        <h2>Add any additional attachments</h2>
+        <input
+          ref={ref}
+          name="attachments"
+          type="file"
+          accept="image/*"
+          multiple
+        />
+        <button type="button" onClick={handlePrevStep}>
+          Previous
+        </button>
+        <button type="button" onClick={handleNextStep}>
+          Next
+        </button>
+      </div>
+    );
+  },
+);
+
+module.exports = {
+  AdditionalAttachments,
 };
