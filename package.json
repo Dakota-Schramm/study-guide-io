@@ -28,11 +28,16 @@
   "dependencies": {
     "@cucumber/cucumber": "^10.3.1",
     "@headlessui/react": "^1.7.18",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.0",
+    "lucide-react": "^0.316.0",
     "next": "14.1.0",
     "pdf-lib": "^1.17.1",
     "react": "^18",
     "react-dom": "^18",
-    "react-pdf": "^7.7.0"
+    "react-pdf": "^7.7.0",
+    "tailwind-merge": "^2.2.1",
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@babel/core": "^7.23.9",
