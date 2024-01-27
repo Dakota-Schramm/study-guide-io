@@ -1,5 +1,6 @@
+"use client";
+
 import React, { useState } from "react";
-import PDFViewer from "./pdf_uploader";
 import PdfWizard from "./PdfWizard";
 
 const Start = ({ handleNextStep }) => {

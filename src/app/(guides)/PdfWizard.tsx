@@ -1,13 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import PDFViewer from "./PdfViewer";
 
 const PdfWizard = () => {
   const [urls, setUrls] = useState(undefined);
-
-  useEffect(() => {
-    console.log(urls);
-  }, [urls]);
 
   return (
     <>
