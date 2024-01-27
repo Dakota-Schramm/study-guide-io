@@ -3,27 +3,6 @@
 import React, { useEffect, useState } from "react";
 import { Document, Page } from "react-pdf";
 
-const PDFControls = ({
-  currentPage,
-  pageTotal,
-  handleDecrement,
-  handleIncrement,
-}) => {
-  return (
-    <>
-      <button type="button" onClick={handleDecrement}>
-        Decrement
-      </button>
-      <p>
-        Page {currentPage} of {pageTotal}
-      </p>
-      <button type="button" onClick={handleIncrement}>
-        Increment
-      </button>
-    </>
-  );
-};
-
 type LoadedPDF =
   | {
       status: "uninitialized";
@@ -55,14 +34,19 @@ const PDF = ({
   // TODO: Add drag-and-drop support for reordering pages of pdf
   return (
     <Document file={filePath} onLoadSuccess={handleDocumentLoadSuccess}>
-      {Array.from(new Array(pageTotal), (_, index) => (
-        <Page
-          //! key={`base_ordering_${index}`} Replace with crypto hash at creation?
-          width={200}
-          height={200}
-          pageNumber={index + 1}
-        />
-      ))}
+      <details>
+        <summary>Pages</summary>
+        <div className="flex">
+          {Array.from(new Array(pageTotal), (_, index) => (
+            <Page
+              //! key={`base_ordering_${index}`} Replace with crypto hash at creation?
+              width={200}
+              height={200}
+              pageNumber={index + 1}
+            />
+          ))}
+        </div>
+      </details>
     </Document>
   );
 };
@@ -112,16 +96,6 @@ const PDFViewer = ({ filePath }) => {
         filePath={filePath}
         pageTotal={pdfStatus?.pageTotal}
       />
-      {status !== "uninitialized" && (
-        <PDFControls
-          currentPage={pdfStatus?.currentPage}
-          pageTotal={pdfStatus?.pageTotal}
-          {...{
-            handleDecrement,
-            handleIncrement,
-          }}
-        />
-      )}
     </div>
   );
 };
