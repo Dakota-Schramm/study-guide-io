@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import PdfWizard from "./pdf/PdfWizard";
 import { Finalize } from "./Finalize";
+import { AdditionalAttachments } from "./AdditionalAttachments";
 
 const Start = ({ hidden, handleNextStep }) => {
   return (
@@ -10,23 +11,6 @@ const Start = ({ hidden, handleNextStep }) => {
       <h2>Start Your Study Guide</h2>
       <button type="button" onClick={handleNextStep}>
         Start
-      </button>
-    </div>
-  );
-};
-
-const AdditionalAttachments = ({ hidden, handlePrevStep, handleNextStep }) => {
-  console.log(`AdditionalAttachments hidden: ${hidden}`);
-
-  return (
-    <div className={hidden && "invisible"}>
-      <h2>Add any additional attachments</h2>
-      <input name="attachments" type="file" accept="image/*" multiple />
-      <button type="button" onClick={handlePrevStep}>
-        Previous
-      </button>
-      <button type="button" onClick={handleNextStep}>
-        Next
       </button>
     </div>
   );
