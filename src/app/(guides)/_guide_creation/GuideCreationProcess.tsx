@@ -40,6 +40,7 @@ const GuideCreationProcess = () => {
   const [step, setStep] = useState<number>(0);
   const pdfRef = useRef(null);
   const attachmentRef = useRef(null);
+  const downloadRef = useRef(null);
 
   function handlePrevStep() {
     setStep((s) => s - 1);
@@ -47,19 +48,6 @@ const GuideCreationProcess = () => {
 
   function handleNextStep() {
     setStep((s) => s + 1);
-  }
-
-  function handleSubmit() {
-    console.log("submitted =>", { pdfRef, attachmentRef });
-    if (!pdfRef?.current || !attachmentRef?.current) return;
-
-    const pdfFiles = pdfRef.current.files;
-    const attachmentFiles = attachmentRef.current.files;
-
-    console.log("Submitted files: ", [
-      ...Array.from(pdfFiles),
-      ...Array.from(attachmentFiles),
-    ]);
   }
 
   return (
@@ -82,7 +70,13 @@ const GuideCreationProcess = () => {
           />
         )}
         {3 <= step && (
-          <Finalize hidden={step !== 3} {...{ handlePrevStep, handleSubmit }} />
+          <Finalize
+            ref={downloadRef}
+            hidden={step !== 3}
+            pdfFiles={pdfRef?.current?.files}
+            attachmentFiles={attachmentRef?.current?.files}
+            {...{ handlePrevStep }}
+          />
         )}
       </form>
       <StepStatus currentStep={step} totalSteps={TOTAL_STEPS} />
