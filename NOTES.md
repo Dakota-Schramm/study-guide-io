@@ -8,3 +8,8 @@ Biome.js linter has no support for caching?
 
 Maybe use?
   [Storing files or blobs locally with IndexedDB using the idb-file-storage library.](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Working_with_files#store_files_data_locally_using_the_indexeddb_file_storage_library)
+
+
+maybe use?
+class-variance-authority?
+clsx?
