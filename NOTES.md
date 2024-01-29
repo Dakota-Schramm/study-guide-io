@@ -15,3 +15,6 @@ maybe use?
 - clsx?
 
 [Cucumber with Playwright](https://www.genui.com/resources/getting-started-with-bdd-using-cucumber-io)
+
+Fix create-guide spec to be a unit test
+  - just make sure function at end is processing files correctly. No need to simulate user
