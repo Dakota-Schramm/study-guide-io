@@ -1,7 +1,10 @@
 const config = {
     parallel: 2,
     paths: ['src/features/**/*.feature'],
-    require: ['src/tests/**/*.ts'],
+    require: [
+      'src/tests/**/*.ts',
+      'src/specs/**/*.ts',
+    ],
     requireModule: ['ts-node/register'],
     format: [
       'summary',

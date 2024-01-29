@@ -2,18 +2,24 @@
 
 import { PDFDocument } from "pdf-lib";
 
+export async function createFileObjectUrl(pdfs: File[], images: File[]) {
+  const pdfBlob = await createPdf(pdfs, images);
+
+  //! Make sure to revoke the URL when finished!
+  const fileObjectUrl = URL.createObjectURL(pdfBlob);
+  return fileObjectUrl;
+}
+
 export async function createPdf(pdfs: File[], images: File[]) {
   const pdfDoc = await PDFDocument.create();
   copyPages(pdfDoc, pdfs);
   if (images) {
     embedImages(pdfDoc, images);
   }
-
   const pdfBytes = await pdfDoc.save();
-  const pdfBlob = new Blob([pdfBytes], { type: "application/pdf" });
-  const fileObjectUrl = URL.createObjectURL(pdfBlob);
 
-  return fileObjectUrl;
+  const pdfBlob = new Blob([pdfBytes], { type: "application/pdf" });
+  return pdfBlob;
 }
 
 // Examples
@@ -100,7 +106,7 @@ function readFile(file) {
   });
 }
 
-async function getPageCount(file) {
+export async function getPageCount(file) {
   const arrayBuffer = await readFile(file);
 
   const pdf = await PDFDocument.load(arrayBuffer);

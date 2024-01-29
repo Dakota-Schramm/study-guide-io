@@ -1,19 +1,31 @@
 "use client";
 import React from "react";
 
-import { createPdf } from "./pdf/createPdf";
+import { createFileObjectUrl } from "./pdf/createPdf";
+
+type FinalizeProps = {
+  hidden: boolean;
+  pdfFiles?: File[];
+  attachmentFiles?: File[];
+  handlePrevStep: () => void;
+};
 
 export const Finalize = ({
   hidden,
   pdfFiles,
   attachmentFiles,
   handlePrevStep,
-}) => {
+}: FinalizeProps) => {
   console.log(`Finalize hidden: ${hidden}`);
 
-  function handleDownload(pdfFiles, attachmentFiles) {
+  function handleDownload(
+    pdfFiles: FinalizeProps["pdfFiles"],
+    attachmentFiles: FinalizeProps["attachmentFiles"],
+  ) {
+    if (!pdfFiles || !attachmentFiles) return;
+
     let pdfUrl: string;
-    createPdf(pdfFiles, attachmentFiles)
+    createFileObjectUrl(pdfFiles, attachmentFiles)
       .then((fileObjectUrl) => {
         const downloadEle = document.createElement("a");
         downloadEle.href = fileObjectUrl;
