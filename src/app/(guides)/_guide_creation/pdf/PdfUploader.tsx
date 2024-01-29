@@ -13,17 +13,20 @@ const PdfUploader = forwardRef(function PdfUploader(props, ref) {
 
   return (
     <div className={hidden ? "invisible absolute" : undefined}>
-      <input
-        ref={ref}
-        name="pdf"
-        type="file"
-        accept=".pdf"
-        multiple
-        onChange={(ev) => {
-          const filesExist = 1 <= (ev.target?.files?.length ?? 0);
-          if (filesExist) setUploaded(true);
-        }}
-      />
+      <label>
+        Upload PDFs:
+        <input
+          ref={ref}
+          name="pdf"
+          type="file"
+          accept=".pdf"
+          multiple
+          onChange={(ev) => {
+            const filesExist = 1 <= (ev.target?.files?.length ?? 0);
+            if (filesExist) setUploaded(true);
+          }}
+        />
+      </label>
       {uploaded && (
         <>
           <PDFViewer {...{ filePath }} />

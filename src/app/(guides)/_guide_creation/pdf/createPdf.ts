@@ -28,35 +28,20 @@ async function copyPages(pdfDocument: PDFDocument, pdfs: File[]) {
   // if (fileType !== "pdf") throw new Error("Incorrect file type found");
 
   const filesPdfBytes = await Promise.all(
-    Array.from(pdfs).map(async (file) => {
-      const bytes = await file.arrayBuffer();
-      const pageCount = getPageCount(file);
-
-      return {
-        bytes,
-        pageCount,
-      };
-    }),
+    Array.from(pdfs).map(async (file) => await file.arrayBuffer()),
   );
 
   const loadedPdfs = await Promise.all(
-    filesPdfBytes.map(async (bundle) => {
-      const { pageCount, bytes } = bundle;
-
-      return {
-        document: await PDFDocument.load(bytes),
-        pageCount,
-      };
-    }),
+    filesPdfBytes.map(async (bytes) => await PDFDocument.load(bytes)),
   );
 
   // TODO: Get this working for one page first, then for multiple pages
   for await (const loadedPdf of loadedPdfs) {
-    const { pageCount, document } = loadedPdf;
+    const pageCount = loadedPdf.getPageCount();
     // const fullDocumentIndicies = Array.from(new Array(pageCount), (_, idx) => idx);
 
     // const pagesToAdd = await pdfDocument.copyPages(document, fullDocumentIndicies);
-    const pagesToAdd = await pdfDocument.copyPages(document, [1]);
+    const pagesToAdd = await pdfDocument.copyPages(loadedPdf, [1]);
 
     for (const page of pagesToAdd) {
       pdfDocument.addPage(page);
@@ -91,24 +76,4 @@ async function embedImages(pdfDocument: PDFDocument, images: File[]) {
       height: dims.height,
     });
   }
-}
-
-// Copied Code
-function readFile(file: Blob) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
-
-    reader.readAsArrayBuffer(file);
-  });
-}
-
-export async function getPageCount(file: Blob) {
-  const arrayBuffer = (await readFile(file)) as Uint8Array;
-
-  const pdf = await PDFDocument.load(arrayBuffer);
-
-  return pdf.getPageCount();
 }

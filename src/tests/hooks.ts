@@ -13,6 +13,12 @@ Before(
   },
 );
 
+Before({ tags: "@browser and @headless" }, async function (this: IBaseWorld) {
+  browser = await chromium.launch({ headless: true });
+  this.context = await browser.newContext();
+  this.page = await this.context.newPage();
+});
+
 After(
   { tags: "@browser and not @headless" },
   async function (this: IBaseWorld) {
