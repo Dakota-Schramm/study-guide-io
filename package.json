@@ -22,8 +22,8 @@
     "test:run": "pnpm exec playwright test",
     "test:ui": "pnpm exec playwright test --ui",
     "test:debug": "pnpm exec playwright test --debug",
-    "tdd:test": "pnpm cucumber-js -t /browser/",
-    "tdd:spec": "pnpm cucumber-js -t /(!browser)/"
+    "tdd:test": "pnpm cucumber-js -t '@browser'",
+    "tdd:spec": "pnpm cucumber-js -t 'not @browser'"
   },
   "dependencies": {
     "@cucumber/cucumber": "^10.3.1",

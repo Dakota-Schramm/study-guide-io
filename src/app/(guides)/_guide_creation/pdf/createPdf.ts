@@ -68,8 +68,7 @@ async function embedImages(pdfDocument: PDFDocument, images: File[]) {
   // const pngs = images.filter((bundle) => bundle.type === "image-png");
   const pngs = images;
   const pngImageBundles = await Promise.all(
-    Array.from(pngs).map(async (bundle) => {
-      const { file } = bundle;
+    Array.from(pngs).map(async (file) => {
       const bytes = await file.arrayBuffer();
       const pngImage = await pdfDocument.embedPng(bytes);
       const pngDims = pngImage.scale(0.5);
@@ -95,7 +94,7 @@ async function embedImages(pdfDocument: PDFDocument, images: File[]) {
 }
 
 // Copied Code
-function readFile(file) {
+function readFile(file: Blob) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
 
@@ -106,8 +105,8 @@ function readFile(file) {
   });
 }
 
-export async function getPageCount(file) {
-  const arrayBuffer = await readFile(file);
+export async function getPageCount(file: Blob) {
+  const arrayBuffer = (await readFile(file)) as Uint8Array;
 
   const pdf = await PDFDocument.load(arrayBuffer);
 
