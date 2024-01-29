@@ -48,7 +48,7 @@ Then(
 
     const pdfDoc = await PDFDocument.load(this.download);
     const pages = await pdfDoc.getPageCount();
-    assert.equal(pages, 1);
+    assert.equal(pages, 3);
   },
 );
 
