@@ -14,4 +14,4 @@ maybe use?
 - class-variance-authority?
 - clsx?
 
-[Cucumber Help](https://codeburst.io/react-behavior-driven-development-bdd-535afd364e5f)
+[Cucumber with Playwright](https://www.genui.com/resources/getting-started-with-bdd-using-cucumber-io)
