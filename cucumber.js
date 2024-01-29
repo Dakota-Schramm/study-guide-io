@@ -9,7 +9,6 @@ const config = {
       "html:cucumber-report.html"
     ],
     formatOptions: { snippetInterface: 'async-await' },
-    publishQuiet: true,
   };
 
 module.exports = {
