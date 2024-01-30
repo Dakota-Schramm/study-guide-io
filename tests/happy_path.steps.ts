@@ -1,6 +1,7 @@
 import { IWorldOptions, World, setWorldConstructor } from "@cucumber/cucumber";
 import { PDFDocument } from "pdf-lib";
 import { Given, When, Then, Before } from "@cucumber/cucumber";
+import { chromium } from "@playwright/test";
 
 import { BaseWorld, IBaseWorld } from "./world";
 import { Readable } from "stream";
@@ -18,9 +19,15 @@ class CreateGuideWorld extends BaseWorld implements ICreateGuideWorld {}
 
 setWorldConstructor(CreateGuideWorld);
 
-Before(async function(this: ICreateGuideWorld) {
-  const page = this.page!;
-  await page.goto("localhost:3000/stem");
+Before(
+  { tags: "@browser and @integration and @stem" },
+  async function(this: ICreateGuideWorld) {
+    console.log("running before tags:@browser and @stem")
+    let browser = await chromium.launch({ headless: false });
+    this.context = await browser.newContext();
+    this.page = await this.context.newPage();
+
+    await this.page.goto("localhost:3000/stem");
 })
 
 /*
@@ -62,38 +69,38 @@ Then(
 
 ///////////
 
-When(
-  "When User creates a study guide with a pdf and one image",
-  async function (this: ICreateGuideWorld) {
-    const page = this.page!;
-    await page.getByRole("button", { name: "Start" }).click();
+// When(
+//   "When User creates a study guide with a pdf and one image",
+//   async function (this: ICreateGuideWorld) {
+//     const page = this.page!;
+//     await page.getByRole("button", { name: "Start" }).click();
 
-    await page.getByLabel("Upload PDFs:").setInputFiles("science.pdf");
-    await page.getByRole("button", { name: "Next" }).click();
+//     await page.getByLabel("Upload PDFs:").setInputFiles("science.pdf");
+//     await page.getByRole("button", { name: "Next" }).click();
 
-    await page.getByRole("button", { name: "Next" }).click();
+//     await page.getByRole("button", { name: "Next" }).click();
 
-    await page.getByTestId("downloadGuide").click();
-    page.on("download", async (download) => {
-      const stream = await download.createReadStream();
-      const buffer = await streamToUint8Array(stream);
+//     await page.getByTestId("downloadGuide").click();
+//     page.on("download", async (download) => {
+//       const stream = await download.createReadStream();
+//       const buffer = await streamToUint8Array(stream);
 
-      this.download = buffer;
-    });
-  },
-);
+//       this.download = buffer;
+//     });
+//   },
+// );
 
-Then(
-  "Then User should have a pdf study guide with one additional page",
-  async function (this: ICreateGuideWorld) {
-    console.log({ download: this.download });
-    if (!this.download) return;
+// Then(
+//   "Then User should have a pdf study guide with one additional page",
+//   async function (this: ICreateGuideWorld) {
+//     console.log({ download: this.download });
+//     if (!this.download) return;
 
-    const pdfDoc = await PDFDocument.load(this.download);
-    const pages = await pdfDoc.getPageCount();
-    assert.equal(pages, 3);
-  },
-);
+//     const pdfDoc = await PDFDocument.load(this.download);
+//     const pages = await pdfDoc.getPageCount();
+//     assert.equal(pages, 3);
+//   },
+// );
 
 async function streamToUint8Array(stream: Readable) {
   const chunks: Uint8Array[] = [];

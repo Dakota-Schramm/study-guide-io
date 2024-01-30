@@ -2,21 +2,23 @@ import { IBaseWorld } from "./world";
 import { ChromiumBrowser, chromium } from "@playwright/test";
 import { After, AfterAll, Before, BeforeAll } from "@cucumber/cucumber";
 
-let browser: ChromiumBrowser;
 
 Before(
-  { tags: "@browser and not @headless" },
+  { tags: "@browser and not @headless and not @integration" },
   async function (this: IBaseWorld) {
-    browser = await chromium.launch({ headless: false });
-    this.context = await browser.newContext();
+    console.log("running before tags:@browser and not @headless")
+    this.browser = await chromium.launch({ headless: false });
+    this.context = await this.browser.newContext();
     this.page = await this.context.newPage();
   },
 );
 
-Before({ tags: "@browser and @headless" }, async function (this: IBaseWorld) {
-  browser = await chromium.launch({ headless: true });
-  this.context = await browser.newContext();
-  this.page = await this.context.newPage();
+Before(
+  { tags: "@browser and @headless and not @integration" },
+  async function (this: IBaseWorld) {
+    this.browser = await chromium.launch({ headless: true });
+    this.context = await this.browser.newContext();
+    this.page = await this.context.newPage();
 });
 
 After(
@@ -24,6 +26,6 @@ After(
   async function (this: IBaseWorld) {
     await this.page?.close();
     await this.context?.close();
-    await browser.close();
+    await this.browser?.close();
   },
 );
