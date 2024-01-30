@@ -73,8 +73,10 @@ const GuideCreationProcess = () => {
           <Finalize
             ref={downloadRef}
             hidden={step !== 3}
-            pdfFiles={pdfRef?.current?.files}
-            attachmentFiles={attachmentRef?.current?.files}
+            pdfFiles={(pdfRef?.current as HTMLInputElement)?.files ?? []}
+            attachmentFiles={
+              (attachmentRef?.current as HTMLInputElement)?.files ?? []
+            }
             {...{ handlePrevStep }}
           />
         )}

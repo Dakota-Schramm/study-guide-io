@@ -5,8 +5,8 @@ import { createFileObjectUrl } from "./pdf/createPdf";
 
 type FinalizeProps = {
   hidden: boolean;
-  pdfFiles?: File[];
-  attachmentFiles?: File[];
+  pdfFiles: FileList;
+  attachmentFiles: FileList;
   handlePrevStep: () => void;
 };
 
@@ -50,6 +50,7 @@ export const Finalize = ({
         Previous
       </button>
       <button
+        data-testid="downloadGuide"
         type="button"
         onClick={() => handleDownload(pdfFiles, attachmentFiles)}
       >

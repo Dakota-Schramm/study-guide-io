@@ -2,7 +2,7 @@
 
 import { PDFDocument } from "pdf-lib";
 
-export async function createFileObjectUrl(pdfs: File[], images: File[]) {
+export async function createFileObjectUrl(pdfs: FileList, images: FileList) {
   const pdfBlob = await createPdf(pdfs, images);
 
   //! Make sure to revoke the URL when finished!
@@ -10,11 +10,11 @@ export async function createFileObjectUrl(pdfs: File[], images: File[]) {
   return fileObjectUrl;
 }
 
-export async function createPdf(pdfs: File[], images: File[]) {
+export async function createPdf(pdfs: FileList, images: FileList) {
   const pdfDoc = await PDFDocument.create();
-  copyPages(pdfDoc, pdfs);
+  await copyPages(pdfDoc, pdfs);
   if (images) {
-    embedImages(pdfDoc, images);
+    await embedImages(pdfDoc, images);
   }
   const pdfBytes = await pdfDoc.save();
 
@@ -22,8 +22,7 @@ export async function createPdf(pdfs: File[], images: File[]) {
   return pdfBlob;
 }
 
-// Examples
-async function copyPages(pdfDocument: PDFDocument, pdfs: File[]) {
+async function copyPages(pdfDocument: PDFDocument, pdfs: FileList) {
   // const fileType = pdfs[0].type;
   // if (fileType !== "pdf") throw new Error("Incorrect file type found");
 
@@ -35,13 +34,17 @@ async function copyPages(pdfDocument: PDFDocument, pdfs: File[]) {
     filesPdfBytes.map(async (bytes) => await PDFDocument.load(bytes)),
   );
 
-  // TODO: Get this working for one page first, then for multiple pages
   for await (const loadedPdf of loadedPdfs) {
     const pageCount = loadedPdf.getPageCount();
-    // const fullDocumentIndicies = Array.from(new Array(pageCount), (_, idx) => idx);
+    const fullDocumentIndicies = Array.from(
+      new Array(pageCount),
+      (_, idx) => idx,
+    );
 
-    // const pagesToAdd = await pdfDocument.copyPages(document, fullDocumentIndicies);
-    const pagesToAdd = await pdfDocument.copyPages(loadedPdf, [1]);
+    const pagesToAdd = await pdfDocument.copyPages(
+      loadedPdf,
+      fullDocumentIndicies,
+    );
 
     for (const page of pagesToAdd) {
       pdfDocument.addPage(page);
@@ -49,7 +52,7 @@ async function copyPages(pdfDocument: PDFDocument, pdfs: File[]) {
   }
 }
 
-async function embedImages(pdfDocument: PDFDocument, images: File[]) {
+async function embedImages(pdfDocument: PDFDocument, images: FileList) {
   // const pngs = images.filter((bundle) => bundle.type === "image-png");
   const pngs = images;
   const pngImageBundles = await Promise.all(

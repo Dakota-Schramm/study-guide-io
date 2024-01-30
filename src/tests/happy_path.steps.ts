@@ -1,7 +1,6 @@
 import { IWorldOptions, World, setWorldConstructor } from "@cucumber/cucumber";
 import { PDFDocument } from "pdf-lib";
 import { Given, When, Then } from "@cucumber/cucumber";
-import path from "path";
 
 import { BaseWorld, IBaseWorld } from "./world";
 import { Readable } from "stream";
@@ -26,17 +25,19 @@ When(
   async function (this: ICreateGuideWorld) {
     const page = this.page!;
     await page.getByRole("button", { name: "Start" }).click();
-    await page
-      .getByLabel("Upload PDFs:")
-      .setInputFiles(path.join(__dirname, "public", "myfile.pdf"));
-    await page.getByRole("button", { name: "Next" }).click();
-    await page.getByRole("button", { name: "Next" }).click();
-    const downloadPromise = page.waitForEvent("download");
-    await page.getByRole("button", { name: "Complete" }).click();
 
-    const download = await downloadPromise;
-    const stream = await download.createReadStream();
-    this.download = await streamToUint8Array(stream);
+    await page.getByLabel("Upload PDFs:").setInputFiles("science.pdf");
+    await page.getByRole("button", { name: "Next" }).click();
+
+    await page.getByRole("button", { name: "Next" }).click();
+
+    await page.getByTestId("downloadGuide").click();
+    page.on("download", async (download) => {
+      const stream = await download.createReadStream();
+      const buffer = await streamToUint8Array(stream);
+
+      this.download = buffer;
+    });
   },
 );
 

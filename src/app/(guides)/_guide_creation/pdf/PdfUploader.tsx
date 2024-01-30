@@ -3,8 +3,10 @@
 import React, { forwardRef, useState } from "react";
 import PDFViewer from "./PdfViewer";
 
-const PdfUploader = forwardRef(function PdfUploader(props, ref) {
-  const { hidden, handleNextStep } = props;
+const PdfUploader = forwardRef(function PdfUploader(
+  { hidden, handleNextStep },
+  ref,
+) {
   const [uploaded, setUploaded] = useState(false);
   const filePath = ref?.current?.files?.[0];
 
