@@ -1,12 +1,15 @@
 import { IWorldOptions, World, setWorldConstructor } from "@cucumber/cucumber";
 import { PDFDocument } from "pdf-lib";
-import { Given, When, Then } from "@cucumber/cucumber";
+import { Given, When, Then, Before } from "@cucumber/cucumber";
 
 import { BaseWorld, IBaseWorld } from "./world";
 import { Readable } from "stream";
 
 const assert = require("assert");
 
+/*
+  SETUP
+*/
 interface ICreateGuideWorld extends IBaseWorld {
   download?: Buffer;
 }
@@ -15,13 +18,17 @@ class CreateGuideWorld extends BaseWorld implements ICreateGuideWorld {}
 
 setWorldConstructor(CreateGuideWorld);
 
-Given("User has a pdf and no images", async function (this: ICreateGuideWorld) {
+Before(async function(this: ICreateGuideWorld) {
   const page = this.page!;
   await page.goto("localhost:3000/stem");
-});
+})
+
+/*
+  TESTS
+*/
 
 When(
-  "User creates a pdf study guide",
+  "User creates a study guide with a pdf and no images",
   async function (this: ICreateGuideWorld) {
     const page = this.page!;
     await page.getByRole("button", { name: "Start" }).click();
@@ -43,6 +50,41 @@ When(
 
 Then(
   "User should have a pdf study guide with no additional pages\\/modifications",
+  async function (this: ICreateGuideWorld) {
+    console.log({ download: this.download });
+    if (!this.download) return;
+
+    const pdfDoc = await PDFDocument.load(this.download);
+    const pages = await pdfDoc.getPageCount();
+    assert.equal(pages, 3);
+  },
+);
+
+///////////
+
+When(
+  "When User creates a study guide with a pdf and one image",
+  async function (this: ICreateGuideWorld) {
+    const page = this.page!;
+    await page.getByRole("button", { name: "Start" }).click();
+
+    await page.getByLabel("Upload PDFs:").setInputFiles("science.pdf");
+    await page.getByRole("button", { name: "Next" }).click();
+
+    await page.getByRole("button", { name: "Next" }).click();
+
+    await page.getByTestId("downloadGuide").click();
+    page.on("download", async (download) => {
+      const stream = await download.createReadStream();
+      const buffer = await streamToUint8Array(stream);
+
+      this.download = buffer;
+    });
+  },
+);
+
+Then(
+  "Then User should have a pdf study guide with one additional page",
   async function (this: ICreateGuideWorld) {
     console.log({ download: this.download });
     if (!this.download) return;

@@ -3,6 +3,10 @@ Feature: Creating a PDF Study Guide
 
   @browser
   Scenario: Create guide with no attachments
-    Given User has a pdf and no images
-    When User creates a pdf study guide
+    When User creates a study guide with a pdf and no images
     Then User should have a pdf study guide with no additional pages/modifications
+
+  @browser
+  Scenario: Create guide with one attachment
+    When User creates a study guide with a pdf and one image
+    Then User should have a pdf study guide with one additional page
