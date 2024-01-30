@@ -10,3 +10,8 @@ Feature: Creating a PDF Study Guide
   Scenario: Create guide with one attachment
     When User creates a study guide with a pdf and one image
     Then User should have a pdf study guide with one additional page
+
+  @browser @integration @stem
+  Scenario: Create guide with multiple attachment
+    When User creates a study guide with a pdf and multiple images
+    Then User should have a pdf study guide with four additional pages

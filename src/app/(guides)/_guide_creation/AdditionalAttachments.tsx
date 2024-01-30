@@ -15,7 +15,7 @@ const AdditionalAttachments = forwardRef(function AdditionalAttachments(
           ref={ref}
           name="attachments"
           type="file"
-          accept=".png"
+          accept=".png, .jpg"
           multiple
         />
       </label>

@@ -53,8 +53,16 @@ async function copyPages(pdfDocument: PDFDocument, pdfs: FileList) {
 }
 
 async function embedImages(pdfDocument: PDFDocument, images: FileList) {
-  // const pngs = images.filter((bundle) => bundle.type === "image-png");
-  const pngs = images;
+  const pngs = Array.from(images).filter((file: File) =>
+    file.name.endsWith(".png"),
+  );
+  const jpgs = Array.from(images).filter((file: File) =>
+    file.name.endsWith(".jpg"),
+  );
+
+  console.log(`Png length: ${pngs.length}`);
+  console.log(`Jpg length: ${jpgs.length}`);
+
   const pngImageBundles = await Promise.all(
     Array.from(pngs).map(async (file) => {
       const bytes = await file.arrayBuffer();
@@ -68,8 +76,24 @@ async function embedImages(pdfDocument: PDFDocument, images: FileList) {
     }),
   );
 
-  for (const pngImageBundle of pngImageBundles) {
-    const { image, dims } = pngImageBundle;
+  // const jpgImageBundles = [];
+  const jpgImageBundles = await Promise.all(
+    Array.from(jpgs).map(async (file) => {
+      const bytes = await file.arrayBuffer();
+      const jpgImage = await pdfDocument.embedJpg(bytes);
+      const jpgDims = jpgImage.scale(0.5);
+
+      return {
+        image: jpgImage,
+        dims: jpgDims,
+      };
+    }),
+  );
+
+  const imageBundles = [...pngImageBundles, ...jpgImageBundles];
+
+  for (const imageBundle of imageBundles) {
+    const { image, dims } = imageBundle;
     const page = pdfDocument.addPage();
 
     page.drawImage(image, {

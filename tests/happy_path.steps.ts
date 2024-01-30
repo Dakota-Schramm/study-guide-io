@@ -35,6 +35,9 @@ Before(
   TESTS
 */
 
+const EXAMPLE_PDF_LENGTH = 3;
+
+// TODO: Make this to where can replace "feature" with single statement?
 When(
   "User creates a study guide with a pdf and no images",
   async function (this: ICreateGuideWorld) {
@@ -64,7 +67,7 @@ Then(
 
     const pdfDoc = await PDFDocument.load(this.download);
     const pages = await pdfDoc.getPageCount();
-    assert.equal(pages, 3);
+    assert.equal(pages, EXAMPLE_PDF_LENGTH);
   },
 );
 
@@ -100,7 +103,48 @@ Then(
 
     const pdfDoc = await PDFDocument.load(this.download);
     const pages = await pdfDoc.getPageCount();
-    assert.equal(pages, 4);
+    assert.equal(pages, EXAMPLE_PDF_LENGTH + 1);
+  },
+);
+
+//////////
+
+When(
+  "User creates a study guide with a pdf and multiple images",
+  async function (this: ICreateGuideWorld) {
+    const page = this.page!;
+    await page.getByRole("button", { name: "Start" }).click();
+
+    await page.getByLabel("Upload PDFs:").setInputFiles("science.pdf");
+    await page.getByRole("button", { name: "Next" }).click();
+
+    await page.getByLabel("Upload images:").setInputFiles([
+      "dog.png",
+      "cat.png",
+      "rat.png",
+      "dog.jpg",
+    ]);
+    await page.getByRole("button", { name: "Next" }).click();
+
+    await page.getByTestId("downloadGuide").click();
+    page.on("download", async (download) => {
+      const stream = await download.createReadStream();
+      const buffer = await streamToUint8Array(stream);
+
+      this.download = buffer;
+    });
+  },
+);
+
+Then(
+  "User should have a pdf study guide with four additional pages",
+  async function (this: ICreateGuideWorld) {
+    console.log({ download: this.download });
+    if (!this.download) return;
+
+    const pdfDoc = await PDFDocument.load(this.download);
+    const pages = await pdfDoc.getPageCount();
+    assert.equal(pages, EXAMPLE_PDF_LENGTH + 4);
   },
 );
 
