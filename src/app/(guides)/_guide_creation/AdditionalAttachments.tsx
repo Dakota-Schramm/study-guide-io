@@ -9,7 +9,16 @@ const AdditionalAttachments = forwardRef(function AdditionalAttachments(
   return (
     <div className={hidden ? "invisible absolute" : undefined}>
       <h2>Add any additional attachments</h2>
-      <input ref={ref} name="attachments" type="file" accept=".png" multiple />
+      <label>
+        Upload images:
+        <input
+          ref={ref}
+          name="attachments"
+          type="file"
+          accept=".png"
+          multiple
+        />
+      </label>
       <button type="button" onClick={handlePrevStep}>
         Previous
       </button>
