@@ -1,6 +1,6 @@
 "use client";
 
-import { sitePath } from '@/utils';
+import { sitePath } from '@/lib/utils';
 
 async function requestDirectoryPermission() {
   try {

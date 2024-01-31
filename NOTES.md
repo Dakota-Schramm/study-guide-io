@@ -20,3 +20,5 @@ Fix create-guide spec to be a unit test
   - just make sure function at end is processing files correctly. No need to simulate user
 
 In order to use Web APIs in test, needs to use browser
+
+Setup Github Actions

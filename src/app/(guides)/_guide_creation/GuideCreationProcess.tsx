@@ -18,6 +18,7 @@ const Start = ({ hidden, handleNextStep }) => {
 
 const TOTAL_STEPS = 4;
 
+//? Maybe replace with https://ui.shadcn.com/docs/components/progress ?
 const StepStatus = ({
   currentStep,
   totalSteps,
