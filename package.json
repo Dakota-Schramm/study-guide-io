@@ -10,7 +10,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "biome:check": "biome ci ./src",
+    "biome:check": "biome ci",
     "biome:fix": "biome check --apply-unsafe ./src",
     "lint-staged:comment": "/* figure out how to get lint staged to work better? */",
     "format": "pnpm dlx @biomejs/biome format ./src",
