@@ -39,17 +39,37 @@ export async function handleFileSetup(
     return;
   }
 
-  let files;
+  let files = [];
+  console.log(fsdHandle.name, sitePath, fsdHandle.name === sitePath)
   const isRootDirectoryAppDirectory = fsdHandle.name === sitePath;
-  if (isRootDirectoryAppDirectory) {
+  if (!isRootDirectoryAppDirectory) {
     const studyGuideIo = await fsdHandle.getDirectoryHandle(sitePath, {
       create: true,
     });
-    files = await Array.from(studyGuideIo.entries());
+
+    for await (const entry of studyGuideIo.entries()) {
+      files.push(entry);
+    }
   } else {
-    files = await Array.from(fsdHandle.entries());
+    for await (const entry of fsdHandle.entries()) {
+      files.push(entry);
+    }
   }
 
   collectFileHandles(files);
   window.localStorage.setItem("isSetup", "true");
 }
+
+// async function* getFilesRecursively(entry) {
+//   if (entry.kind === "file") {
+//     const file = await entry.getFile();
+//     if (file !== null) {
+//       file.relativePath = getRelativePath(entry);
+//       yield file;
+//     }
+//   } else if (entry.kind === "directory") {
+//     for await (const handle of entry.values()) {
+//       yield* getFilesRecursively(handle);
+//     }
+//   }
+// }
