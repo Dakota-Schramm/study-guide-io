@@ -14,6 +14,8 @@ async function requestDirectoryPermission(userAction = true) {
       startIn: "documents",
     })) as FileSystemDirectoryHandle;
 
+    // TODO: Save the handle to the file system directory in IndexedDB
+
     return fsdHandle;
   } catch (error: unknown) {
     const exception = error as DOMException;
@@ -38,7 +40,8 @@ export async function handleFileSetup(
   }
 
   let files;
-  if (fsdHandle.name !== sitePath) {
+  const isRootDirectoryAppDirectory = fsdHandle.name === sitePath;
+  if (isRootDirectoryAppDirectory) {
     const studyGuideIo = await fsdHandle.getDirectoryHandle(sitePath, {
       create: true,
     });
