@@ -22,3 +22,9 @@ Fix create-guide spec to be a unit test
 In order to use Web APIs in test, needs to use browser
 
 Setup Github Actions
+
+Potential Features:
+  - Add class progress
+    - Allows user to "update" pdfs by adding new class notes and homeworks
+    - Sync with calendar?
+      - Send reminders to user to review notes on particular days
