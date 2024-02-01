@@ -2,9 +2,7 @@
 
 import { pdfjs } from "react-pdf";
 import "./globals.css";
-import { useEffect, useState } from "react";
 import { SettingsProvider } from "@/contexts/SettingsContext";
-import { handleFileSetup } from "@/user_lifecycle_methods";
 
 // export const metadata: Metadata = {
 //   title: "Create Next App",
@@ -17,43 +15,16 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/b
 //   import.meta.url,
 // ).toString();
 
-type ISettings = {
-  guideHandles?: FileSystemHandle[];
-};
-
-export default function RootLayout({
+const RootLayout = ({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) {
-  const [settings, setSettings] = useState<ISettings>({
-    guideHandles: undefined,
-  });
+}>) => (
+  <SettingsProvider>
+    <html lang="en" className="w-full h-full box-border">
+      <body className="w-full h-full box-border">{children}</body>
+    </html>
+  </SettingsProvider>
+);
 
-  function handleSettingsInit() {
-    handleFileSetup((handles) => {
-      setSettings({
-        ...settings,
-        guideHandles: handles,
-      });
-    }, false);
-  }
-
-  useEffect(function initializeUserStartingDirectory() {
-    // const isSetupValue = window.localStorage.getItem('isSetup');
-    // const isSetup = isSetupValue === 'true';
-
-    // if (!isSetup) {
-    // TODO: Change this to flash an alert to the user instead
-    handleSettingsInit();
-    // }
-  }, []);
-
-  return (
-    <SettingsProvider>
-      <html lang="en" className="w-full h-full box-border">
-        <body className="w-full h-full box-border">{children}</body>
-      </html>
-    </SettingsProvider>
-  );
-}
+export default RootLayout;

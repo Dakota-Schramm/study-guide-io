@@ -14,7 +14,7 @@ export const SettingsContext = createContext({
 
 export const SettingsProvider = ({ children }: { children: ReactNode }) => {
   const [settings, setSettings] = useState<ISettings>({
-    guideHandles: [],
+    guideHandles: undefined,
   });
 
   return (

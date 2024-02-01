@@ -5,4 +5,4 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const sitePath = 'StudyGuideIO'
+export const sitePath = "StudyGuideIO";
