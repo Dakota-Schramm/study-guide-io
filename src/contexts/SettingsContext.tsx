@@ -1,13 +1,13 @@
 import { ReactNode, createContext, useState } from "react";
 
 type ISettings = {
-  guideHandles: unknown[];
+  guideHandles: unknown[] | undefined;
 };
 
 // Create a simple React Context
 export const SettingsContext = createContext({
   settings: {
-    guideHandles: [],
+    guideHandles: undefined,
   },
   setSettings: (settings: ISettings) => {},
 });
