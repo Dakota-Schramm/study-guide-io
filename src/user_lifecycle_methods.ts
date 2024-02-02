@@ -44,5 +44,17 @@ export async function locateHomeDirectory(userAction: boolean) {
   return homeDir;
 }
 
+export async function setupCourseTypeDirectories(
+  root: FileSystemDirectoryHandle,
+) {
+  const courseTypeDirectories: FileSystemDirectoryHandle[] = [];
+
+  courseTypeDirectories.push(
+    await root.getDirectoryHandle("STEM", { create: true }),
+  );
+
+  return courseTypeDirectories;
+}
+
 //? Maybe use this eventually
 // https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryHandle#return_handles_for_all_files_in_a_directory

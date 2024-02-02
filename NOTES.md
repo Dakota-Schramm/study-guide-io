@@ -28,3 +28,4 @@ Potential Features:
     - Allows user to "update" pdfs by adding new class notes and homeworks
     - Sync with calendar?
       - Send reminders to user to review notes on particular days
+  - Add note for firefox users to switch browsers

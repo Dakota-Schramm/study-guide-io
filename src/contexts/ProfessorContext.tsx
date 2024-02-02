@@ -1,5 +1,8 @@
 import { STEMCourse, instantiateCourses } from "@/app/course";
-import { locateHomeDirectory } from "@/user_lifecycle_methods";
+import {
+  locateHomeDirectory,
+  setupCourseTypeDirectories,
+} from "@/user_lifecycle_methods";
 import {
   ReactNode,
   createContext,
@@ -35,13 +38,9 @@ export const ProfessorProvider = ({ children }: { children: ReactNode }) => {
     const homeDirHandle = await locateHomeDirectory(userAction);
     if (!homeDirHandle) return;
 
-    // Replace with Array.fromAsync().filter()
-    const files = [];
-    for await (const entry of homeDirHandle.entries()) {
-      if (entry[0] === "STEM") files.push(entry[1]);
-    }
-
-    const stem = await instantiateCourses(files);
+    const courseTypeDirectories =
+      await setupCourseTypeDirectories(homeDirHandle);
+    const stem = await instantiateCourses(courseTypeDirectories);
     setProfessor((prev) => ({ ...prev, stem }));
   }, []);
 
