@@ -2,7 +2,7 @@
 
 import { ProfessorContext } from "@/contexts/ProfessorContext";
 import React, { useContext } from "react";
-import { PersonalView } from './PersonalView';
+import { PersonalView } from "./PersonalView";
 
 // TODO: Replce with window.locatio.hash or URLSearchParams(window.location.href)
 // TODO: Fix so Create doesnt display until settings setup
@@ -72,11 +72,11 @@ function BasicView({
 }
 
 function checkPageType(fileHandles: FileSystemFileHandle | undefined) {
-  let index: 'personal' | 'basic' | 'newUser';
+  let index: "personal" | "basic" | "newUser";
 
-  if (typeof fileHandles === 'undefined') index = 'newUser';
-  else if (fileHandles.length) index = 'personal';
-  else index = 'basic';
+  if (typeof fileHandles === "undefined") index = "newUser";
+  else if (fileHandles.length) index = "personal";
+  else index = "basic";
 
   return index;
 }
