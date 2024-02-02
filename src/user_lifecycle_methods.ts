@@ -19,12 +19,9 @@ async function requestDirectoryPermission(userAction = true) {
     return fsdHandle;
   } catch (error: unknown) {
     const exception = error as DOMException;
-    switch (exception.name) {
-      case "AbortError":
-        return null;
-      default:
-        console.log(`${typeof exception}: ${exception.message}`);
-    }
+    if (exception.name === "AbortError") return null;
+
+    console.log(`${typeof exception}: ${exception.message}`);
   }
 }
 
@@ -32,14 +29,14 @@ export async function locateHomeDirectory(userAction: boolean) {
   const fsdHandle = await requestDirectoryPermission(userAction);
   if (!fsdHandle) {
     // TODO: Fix message
-    alert("You must allow access to your file system to use this app.");
+    // alert("You must allow access to your file system to use this app.");
     return;
   }
 
-  const homeDir = fsdHandle;
+  let homeDir = fsdHandle;
   const isRootDirectoryAppDirectory = fsdHandle.name === sitePath;
   if (!isRootDirectoryAppDirectory) {
-    const homeDir = await fsdHandle.getDirectoryHandle(sitePath, {
+    homeDir = await fsdHandle.getDirectoryHandle(sitePath, {
       create: true,
     });
   }
