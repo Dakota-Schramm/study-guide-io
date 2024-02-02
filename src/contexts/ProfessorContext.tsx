@@ -31,22 +31,19 @@ export const ProfessorProvider = ({ children }: { children: ReactNode }) => {
     stem: undefined,
   });
 
-  const reSyncCourses = useCallback(
-    async (userAction: boolean) => {
-      const homeDirHandle = await locateHomeDirectory(userAction);
-      if (!homeDirHandle) return;
+  const reSyncCourses = useCallback(async (userAction: boolean) => {
+    const homeDirHandle = await locateHomeDirectory(userAction);
+    if (!homeDirHandle) return;
 
-      // Replace with Array.fromAsync().filter()
-      const files = [];
-      for await (const entry of homeDirHandle.entries()) {
-        if (entry[0] === "STEM") files.push(entry[1]);
-      }
+    // Replace with Array.fromAsync().filter()
+    const files = [];
+    for await (const entry of homeDirHandle.entries()) {
+      if (entry[0] === "STEM") files.push(entry[1]);
+    }
 
-      const stem = await instantiateCourses(files);
-      setProfessor({ ...professor, stem });
-    },
-    [],
-  );
+    const stem = await instantiateCourses(files);
+    setProfessor((prev) => ({ ...prev, stem }));
+  }, []);
 
   return (
     <ProfessorContext.Provider
