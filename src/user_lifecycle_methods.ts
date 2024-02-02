@@ -12,7 +12,7 @@ async function requestDirectoryPermission(userAction = true) {
     const fsdHandle = (await window.showDirectoryPicker({
       mode: "readwrite",
       startIn: "documents",
-    })) as FileSystemDirectoryHandle;
+    }));
 
     // TODO: Save the handle to the file system directory in IndexedDB
 
@@ -28,10 +28,7 @@ async function requestDirectoryPermission(userAction = true) {
   }
 }
 
-export async function handleFileSetup(
-  collectFileHandles: (files: FileSystemHandle[]) => void,
-  userAction = true,
-) {
+export async function locateHomeDirectory(userAction: boolean) {
   const fsdHandle = await requestDirectoryPermission(userAction);
   if (!fsdHandle) {
     // TODO: Fix message
@@ -39,37 +36,16 @@ export async function handleFileSetup(
     return;
   }
 
-  let files = [];
-  console.log(fsdHandle.name, sitePath, fsdHandle.name === sitePath)
+  let homeDir = fsdHandle;
   const isRootDirectoryAppDirectory = fsdHandle.name === sitePath;
   if (!isRootDirectoryAppDirectory) {
-    const studyGuideIo = await fsdHandle.getDirectoryHandle(sitePath, {
-      create: true,
-    });
-
-    for await (const entry of studyGuideIo.entries()) {
-      files.push(entry);
-    }
-  } else {
-    for await (const entry of fsdHandle.entries()) {
-      files.push(entry);
-    }
+    const homeDir = await fsdHandle
+      .getDirectoryHandle(sitePath, { create: true, });
   }
 
-  collectFileHandles(files);
-  window.localStorage.setItem("isSetup", "true");
+  return homeDir
+
 }
 
-// async function* getFilesRecursively(entry) {
-//   if (entry.kind === "file") {
-//     const file = await entry.getFile();
-//     if (file !== null) {
-//       file.relativePath = getRelativePath(entry);
-//       yield file;
-//     }
-//   } else if (entry.kind === "directory") {
-//     for await (const handle of entry.values()) {
-//       yield* getFilesRecursively(handle);
-//     }
-//   }
-// }
+//? Maybe use this eventually
+// https://developer.mozilla.org/en-US/docs/Web/API/FileSystemDirectoryHandle#return_handles_for_all_files_in_a_directory

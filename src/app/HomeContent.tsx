@@ -1,7 +1,6 @@
 "use client";
 
-import { SettingsContext } from "@/contexts/SettingsContext";
-import { handleFileSetup } from "@/user_lifecycle_methods";
+import { ProfessorContext } from '@/contexts/ProfessorContext';
 import React, { useContext } from "react";
 
 // TODO: Replce with window.locatio.hash or URLSearchParams(window.location.href)
@@ -12,36 +11,22 @@ export const HomeContent = ({
 }: {
   handleClick: (newLocation: string) => void;
 }) => {
-  const { settings, setSettings } = useContext(SettingsContext);
-  const { guideHandles } = settings;
-
-  let index: "personal" | "basic" | "newUser";
-  if (typeof guideHandles === "undefined") index = "newUser";
-  else if (guideHandles.length) index = "personal";
-  else index = "basic";
+  const { professor, } = useContext(ProfessorContext);
+  const { stem } = professor;
 
   return {
     personal: <PersonalView handleClick={handleClick} />,
     basic: <BasicView handleClick={handleClick} />,
     newUser: <NewUserView />,
-  }[index];
+  }[checkPageType(stem)];
 };
 
 function NewUserView() {
-  const { settings, setSettings } = useContext(SettingsContext);
-  const { guideHandles } = settings;
+  const { professor, reSyncCourses, } = useContext(ProfessorContext);
+  const { stem } = professor;
 
-  if (guideHandles !== undefined) {
+  if (stem !== undefined) {
     throw new Error("Unreachable state met in HomeContent.tsx: NewUserView()");
-  }
-
-  function handleSetup() {
-    handleFileSetup((handles) => {
-      setSettings({
-        ...settings,
-        guideHandles: handles,
-      });
-    });
   }
 
   return (
@@ -49,7 +34,7 @@ function NewUserView() {
       <div>Placeholder image...</div>
       <h2>We need some things from you to get started...</h2>
 
-      <button type="button" onClick={handleSetup}>
+      <button type="button" onClick={() => { reSyncCourses(true) }}>
         Setup permissions
       </button>
     </>
@@ -61,10 +46,10 @@ function BasicView({
 }: {
   handleClick: (newLocation: string) => void;
 }) {
-  const { settings, setSettings } = useContext(SettingsContext);
-  const { guideHandles } = settings;
+  const { professor, } = useContext(ProfessorContext);
+  const { stem } = professor;
 
-  if (guideHandles?.length !== 0) {
+  if (stem?.length !== 0) {
     throw new Error("Unreachable state met in HomeContent.tsx: BasicView()");
   }
 
@@ -80,13 +65,24 @@ function BasicView({
   );
 }
 
+// TODO: Allow user to select a course to view in app
 function PersonalView() {
-  const { settings, setSettings } = useContext(SettingsContext);
-  const { guideHandles } = settings;
+  const { professor, setProfessor } = useContext(ProfessorContext);
+  const { stem } = professor;
 
-  if (!guideHandles?.length) {
+  if (!stem?.length) {
     throw new Error("Unreachable state met in HomeContent.tsx: PersonalView()");
   }
 
-  return guideHandles.map(() => <div>Personal view</div>);
+  return stem.map(() => <div>Personal view</div>);
+}
+
+function checkPageType(fileHandles: FileSystemFileHandle[] | undefined) {
+  let index: "personal" | "basic" | "newUser";
+
+  if (typeof fileHandles === "undefined") index = "newUser";
+  else if (fileHandles.length) index = "personal";
+  else index = "basic";
+
+  return index
 }

@@ -12,8 +12,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { SettingsContent } from "./SettingsContent";
 import { HomeContent } from "./HomeContent";
-import { SettingsContext } from "@/contexts/SettingsContext";
-import { handleFileSetup } from "@/user_lifecycle_methods";
+import { ProfessorContext } from '@/contexts/ProfessorContext';
 
 const CreateContent = () => (
   <>
@@ -46,7 +45,9 @@ const OptionSwitcher = () => {
   );
 
   function handleClick(section: string) {
-    router.push(`${pathname}?${createQueryString("section", section)}`);
+    const newQueryString = createQueryString('section', section);
+    const newUrl = `${pathname}?${newQueryString}`;
+    router.push(newUrl);
   }
 
   return {
@@ -58,19 +59,10 @@ const OptionSwitcher = () => {
 
 //? Maybe use https://ui.shadcn.com/docs/components/hover-card for documents
 export default function Home() {
-  const { settings, setSettings } = useContext(SettingsContext);
-
-  function handleSettingsInit() {
-    handleFileSetup((handles) => {
-      setSettings({
-        ...settings,
-        guideHandles: handles,
-      });
-    }, false);
-  }
+  const { reSyncCourses } = useContext(ProfessorContext);
 
   // TODO: Add localStorage check for initialization
-  useEffect(handleSettingsInit, []);
+  useEffect(() => reSyncCourses(false), []);
 
   return (
     <main className="flex w-full h-full justify-center items-between space-x-8">

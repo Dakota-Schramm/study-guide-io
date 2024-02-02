@@ -2,27 +2,17 @@
 
 import React, { useContext, useEffect, useState } from "react";
 
-import { SettingsContext } from "@/contexts/SettingsContext";
-import { handleFileSetup } from "@/user_lifecycle_methods";
+import { ProfessorContext } from '@/contexts/ProfessorContext';
 
 export const SettingsContent = () => {
-  const { settings, setSettings } = useContext(SettingsContext);
-  const { guideHandles } = settings;
+  const { professor, reSyncCourses, } = useContext(ProfessorContext);
+  const { stem } = professor;
 
-  function handleTour() {
-    handleFileSetup((handles) => {
-      setSettings({
-        ...settings,
-        guideHandles: handles,
-      });
-    });
-  }
-
-  useEffect(() => console.log({ guideHandles }), [guideHandles]);
+  useEffect(() => console.log({ stem }), [stem]);
 
   return (
     <>
-      <button type="button" onClick={handleTour}>
+      <button type="button" onClick={() => reSyncCourses(true)}>
         Setup directory
       </button>
     </>
