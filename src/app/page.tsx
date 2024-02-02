@@ -1,29 +1,13 @@
 "use client";
 
-import React, {
-  forwardRef,
-  useEffect,
-  useState,
-  useCallback,
-  useContext,
-} from "react";
+import React, { useEffect, useCallback, useContext } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { SettingsContent } from "./SettingsContent";
 import { HomeContent } from "./HomeContent";
 import { ProfessorContext } from "@/contexts/ProfessorContext";
-
-const CreateContent = () => (
-  <>
-    <Link href="/stem" className="border h-24 lg:h-32 p-4">
-      STEM
-    </Link>
-    <Link href="/writing" className="border h-24 lg:h-32 p-4">
-      Writing
-    </Link>
-  </>
-);
+import CreateContent from "./create/page";
 
 const OptionSwitcher = () => {
   const router = useRouter();
@@ -57,6 +41,14 @@ const OptionSwitcher = () => {
   }[index];
 };
 
+const HomeHeader = () => {
+  return (
+    <header>
+      <Link href="/">Home</Link>
+    </header>
+  );
+};
+
 //? Maybe use https://ui.shadcn.com/docs/components/hover-card for documents
 export default function Home() {
   const { reSyncCourses } = useContext(ProfessorContext);
@@ -67,8 +59,11 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="flex w-full h-full justify-center items-between space-x-8">
-      <OptionSwitcher />
-    </main>
+    <>
+      <HomeHeader />
+      <main className="flex w-full h-full justify-center items-between space-x-8">
+        <OptionSwitcher />
+      </main>
+    </>
   );
 }
