@@ -1,10 +1,9 @@
 "use client";
 
 import React, { useEffect, useCallback, useContext } from "react";
-import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-import { SettingsContent } from "./SettingsContent";
+import SettingsContent from "./settings/page";
 import { HomeContent } from "./HomeContent";
 import { ProfessorContext } from "@/contexts/ProfessorContext";
 import CreateContent from "./create/page";

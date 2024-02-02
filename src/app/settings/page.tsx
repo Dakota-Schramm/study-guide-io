@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 
 import { ProfessorContext } from "@/contexts/ProfessorContext";
 
-export const SettingsContent = () => {
+export default function SettingsContent() {
   const { professor, reSyncCourses } = useContext(ProfessorContext);
   const { stem } = professor;
 
@@ -17,4 +17,4 @@ export const SettingsContent = () => {
       </button>
     </>
   );
-};
+}
