@@ -19,29 +19,24 @@
     - Add course end date
 */
 export class BaseCourse {
-  private appHandle?: FileSystemDirectoryHandle;
   private courseHandle?: FileSystemDirectoryHandle;
   private files?: FileSystemFileHandle[];
   private readonly name: string;
 
-  public constructor(name: string, appHandle: FileSystemDirectoryHandle) {
+  public constructor(courseHandle: FileSystemDirectoryHandle) {
     // name cannot be changed after this initial definition, which has to be either at it's declaration or in the constructor.
-    this.name = name;
-    this.appHandle = appHandle;
+    this.courseHandle = courseHandle;
+    this.name = courseHandle.name;
   }
 
   async initialize(
     appHandle: FileSystemDirectoryHandle,
     courseType: "stem" | "writing",
-    courseName: string,
   ) {
     const courseTypeHandle = await this.findDirectory(appHandle, courseType);
-    const courseHandle = await courseTypeHandle?.getDirectoryHandle(
-      courseName,
-      {
-        create: true,
-      },
-    );
+    const courseHandle = await courseTypeHandle?.getDirectoryHandle(this.name, {
+      create: true,
+    });
 
     this.courseHandle = courseHandle;
   }
@@ -77,7 +72,7 @@ export class BaseCourse {
 
 class STEMCourse extends BaseCourse {
   async initialize(appHandle: FileSystemDirectoryHandle, courseName: string) {
-    await super.initialize(appHandle, "stem", courseName);
+    await super.initialize(appHandle, "stem");
   }
 }
 
