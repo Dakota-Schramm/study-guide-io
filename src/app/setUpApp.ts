@@ -1,7 +1,7 @@
 import { sitePath } from "@/lib/utils";
 
 export async function setUpApp() {
-  const rootHandle = await locateHomeDirectory(false);
+  const rootHandle = await setupHomeDirectory(false);
   if (!rootHandle) {
     // User needs to allow access
     return;
@@ -42,7 +42,7 @@ async function requestDirectoryPermission(userAction = true) {
 /**
  * requires use of window
  */
-export async function locateHomeDirectory(userAction: boolean) {
+export async function setupHomeDirectory(userAction: boolean) {
   const fsdHandle = await requestDirectoryPermission(userAction);
   if (!fsdHandle) {
     // TODO: Fix message
