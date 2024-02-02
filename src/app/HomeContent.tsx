@@ -2,6 +2,7 @@
 
 import { ProfessorContext } from "@/contexts/ProfessorContext";
 import React, { useContext } from "react";
+import { PersonalView } from './PersonalView';
 
 // TODO: Replce with window.locatio.hash or URLSearchParams(window.location.href)
 // TODO: Fix so Create doesnt display until settings setup
@@ -70,26 +71,12 @@ function BasicView({
   );
 }
 
-// TODO: Allow user to select a course to view in app
-function PersonalView() {
-  const { professor, setProfessor } = useContext(ProfessorContext);
-  const { stem } = professor;
+function checkPageType(fileHandles: FileSystemFileHandle | undefined) {
+  let index: 'personal' | 'basic' | 'newUser';
 
-  if (!stem?.length) {
-    throw new Error("Unreachable state met in HomeContent.tsx: PersonalView()");
-  }
-
-  return stem.map((course) => {
-    <div>Personal view</div>;
-  });
-}
-
-function checkPageType(fileHandles: FileSystemFileHandle[] | undefined) {
-  let index: "personal" | "basic" | "newUser";
-
-  if (typeof fileHandles === "undefined") index = "newUser";
-  else if (fileHandles.length) index = "personal";
-  else index = "basic";
+  if (typeof fileHandles === 'undefined') index = 'newUser';
+  else if (fileHandles.length) index = 'personal';
+  else index = 'basic';
 
   return index;
 }
