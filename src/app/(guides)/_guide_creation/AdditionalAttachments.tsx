@@ -2,9 +2,11 @@
 import React, { forwardRef } from "react";
 
 const AdditionalAttachments = forwardRef(function AdditionalAttachments(
-  { hidden, handlePrevStep, handleNextStep },
+  { rendered, hidden, handlePrevStep, handleNextStep },
   ref,
 ) {
+  if (!rendered) return;
+
   // TODO: Allow more file types in input[name="attachments"]
   return (
     <div className={hidden ? "invisible absolute" : undefined}>

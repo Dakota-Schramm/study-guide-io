@@ -4,7 +4,7 @@ import React, { forwardRef, useState } from "react";
 import PDFViewer from "./PdfViewer";
 
 const PdfUploader = forwardRef(function PdfUploader(
-  { hidden, handleNextStep },
+  { rendered, hidden, handleNextStep },
   ref,
 ) {
   const [uploaded, setUploaded] = useState(false);
@@ -12,6 +12,8 @@ const PdfUploader = forwardRef(function PdfUploader(
 
   console.log(`PdfUploader hidden: ${hidden}`);
   console.log(`PdfUploader ref: ${ref}`);
+
+  if (!rendered) return;
 
   return (
     <div className={hidden ? "invisible absolute" : undefined}>

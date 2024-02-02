@@ -56,31 +56,28 @@ const GuideCreationProcess = () => {
       <form id="pdf-create" className="flex flex-col">
         {/* Steps */}
         <Start hidden={step !== 0} {...{ handleNextStep }} />
-        {1 <= step && (
-          <PdfUploader
-            ref={pdfRef}
-            hidden={2 <= step}
-            {...{ handleNextStep }}
-          />
-        )}
-        {2 <= step && (
-          <AdditionalAttachments
-            ref={attachmentRef}
-            hidden={3 <= step}
-            {...{ handlePrevStep, handleNextStep }}
-          />
-        )}
-        {3 <= step && (
-          <Finalize
-            ref={downloadRef}
-            hidden={step !== 3}
-            pdfFiles={(pdfRef?.current as HTMLInputElement)?.files ?? []}
-            attachmentFiles={
-              (attachmentRef?.current as HTMLInputElement)?.files ?? []
-            }
-            {...{ handlePrevStep }}
-          />
-        )}
+        <PdfUploader
+          ref={pdfRef}
+          rendered={1 <= step}
+          hidden={2 <= step}
+          {...{ handleNextStep }}
+        />
+        <AdditionalAttachments
+          ref={attachmentRef}
+          rendered={2 <= step}
+          hidden={3 <= step}
+          {...{ handlePrevStep, handleNextStep }}
+        />
+        <Finalize
+          ref={downloadRef}
+          rendered={3 <= step}
+          hidden={step !== 3}
+          pdfFiles={(pdfRef?.current as HTMLInputElement)?.files ?? []}
+          attachmentFiles={
+            (attachmentRef?.current as HTMLInputElement)?.files ?? []
+          }
+          {...{ handlePrevStep }}
+        />
       </form>
       <StepStatus currentStep={step} totalSteps={TOTAL_STEPS} />
     </>
