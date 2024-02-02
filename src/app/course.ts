@@ -14,6 +14,8 @@
 
 */
 
+import { findSubDirectory } from "./setUpApp";
+
 /* 
   TODO: Add the following features:
     - Add course end date
@@ -33,7 +35,7 @@ export class BaseCourse {
     appHandle: FileSystemDirectoryHandle,
     courseType: "stem" | "writing",
   ) {
-    const courseTypeHandle = await this.findDirectory(appHandle, courseType);
+    const courseTypeHandle = await findSubDirectory(appHandle, courseType);
     const courseHandle = await courseTypeHandle?.getDirectoryHandle(this.name, {
       create: true,
     });
@@ -51,22 +53,6 @@ export class BaseCourse {
 
   public setFiles(files: FileSystemFileHandle[]): void {
     this.files = files;
-  }
-
-  private async findDirectory(
-    handle: FileSystemDirectoryHandle,
-    name: string,
-  ): Promise<FileSystemDirectoryHandle | null> {
-    let found = null;
-    for await (const subdirectory of handle.entries()) {
-      const [fileName, fileObj] = subdirectory;
-      if (fileName === name) {
-        found = fileObj;
-        break;
-      }
-    }
-
-    return found;
   }
 }
 

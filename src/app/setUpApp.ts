@@ -42,7 +42,7 @@ async function requestDirectoryPermission(userAction = true) {
 /**
  * requires use of window
  */
-async function setupHomeDirectory(userAction: boolean) {
+export async function setupHomeDirectory(userAction: boolean) {
   const fsdHandle = await requestDirectoryPermission(userAction);
   if (!fsdHandle) {
     // TODO: Fix message
@@ -81,6 +81,25 @@ async function setupCourseTypeDirectories(root: FileSystemDirectoryHandle) {
     return;
 
   return courseTypeDirectories;
+}
+
+/**
+ * checks to see if subDirectory exists within the given fileHandle
+ */
+export async function findSubDirectory(
+  handle: FileSystemDirectoryHandle,
+  name: string,
+): Promise<FileSystemDirectoryHandle | null> {
+  let found = null;
+  for await (const subdirectory of handle.entries()) {
+    const [fileName, fileObj] = subdirectory;
+    if (fileName === name) {
+      found = fileObj;
+      break;
+    }
+  }
+
+  return found;
 }
 
 //? Maybe use this eventually
