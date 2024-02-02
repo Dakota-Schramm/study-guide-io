@@ -1,8 +1,3 @@
-import { STEMCourse, instantiateCourses } from "@/app/course";
-import {
-  locateHomeDirectory,
-  setupCourseTypeDirectories,
-} from "@/user_lifecycle_methods";
 import {
   ReactNode,
   createContext,
@@ -11,9 +6,17 @@ import {
   useState,
 } from "react";
 
+import { BaseCourse, STEMCourse, instantiateCourses } from "@/app/course";
+import { setUpApp } from "@/app/setUpApp";
+
 type IProfessor = {
   root?: FileSystemDirectoryHandle;
-  stem?: (typeof STEMCourse)[];
+  stem?: CourseCollection;
+};
+
+type CourseCollection = {
+  handle: FileSystemDirectoryHandle;
+  courses: BaseCourse[];
 };
 
 export const ProfessorContext = createContext({
@@ -35,13 +38,18 @@ export const ProfessorProvider = ({ children }: { children: ReactNode }) => {
   });
 
   const reSyncCourses = useCallback(async (userAction: boolean) => {
-    const homeDirHandle = await locateHomeDirectory(userAction);
-    if (!homeDirHandle) return;
+    const handles = await setUpApp();
 
-    const courseTypeDirectories =
-      await setupCourseTypeDirectories(homeDirHandle);
-    const stem = await instantiateCourses(courseTypeDirectories);
-    setProfessor((prev) => ({ ...prev, stem }));
+    if (!handles?.stem) return;
+
+    const stemCourses = await instantiateCourses([handles.stem]);
+    setProfessor({
+      root: handles.root,
+      stem: {
+        handle: handles.stem,
+        courses: stemCourses,
+      },
+    });
   }, []);
 
   return (

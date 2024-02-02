@@ -1,7 +1,21 @@
-"use client";
-
 import { sitePath } from "@/lib/utils";
 
+export async function setUpApp() {
+  const rootHandle = await locateHomeDirectory(false);
+  if (!rootHandle) {
+    // User needs to allow access
+    return;
+  }
+
+  return {
+    root: rootHandle,
+    ...(await setupCourseTypeDirectories(rootHandle)),
+  };
+}
+
+/**
+ * requires use of window
+ */
 async function requestDirectoryPermission(userAction = true) {
   if (!userAction) {
     // TODO: Show an alert to prompt the user to allow access to their file system
@@ -25,6 +39,9 @@ async function requestDirectoryPermission(userAction = true) {
   }
 }
 
+/**
+ * requires use of window
+ */
 export async function locateHomeDirectory(userAction: boolean) {
   const fsdHandle = await requestDirectoryPermission(userAction);
   if (!fsdHandle) {
@@ -44,14 +61,24 @@ export async function locateHomeDirectory(userAction: boolean) {
   return homeDir;
 }
 
-export async function setupCourseTypeDirectories(
-  root: FileSystemDirectoryHandle,
-) {
-  const courseTypeDirectories: FileSystemDirectoryHandle[] = [];
+/**
+ * requires use of window
+ */
+async function setupCourseTypeDirectories(root: FileSystemDirectoryHandle) {
+  const courseTypeDirectories = {
+    stem: undefined,
+    writing: undefined,
+  };
 
-  courseTypeDirectories.push(
-    await root.getDirectoryHandle("STEM", { create: true }),
-  );
+  courseTypeDirectories.stem = await root.getDirectoryHandle("STEM", {
+    create: true,
+  });
+
+  if (
+    courseTypeDirectories.stem === undefined &&
+    courseTypeDirectories.writing === undefined
+  )
+    return;
 
   return courseTypeDirectories;
 }
