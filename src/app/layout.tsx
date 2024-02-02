@@ -2,6 +2,8 @@
 
 import { pdfjs } from "react-pdf";
 import "./globals.css";
+import Link from "next/link";
+
 import { ProfessorProvider } from "@/contexts/ProfessorContext";
 
 // export const metadata: Metadata = {
@@ -15,6 +17,17 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/b
 //   import.meta.url,
 // ).toString();
 
+// TODO: Maybe attach a ref to make invisible in some views?
+const HomeHeader = () => {
+  return (
+    <header className="p-4 space-x-8 divide-x">
+      <Link href="/">Home</Link>
+      <Link href="/create">Create</Link>
+      <Link href="/settings">Settings</Link>
+    </header>
+  );
+};
+
 const RootLayout = ({
   children,
 }: Readonly<{
@@ -22,7 +35,10 @@ const RootLayout = ({
 }>) => (
   <ProfessorProvider>
     <html lang="en" className="w-full h-full box-border">
-      <body className="w-full h-full box-border">{children}</body>
+      <body className="w-full h-full box-border">
+        <HomeHeader />
+        {children}
+      </body>
     </html>
   </ProfessorProvider>
 );

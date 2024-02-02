@@ -40,26 +40,18 @@ const OptionSwitcher = () => {
   }[index];
 };
 
-const HomeHeader = () => {
-  return (
-    <header>
-      <Link href="/">Home</Link>
-    </header>
-  );
-};
-
 //? Maybe use https://ui.shadcn.com/docs/components/hover-card for documents
 export default function Home() {
   const { reSyncCourses } = useContext(ProfessorContext);
 
   // TODO: Add localStorage check for initialization
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Only run on mount
   useEffect(() => {
     reSyncCourses(false);
   }, []);
 
   return (
     <>
-      <HomeHeader />
       <main className="flex w-full h-full justify-center items-between space-x-8">
         <OptionSwitcher />
       </main>
