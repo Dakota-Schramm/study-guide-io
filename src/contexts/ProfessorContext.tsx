@@ -1,11 +1,17 @@
 import { STEMCourse, instantiateCourses } from "@/app/course";
 import { locateHomeDirectory } from "@/user_lifecycle_methods";
-import { ReactNode, createContext, useCallback, useState } from "react";
+import {
+  ReactNode,
+  createContext,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 
 type IProfessor = {
   root?: FileSystemDirectoryHandle;
-  stem?: typeof STEMCourse[];
-}
+  stem?: (typeof STEMCourse)[];
+};
 
 export const ProfessorContext = createContext({
   professor: {
@@ -25,20 +31,27 @@ export const ProfessorProvider = ({ children }: { children: ReactNode }) => {
     stem: undefined,
   });
 
-  const reSyncCourses = useCallback(async (userAction: boolean) => {
-    const homeDirHandle = await locateHomeDirectory(userAction);
+  const reSyncCourses = useCallback(
+    async (userAction: boolean) => {
+      const homeDirHandle = await locateHomeDirectory(userAction);
+      if (!homeDirHandle) return;
 
-    let files = [];
-    for await (const entry of homeDirHandle?.entries()) {
-      if (entry.name === "STEM") files.push(entry);
-    }
+      // Replace with Array.fromAsync().filter()
+      const files = [];
+      for await (const entry of homeDirHandle.entries()) {
+        if (entry[0] === "STEM") files.push(entry[1]);
+      }
 
-    const stem = await instantiateCourses(files)
-    setProfessor({ ...professor, stem, });
-  }, [JSON.stringify(professor.stem)])
+      const stem = await instantiateCourses(files);
+      setProfessor({ ...professor, stem });
+    },
+    [],
+  );
 
   return (
-    <ProfessorContext.Provider value={{ professor, setProfessor, reSyncCourses, }}>
+    <ProfessorContext.Provider
+      value={{ professor, setProfessor, reSyncCourses }}
+    >
       {children}
     </ProfessorContext.Provider>
   );

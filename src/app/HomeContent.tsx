@@ -1,6 +1,6 @@
 "use client";
 
-import { ProfessorContext } from '@/contexts/ProfessorContext';
+import { ProfessorContext } from "@/contexts/ProfessorContext";
 import React, { useContext } from "react";
 
 // TODO: Replce with window.locatio.hash or URLSearchParams(window.location.href)
@@ -11,18 +11,18 @@ export const HomeContent = ({
 }: {
   handleClick: (newLocation: string) => void;
 }) => {
-  const { professor, } = useContext(ProfessorContext);
+  const { professor } = useContext(ProfessorContext);
   const { stem } = professor;
 
   return {
-    personal: <PersonalView handleClick={handleClick} />,
+    personal: <PersonalView />,
     basic: <BasicView handleClick={handleClick} />,
     newUser: <NewUserView />,
   }[checkPageType(stem)];
 };
 
 function NewUserView() {
-  const { professor, reSyncCourses, } = useContext(ProfessorContext);
+  const { professor, reSyncCourses } = useContext(ProfessorContext);
   const { stem } = professor;
 
   if (stem !== undefined) {
@@ -34,7 +34,12 @@ function NewUserView() {
       <div>Placeholder image...</div>
       <h2>We need some things from you to get started...</h2>
 
-      <button type="button" onClick={() => { reSyncCourses(true) }}>
+      <button
+        type="button"
+        onClick={() => {
+          reSyncCourses(true);
+        }}
+      >
         Setup permissions
       </button>
     </>
@@ -46,7 +51,7 @@ function BasicView({
 }: {
   handleClick: (newLocation: string) => void;
 }) {
-  const { professor, } = useContext(ProfessorContext);
+  const { professor } = useContext(ProfessorContext);
   const { stem } = professor;
 
   if (stem?.length !== 0) {
@@ -84,5 +89,5 @@ function checkPageType(fileHandles: FileSystemFileHandle[] | undefined) {
   else if (fileHandles.length) index = "personal";
   else index = "basic";
 
-  return index
+  return index;
 }

@@ -12,7 +12,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { SettingsContent } from "./SettingsContent";
 import { HomeContent } from "./HomeContent";
-import { ProfessorContext } from '@/contexts/ProfessorContext';
+import { ProfessorContext } from "@/contexts/ProfessorContext";
 
 const CreateContent = () => (
   <>
@@ -45,7 +45,7 @@ const OptionSwitcher = () => {
   );
 
   function handleClick(section: string) {
-    const newQueryString = createQueryString('section', section);
+    const newQueryString = createQueryString("section", section);
     const newUrl = `${pathname}?${newQueryString}`;
     router.push(newUrl);
   }
@@ -62,7 +62,9 @@ export default function Home() {
   const { reSyncCourses } = useContext(ProfessorContext);
 
   // TODO: Add localStorage check for initialization
-  useEffect(() => reSyncCourses(false), []);
+  useEffect(() => {
+    reSyncCourses(false);
+  }, []);
 
   return (
     <main className="flex w-full h-full justify-center items-between space-x-8">
