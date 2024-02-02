@@ -42,7 +42,7 @@ async function requestDirectoryPermission(userAction = true) {
 /**
  * requires use of window
  */
-export async function setupHomeDirectory(userAction: boolean) {
+async function setupHomeDirectory(userAction: boolean) {
   const fsdHandle = await requestDirectoryPermission(userAction);
   if (!fsdHandle) {
     // TODO: Fix message
