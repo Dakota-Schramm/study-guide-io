@@ -2,7 +2,7 @@
 
 import { pdfjs } from "react-pdf";
 import "./globals.css";
-import { ProfessorProvider } from '@/contexts/ProfessorContext';
+import { ProfessorProvider } from "@/contexts/ProfessorContext";
 
 // export const metadata: Metadata = {
 //   title: "Create Next App",

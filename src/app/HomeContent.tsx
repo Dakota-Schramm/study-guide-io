@@ -79,7 +79,9 @@ function PersonalView() {
     throw new Error("Unreachable state met in HomeContent.tsx: PersonalView()");
   }
 
-  return stem.map(() => <div>Personal view</div>);
+  return stem.map((course) => {
+    <div>Personal view</div>;
+  });
 }
 
 function checkPageType(fileHandles: FileSystemFileHandle[] | undefined) {

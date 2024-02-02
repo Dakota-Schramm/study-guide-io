@@ -9,10 +9,10 @@ async function requestDirectoryPermission(userAction = true) {
   }
 
   try {
-    const fsdHandle = (await window.showDirectoryPicker({
+    const fsdHandle = await window.showDirectoryPicker({
       mode: "readwrite",
       startIn: "documents",
-    }));
+    });
 
     // TODO: Save the handle to the file system directory in IndexedDB
 
@@ -36,15 +36,15 @@ export async function locateHomeDirectory(userAction: boolean) {
     return;
   }
 
-  let homeDir = fsdHandle;
+  const homeDir = fsdHandle;
   const isRootDirectoryAppDirectory = fsdHandle.name === sitePath;
   if (!isRootDirectoryAppDirectory) {
-    const homeDir = await fsdHandle
-      .getDirectoryHandle(sitePath, { create: true, });
+    const homeDir = await fsdHandle.getDirectoryHandle(sitePath, {
+      create: true,
+    });
   }
 
-  return homeDir
-
+  return homeDir;
 }
 
 //? Maybe use this eventually
