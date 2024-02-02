@@ -19,12 +19,31 @@
     - Add course end date
 */
 export class BaseCourse {
+  private appHandle?: FileSystemDirectoryHandle;
+  private courseHandle?: FileSystemDirectoryHandle;
   private files?: FileSystemFileHandle[];
   private readonly name: string;
 
-  public constructor(name: string) {
+  public constructor(name: string, appHandle: FileSystemDirectoryHandle) {
     // name cannot be changed after this initial definition, which has to be either at it's declaration or in the constructor.
     this.name = name;
+    this.appHandle = appHandle;
+  }
+
+  async initialize(
+    appHandle: FileSystemDirectoryHandle,
+    courseType: "stem" | "writing",
+    courseName: string,
+  ) {
+    const courseTypeHandle = await this.findDirectory(appHandle, courseType);
+    const courseHandle = await courseTypeHandle?.getDirectoryHandle(
+      courseName,
+      {
+        create: true,
+      },
+    );
+
+    this.courseHandle = courseHandle;
   }
 
   public getName(): string {
@@ -38,9 +57,29 @@ export class BaseCourse {
   public setFiles(files: FileSystemFileHandle[]): void {
     this.files = files;
   }
+
+  private async findDirectory(
+    handle: FileSystemDirectoryHandle,
+    name: string,
+  ): Promise<FileSystemDirectoryHandle | null> {
+    let found = null;
+    for await (const subdirectory of handle.entries()) {
+      const [fileName, fileObj] = subdirectory;
+      if (fileName === name) {
+        found = fileObj;
+        break;
+      }
+    }
+
+    return found;
+  }
 }
 
-class STEMCourse extends BaseCourse {}
+class STEMCourse extends BaseCourse {
+  async initialize(appHandle: FileSystemDirectoryHandle, courseName: string) {
+    await super.initialize(appHandle, "stem", courseName);
+  }
+}
 
 /*
   HELPER FUNCTIONS
@@ -95,7 +134,7 @@ async function instantiateCourse(
   root: FileSystemDirectoryHandle,
   courseType: string,
 ) {
-  const newCourse = new STEMCourse(root.name);
+  const newCourse = new STEMCourse(root.name, root);
 
   // const courseContents = await Array.fromAsync(root.entries());
   // const courseFiles = courseContents.filter((handle) => handle.kind === "file")
