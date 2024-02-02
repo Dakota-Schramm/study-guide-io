@@ -2,12 +2,12 @@
 
 import React, { useContext } from "react";
 import Link from "next/link";
-import { ProfessorContext } from "@/contexts/ProfessorContext";
+import { DeanContext } from "@/contexts/DeanContext";
 
 export default function CreateContent() {
-  const { professor } = useContext(ProfessorContext);
+  const { dean } = useContext(DeanContext);
 
-  if (professor.stem === undefined) {
+  if (dean.stem === undefined) {
     if (window) window.location.href = "/";
   }
 

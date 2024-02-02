@@ -5,7 +5,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import SettingsContent from "./settings/page";
 import { HomeContent } from "./HomeContent";
-import { ProfessorContext } from "@/contexts/ProfessorContext";
+import { DeanContext } from "@/contexts/DeanContext";
 import CreateContent from "./create/page";
 
 const OptionSwitcher = () => {
@@ -42,7 +42,7 @@ const OptionSwitcher = () => {
 
 //? Maybe use https://ui.shadcn.com/docs/components/hover-card for documents
 export default function Home() {
-  const { reSyncCourses } = useContext(ProfessorContext);
+  const { reSyncCourses } = useContext(DeanContext);
 
   // TODO: Add localStorage check for initialization
   // biome-ignore lint/correctness/useExhaustiveDependencies: Only run on mount

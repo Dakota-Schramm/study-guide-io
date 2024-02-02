@@ -1,6 +1,6 @@
 "use client";
 
-import { ProfessorContext } from "@/contexts/ProfessorContext";
+import { DeanContext } from "@/contexts/DeanContext";
 import React, { useContext } from "react";
 import { PersonalView } from "./PersonalView";
 
@@ -12,8 +12,8 @@ export const HomeContent = ({
 }: {
   handleClick: (newLocation: string) => void;
 }) => {
-  const { professor } = useContext(ProfessorContext);
-  const { stem } = professor;
+  const { dean } = useContext(DeanContext);
+  const { stem } = dean;
 
   return {
     personal: <PersonalView />,
@@ -23,8 +23,8 @@ export const HomeContent = ({
 };
 
 function NewUserView() {
-  const { professor, reSyncCourses } = useContext(ProfessorContext);
-  const { stem } = professor;
+  const { dean, reSyncCourses } = useContext(DeanContext);
+  const { stem } = dean;
 
   if (stem !== undefined) {
     throw new Error("Unreachable state met in HomeContent.tsx: NewUserView()");
@@ -52,8 +52,8 @@ function BasicView({
 }: {
   handleClick: (newLocation: string) => void;
 }) {
-  const { professor } = useContext(ProfessorContext);
-  const { stem } = professor;
+  const { dean } = useContext(DeanContext);
+  const { stem } = dean;
 
   if (stem?.length !== 0) {
     throw new Error("Unreachable state met in HomeContent.tsx: BasicView()");

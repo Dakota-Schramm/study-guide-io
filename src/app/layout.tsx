@@ -4,7 +4,7 @@ import { pdfjs } from "react-pdf";
 import "./globals.css";
 import Link from "next/link";
 
-import { ProfessorProvider } from "@/contexts/ProfessorContext";
+import { DeanProvider } from "@/contexts/DeanContext";
 
 // export const metadata: Metadata = {
 //   title: "Create Next App",
@@ -33,14 +33,14 @@ const RootLayout = ({
 }: Readonly<{
   children: React.ReactNode;
 }>) => (
-  <ProfessorProvider>
+  <DeanProvider>
     <html lang="en" className="w-full h-full box-border">
       <body className="w-full h-full box-border">
         <HomeHeader />
         {children}
       </body>
     </html>
-  </ProfessorProvider>
+  </DeanProvider>
 );
 
 export default RootLayout;

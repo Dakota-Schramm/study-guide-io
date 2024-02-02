@@ -9,7 +9,7 @@ import {
 import { BaseCourse, STEMCourse, instantiateCourses } from "@/app/course";
 import { setUpApp } from "@/app/setUpApp";
 
-type IProfessor = {
+type IDean = {
   root?: FileSystemDirectoryHandle;
   stem?: CourseCollection;
 };
@@ -19,20 +19,20 @@ type CourseCollection = {
   courses: BaseCourse[];
 };
 
-export const ProfessorContext = createContext({
-  professor: {
+export const DeanContext = createContext({
+  dean: {
     root: undefined,
     stem: undefined,
   },
-  setProfessor: (professor: IProfessor) => {},
+  setDean: (professor: IDean) => {},
   reSyncCourses: (userAction: boolean) => {},
 });
 
 /**
  * The provider that handles globals for the app
  */
-export const ProfessorProvider = ({ children }: { children: ReactNode }) => {
-  const [professor, setProfessor] = useState<IProfessor>({
+export const DeanProvider = ({ children }: { children: ReactNode }) => {
+  const [dean, setDean] = useState<IDean>({
     root: undefined,
     stem: undefined,
   });
@@ -43,7 +43,7 @@ export const ProfessorProvider = ({ children }: { children: ReactNode }) => {
     if (!handles?.stem) return;
 
     const stemCourses = await instantiateCourses([handles.stem]);
-    setProfessor({
+    setDean({
       root: handles.root,
       stem: {
         handle: handles.stem,
@@ -53,10 +53,8 @@ export const ProfessorProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <ProfessorContext.Provider
-      value={{ professor, setProfessor, reSyncCourses }}
-    >
+    <DeanContext.Provider value={{ dean, setDean, reSyncCourses }}>
       {children}
-    </ProfessorContext.Provider>
+    </DeanContext.Provider>
   );
 };

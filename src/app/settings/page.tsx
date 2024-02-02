@@ -2,11 +2,11 @@
 
 import React, { useContext, useEffect } from "react";
 
-import { ProfessorContext } from "@/contexts/ProfessorContext";
+import { DeanContext } from "@/contexts/DeanContext";
 
 export default function SettingsContent() {
-  const { professor, reSyncCourses } = useContext(ProfessorContext);
-  const { stem } = professor;
+  const { dean, reSyncCourses } = useContext(DeanContext);
+  const { stem } = dean;
 
   useEffect(() => console.log({ stem }), [stem]);
 
