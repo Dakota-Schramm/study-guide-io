@@ -3,7 +3,6 @@ import React, { useContext } from "react";
 
 import { createFileObjectUrl, createPdf } from "./pdf/createPdf";
 import { DeanContext } from "@/contexts/DeanContext";
-import { useRouter } from "next/router";
 
 type PDFComponents = {
   pdfFiles: FileList;
@@ -45,7 +44,7 @@ export const Finalize = ({
 
       // TODO: Fix so that doesn't require app reload after redirect
       // Permission state doesnt stay after full page refresh
-      window.location.href = "/";
+      // window.location.href = "/";
     } else {
       // old download
       startDownload(files.pdfFiles, files.attachmentFiles);

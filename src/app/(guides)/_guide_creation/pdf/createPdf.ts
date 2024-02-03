@@ -113,15 +113,46 @@ function determineScale(page, image) {
   const { width: pageWidth, height: pageHeight } = page;
   const { width: imageWidth, height: imageHeight } = image;
 
+  const aspectRatio = imageWidth / imageHeight;
+  const scaledHeight = (pageHeight * imageHeight) / pageWidth;
+  const scaledImage = calculateAspectRatioFit(
+    imageWidth,
+    imageHeight,
+    pageWidth,
+    scaledHeight,
+  );
+
+  const margin = Math.floor((pageWidth - scaledImage.width) / 2);
+
   // Calculate different sizes the scaledImage can resize to, noting the following:
   // if the scaledImage is larger than the page
   // if the image ratio is weird
   // the largest ratio that the image can be kept at, without stretching it
 
   return {
-    x: 0,
+    x: margin,
     y: 0,
-    width: imageWidth,
-    height: imageHeight,
+    ...scaledImage,
   };
+}
+
+/**
+ * Conserve aspect ratio of the original region. Useful when shrinking/enlarging
+ * images to fit into a certain area.
+ *
+ * @param srcWidth width of source image
+ * @param srcHeight height of source image
+ * @param maxWidth maximum available width
+ * @param maxHeight maximum available height
+ * @return {Object} { width, height }
+ */
+function calculateAspectRatioFit(
+  srcWidth: number,
+  srcHeight: number,
+  maxWidth: number,
+  maxHeight: number,
+) {
+  const ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
+
+  return { width: srcWidth * ratio, height: srcHeight * ratio };
 }
