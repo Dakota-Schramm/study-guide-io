@@ -9,6 +9,7 @@ import {
 import { STEMProfessor } from "@/app/teaching-board";
 
 type IDean = {
+  permissions?: "read" | "readwrite" | null;
   root?: FileSystemDirectoryHandle;
   stem?: STEMProfessor;
 };
@@ -21,6 +22,7 @@ type DeanContext = {
 
 export const DeanContext = createContext<DeanContext>({
   dean: {
+    permissions: undefined,
     root: undefined,
     stem: undefined,
   },
@@ -33,6 +35,7 @@ export const DeanContext = createContext<DeanContext>({
  */
 export const DeanProvider = ({ children }: { children: ReactNode }) => {
   const [dean, setDean] = useState<IDean>({
+    permissions: undefined,
     root: undefined,
     stem: undefined,
   });
@@ -44,10 +47,11 @@ export const DeanProvider = ({ children }: { children: ReactNode }) => {
       return;
     }
 
-    setDean({
+    setDean((prev) => ({
+      ...prev,
       root: stemProfessor.getRoot(),
       stem: stemProfessor,
-    });
+    }));
   }, []);
 
   return (
