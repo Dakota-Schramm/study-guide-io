@@ -21,7 +21,7 @@ async function requestDirectoryPermission() {
       return null;
     }
 
-    console.log(`${typeof exception}: ${exception.message}`);
+    console.log(`${typeof error}: ${error.message}`);
     return null;
   }
 }

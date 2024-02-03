@@ -9,17 +9,13 @@ import Link from "next/link";
 // TODO: Replce with window.locatio.hash or URLSearchParams(window.location.href)
 // TODO: Fix so Create doesnt display until settings setup
 // TODO: Use OPFS as fallback if user says no to showing directory
-export const HomeContent = ({
-  handleClick,
-}: {
-  handleClick: (newLocation: string) => void;
-}) => {
+export const HomeContent = () => {
   const { dean } = useContext(DeanContext);
   const { permissions, stem } = dean;
 
   return {
     personal: <PersonalView />,
-    basic: <BasicView handleClick={handleClick} />,
+    basic: <BasicView />,
     newUser: <NewUserView {...{ permissions }} />,
   }[checkPageType(stem?.courses)];
 };
@@ -64,19 +60,11 @@ function UserRefusedView() {
   );
 }
 
-function BasicView({
-  handleClick,
-}: {
-  handleClick: (newLocation: string) => void;
-}) {
+function BasicView() {
   return (
     <>
-      <button type="button" onClick={() => handleClick("create")}>
-        Create
-      </button>
-      <button type="button" onClick={() => handleClick("settings")}>
-        Settings
-      </button>
+      <Link href="/create">Create</Link>
+      <Link href="/settings">Settings</Link>
     </>
   );
 }
