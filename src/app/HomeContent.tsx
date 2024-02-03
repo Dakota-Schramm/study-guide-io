@@ -1,10 +1,12 @@
 "use client";
 
+import React, { useContext } from "react";
+import Link from "next/link";
+
 import { DeanContext, IDean } from "@/contexts/DeanContext";
-import React, { useContext, useEffect } from "react";
 import { PersonalView } from "./PersonalView";
 import { BaseCourse } from "./course";
-import Link from "next/link";
+import { isIncompatibleBrowser } from "@/lib/browserHelpers";
 
 // TODO: Replce with window.locatio.hash or URLSearchParams(window.location.href)
 // TODO: Fix so Create doesnt display until settings setup
@@ -24,19 +26,10 @@ type NewUserViewProps = {
   permissions: IDean["permissions"];
 };
 function NewUserView({ permissions }: NewUserViewProps) {
-  const isMozillaBrowser = /mozilla/i.test(navigator.userAgent);
-  const isSafariBrowser = checkIfSafari();
+  const isAppBroken =
+    isIncompatibleBrowser && window.showDirectoryPicker === undefined;
 
-  function checkIfSafari() {
-    const ua = navigator.userAgent.toLowerCase();
-    return ua.includes("safari") && !ua.includes("chrome");
-  }
-
-  const isIncompatibleBrowser = isMozillaBrowser || isSafariBrowser;
-
-  if (isIncompatibleBrowser && window.showDirectoryPicker === undefined)
-    return <UnsupportedBrowserView />;
-
+  if (isAppBroken) return <UnsupportedBrowserView />;
   if (permissions === undefined) return <UserBouncerView />;
   if (permissions === null) return <UserRefusedView />;
 }
@@ -60,7 +53,6 @@ function UnsupportedBrowserView() {
 
 function UserBouncerView() {
   const { reSyncCourses } = useContext(DeanContext);
-  //
 
   return (
     <>
