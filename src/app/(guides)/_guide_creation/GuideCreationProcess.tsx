@@ -20,6 +20,9 @@ const Start = ({ hidden, handleNextStep }) => {
 const CourseInitialization = ({ rendered, hidden, handleNextStep }) => {
   if (!rendered) return;
 
+  // TODO: Add suggestions based on previous course names
+  // https://www.geeksforgeeks.org/how-to-display-suggestions-for-input-field-in-html/
+
   return (
     <div hidden={hidden}>
       <label>
