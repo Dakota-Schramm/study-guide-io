@@ -29,20 +29,29 @@ export const Finalize = ({
   // console.log(`Finalize hidden: ${hidden}`);
 
   const { dean } = useContext(DeanContext);
-  const { stem } = dean;
+  const { root, stem } = dean;
 
   if (!rendered) return;
 
   async function handleSubmit() {
-    if (!stem) return;
+    if (root) {
+      // new download
+      if (!stem) return;
 
-    const courseHandle = await stem.findCourseHandle(components?.courseName, {
-      create: true,
-    });
-    await handleDownload(files, courseHandle, fileName);
+      const courseHandle = await stem.findCourseHandle(components?.courseName, {
+        create: true,
+      });
+      await handleDownload(files, courseHandle, fileName);
 
-    // TODO: Fix so that doesn't require reload after redirect
-    window.location.href = "/";
+      // TODO: Fix so that doesn't require app reload after redirect
+      // Permission state doesnt stay after full page refresh
+      window.location.href = "/";
+    } else {
+      // old download
+      startDownload(files.pdfFiles, files.attachmentFiles);
+      // TODO: Use cookie to track file download
+      // https://stackoverflow.com/questions/1106377/detect-when-a-browser-receives-a-file-download
+    }
   }
 
   const files = {

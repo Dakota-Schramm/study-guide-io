@@ -17,6 +17,7 @@ const Start = ({ hidden, handleNextStep }) => {
   );
 };
 
+// TODO: Change this to not show courseNameInput when just downloading file directly
 const CourseInitialization = ({ rendered, hidden, handleNextStep }) => {
   if (!rendered) return;
 
