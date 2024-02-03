@@ -55,11 +55,13 @@ export const PersonalView = () => {
   const { dean } = useContext(DeanContext);
   const { stem } = dean;
 
-  if (!stem?.length) {
-    throw new Error("Unreachable state met in HomeContent.tsx: PersonalView()");
+  if (!stem?.courses?.length) {
+    throw new Error(
+      `Unreachable state met => StemLength: ${stem?.courses?.length}`,
+    );
   }
 
-  return stem.map((course: STEMCourse) => (
+  return stem.courses.map((course: STEMCourse) => (
     <div>
       <CourseCard
         title={course.getName()}

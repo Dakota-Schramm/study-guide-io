@@ -1,21 +1,6 @@
 import { sitePath } from "@/lib/utils";
 
 // TODO: Add localStorage check for initialization
-/**
- * Action MUST BE started by user
- */
-export async function setUpApp() {
-  const rootHandle = await setupHomeDirectory();
-  if (!rootHandle) {
-    // User needs to allow access
-    return;
-  }
-
-  return {
-    root: rootHandle,
-    ...(await setupCourseTypeDirectories(rootHandle)),
-  };
-}
 
 /**
  * requires use of window
@@ -78,8 +63,9 @@ async function setupCourseTypeDirectories(root: FileSystemDirectoryHandle) {
   if (
     courseTypeDirectories.stem === undefined &&
     courseTypeDirectories.writing === undefined
-  )
+  ) {
     return;
+  }
 
   return courseTypeDirectories;
 }

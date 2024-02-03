@@ -1,8 +1,9 @@
 "use client";
 
 import { DeanContext } from "@/contexts/DeanContext";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { PersonalView } from "./PersonalView";
+import { BaseCourse } from "./course";
 
 // TODO: Replce with window.locatio.hash or URLSearchParams(window.location.href)
 // TODO: Fix so Create doesnt display until settings setup
@@ -15,11 +16,15 @@ export const HomeContent = ({
   const { dean } = useContext(DeanContext);
   const { stem } = dean;
 
+  useEffect(() => {
+    console.log(`Home courses: ${stem?.courses}`);
+  }, [stem?.courses]);
+
   return {
     personal: <PersonalView />,
     basic: <BasicView handleClick={handleClick} />,
     newUser: <NewUserView />,
-  }[checkPageType(stem)];
+  }[checkPageType(stem?.courses)];
 };
 
 function NewUserView() {
@@ -27,7 +32,9 @@ function NewUserView() {
   const { stem } = dean;
 
   if (stem !== undefined) {
-    throw new Error("Unreachable state met in HomeContent.tsx: NewUserView()");
+    throw new Error(
+      `Unreachable state met => StemLength: ${stem?.courses?.length}`,
+    );
   }
 
   return (
@@ -35,12 +42,7 @@ function NewUserView() {
       <div>Placeholder image...</div>
       <h2>We need some things from you to get started...</h2>
 
-      <button
-        type="button"
-        onClick={async () => {
-          await reSyncCourses();
-        }}
-      >
+      <button type="button" onClick={reSyncCourses}>
         Setup permissions
       </button>
     </>
@@ -71,11 +73,11 @@ function BasicView({
   );
 }
 
-function checkPageType(fileHandles: FileSystemFileHandle | undefined) {
+function checkPageType(courses: BaseCourse[] | undefined) {
   let index: "personal" | "basic" | "newUser";
 
-  if (typeof fileHandles === "undefined") index = "newUser";
-  else if (fileHandles.length) index = "personal";
+  if (typeof courses === "undefined") index = "newUser";
+  else if (courses.length) index = "personal";
   else index = "basic";
 
   return index;

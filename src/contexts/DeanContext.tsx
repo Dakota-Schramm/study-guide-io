@@ -6,26 +6,26 @@ import {
   useState,
 } from "react";
 
-import { BaseCourse, STEMCourse, instantiateCourses } from "@/app/course";
-import { setUpApp } from "@/app/setUpApp";
+import { STEMProfessor } from "@/app/teaching-board";
 
 type IDean = {
   root?: FileSystemDirectoryHandle;
-  stem?: CourseCollection;
+  stem?: STEMProfessor;
 };
 
-type CourseCollection = {
-  handle: FileSystemDirectoryHandle;
-  courses: BaseCourse[];
+type DeanContext = {
+  dean: IDean;
+  setDean: (professor: IDean) => void;
+  reSyncCourses: () => void;
 };
 
-export const DeanContext = createContext({
+export const DeanContext = createContext<DeanContext>({
   dean: {
     root: undefined,
     stem: undefined,
   },
   setDean: (professor: IDean) => {},
-  reSyncCourses: (userAction: boolean) => {},
+  reSyncCourses: () => {},
 });
 
 /**
@@ -40,14 +40,13 @@ export const DeanProvider = ({ children }: { children: ReactNode }) => {
   const reSyncCourses = useCallback(async () => {
     const stemProfessor = await new STEMProfessor();
     await stemProfessor.initialize();
+    if (!stemProfessor.handle || !stemProfessor.courses) {
+      return;
+    }
 
-    const stemCourses = await instantiateCourses([handles.stem]);
     setDean({
-      root: handles.root,
-      stem: {
-        handle: handles.stem,
-        courses: stemCourses,
-      },
+      root: stemProfessor.getRoot(),
+      stem: stemProfessor,
     });
   }, []);
 
