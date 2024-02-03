@@ -1,7 +1,11 @@
 import { sitePath } from "@/lib/utils";
 
+// TODO: Add localStorage check for initialization
+/**
+ * Action MUST BE started by user
+ */
 export async function setUpApp() {
-  const rootHandle = await setupHomeDirectory(false);
+  const rootHandle = await setupHomeDirectory();
   if (!rootHandle) {
     // User needs to allow access
     return;
@@ -16,12 +20,7 @@ export async function setUpApp() {
 /**
  * requires use of window
  */
-async function requestDirectoryPermission(userAction = true) {
-  if (!userAction) {
-    // TODO: Show an alert to prompt the user to allow access to their file system
-    return;
-  }
-
+async function requestDirectoryPermission() {
   try {
     const fsdHandle = await window.showDirectoryPicker({
       mode: "readwrite",
@@ -30,6 +29,7 @@ async function requestDirectoryPermission(userAction = true) {
 
     // TODO: Save the handle to the file system directory in IndexedDB
 
+    console.log({ fsdHandle });
     return fsdHandle;
   } catch (error: unknown) {
     const exception = error as DOMException;
@@ -41,9 +41,10 @@ async function requestDirectoryPermission(userAction = true) {
 
 /**
  * requires use of window
+ * MUST BE a user action to work
  */
-export async function setupHomeDirectory(userAction: boolean) {
-  const fsdHandle = await requestDirectoryPermission(userAction);
+export async function setupHomeDirectory() {
+  const fsdHandle = await requestDirectoryPermission();
   if (!fsdHandle) {
     // TODO: Fix message
     // alert("You must allow access to your file system to use this app.");
