@@ -1,14 +1,8 @@
-import {
-  ReactNode,
-  createContext,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import { ReactNode, createContext, useCallback, useState } from "react";
 
 import { STEMProfessor } from "@/app/teaching-board";
 
-type IDean = {
+export type IDean = {
   permissions?: "read" | "readwrite" | null;
   root?: FileSystemDirectoryHandle;
   stem?: STEMProfessor;
@@ -43,13 +37,13 @@ export const DeanProvider = ({ children }: { children: ReactNode }) => {
   const reSyncCourses = useCallback(async () => {
     const stemProfessor = await new STEMProfessor();
     await stemProfessor.initialize();
-    if (!stemProfessor.handle || !stemProfessor.courses) {
-      return;
-    }
+
+    const root = stemProfessor.getRoot();
+    const appPermissions = root !== null ? "read-write" : null;
 
     setDean((prev) => ({
-      ...prev,
-      root: stemProfessor.getRoot(),
+      permissions: appPermissions,
+      root,
       stem: stemProfessor,
     }));
   }, []);

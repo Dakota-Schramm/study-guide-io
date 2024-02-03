@@ -1,9 +1,10 @@
 "use client";
 
-import { DeanContext } from "@/contexts/DeanContext";
+import { DeanContext, IDean } from "@/contexts/DeanContext";
 import React, { useContext, useEffect } from "react";
 import { PersonalView } from "./PersonalView";
 import { BaseCourse } from "./course";
+import Link from "next/link";
 
 // TODO: Replce with window.locatio.hash or URLSearchParams(window.location.href)
 // TODO: Fix so Create doesnt display until settings setup
@@ -14,29 +15,25 @@ export const HomeContent = ({
   handleClick: (newLocation: string) => void;
 }) => {
   const { dean } = useContext(DeanContext);
-  const { stem } = dean;
-
-  useEffect(() => {
-    console.log(`Home courses: ${stem?.courses}`);
-  }, [stem?.courses]);
+  const { permissions, stem } = dean;
 
   return {
     personal: <PersonalView />,
     basic: <BasicView handleClick={handleClick} />,
-    newUser: <NewUserView />,
+    newUser: <NewUserView {...{ permissions }} />,
   }[checkPageType(stem?.courses)];
 };
 
-function NewUserView() {
-  const { dean, reSyncCourses } = useContext(DeanContext);
-  const { stem } = dean;
+type NewUserViewProps = {
+  permissions: IDean["permissions"];
+};
+function NewUserView({ permissions }: NewUserViewProps) {
+  if (permissions === undefined) return <UserBouncerView />;
+  if (permissions === null) return <UserRefusedView />;
+}
 
-  if (stem !== undefined) {
-    throw new Error(
-      `Unreachable state met => StemLength: ${stem?.courses?.length}`,
-    );
-  }
-
+function UserBouncerView() {
+  const { reSyncCourses } = useContext(DeanContext);
   return (
     <>
       <div>Placeholder image...</div>
@@ -49,18 +46,29 @@ function NewUserView() {
   );
 }
 
+function UserRefusedView() {
+  return (
+    <>
+      <h2>File System Permission has been Rejected:</h2>
+      <ul>
+        <li>App has limited features while in this mode</li>
+        <li>
+          This setting can be re-enabled at
+          <Link href="/settings">
+            <span>settings</span>
+          </Link>
+          .
+        </li>
+      </ul>
+    </>
+  );
+}
+
 function BasicView({
   handleClick,
 }: {
   handleClick: (newLocation: string) => void;
 }) {
-  const { dean } = useContext(DeanContext);
-  const { stem } = dean;
-
-  if (stem?.courses?.length !== 0) {
-    throw new Error(`Unreachable state met => StemLength: ${stem?.length}`);
-  }
-
   return (
     <>
       <button type="button" onClick={() => handleClick("create")}>

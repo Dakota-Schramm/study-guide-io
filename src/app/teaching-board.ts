@@ -97,7 +97,9 @@ class STEMProfessor extends BaseProfessor {
 
   async initialize() {
     await super.initialize();
-    const courseTypeHandle = await findSubDirectory(this.root, "STEM");
+    if (this.getRoot() === null) return;
+
+    const courseTypeHandle = await findSubDirectory(this.getRoot(), "STEM");
     if (courseTypeHandle === null) {
       throw new Error(
         "STEMProfessor.initialize() => " + "STEM directory could not be found",
