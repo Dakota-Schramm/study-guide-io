@@ -24,12 +24,44 @@ type NewUserViewProps = {
   permissions: IDean["permissions"];
 };
 function NewUserView({ permissions }: NewUserViewProps) {
+  const isMozillaBrowser = /mozilla/i.test(navigator.userAgent);
+  const isSafariBrowser = checkIfSafari();
+
+  function checkIfSafari() {
+    const ua = navigator.userAgent.toLowerCase();
+    return ua.includes("safari") && !ua.includes("chrome");
+  }
+
+  const isIncompatibleBrowser = isMozillaBrowser || isSafariBrowser;
+
+  if (isIncompatibleBrowser && window.showDirectoryPicker === undefined)
+    return <UnsupportedBrowserView />;
+
   if (permissions === undefined) return <UserBouncerView />;
   if (permissions === null) return <UserRefusedView />;
 }
 
+function UnsupportedBrowserView() {
+  return (
+    <>
+      <h2>
+        Sorry, but all of this app's features don't currently work on this
+        browser.
+      </h2>
+      <p>Consider switching to one of the following browsers instead:</p>
+      <ul>
+        <li>Google Chrome</li>
+        <li>Microsoft Edge</li>
+        <li>Opera</li>
+      </ul>
+    </>
+  );
+}
+
 function UserBouncerView() {
   const { reSyncCourses } = useContext(DeanContext);
+  //
+
   return (
     <>
       <div>Placeholder image...</div>
