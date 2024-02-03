@@ -10,6 +10,7 @@ export default function SettingsContent() {
 
   useEffect(() => console.log({ stem }), [stem]);
 
+  // TODO: Create button that allows user to reinitialize a study guide folder?
   return (
     <>
       <button type="button" onClick={() => reSyncCourses()}>

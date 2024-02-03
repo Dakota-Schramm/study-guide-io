@@ -1,7 +1,7 @@
 import { sitePath } from "@/lib/utils";
 
-// TODO: Add localStorage check for initialization
-
+// TODO: Change this to check if idb is initialized already with handle.
+// If so, request permissions directly on that
 /**
  * requires use of window
  */

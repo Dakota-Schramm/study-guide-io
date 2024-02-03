@@ -7,6 +7,7 @@ import {
 } from "react";
 
 import { STEMProfessor } from "@/app/teaching-board";
+import { loadHandles, syncHandles } from "@/app/idbUtils";
 
 type IDean = {
   root?: FileSystemDirectoryHandle;
@@ -38,16 +39,28 @@ export const DeanProvider = ({ children }: { children: ReactNode }) => {
   });
 
   const reSyncCourses = useCallback(async () => {
+    let appHandle;
+    let stemHandle;
+
+    const storedHandles = await loadHandles();
+    if (storedHandles) {
+      console.log(storedHandles)
+    }
+
     const stemProfessor = new STEMProfessor();
     await stemProfessor.initialize();
     if (!stemProfessor.handle || !stemProfessor.courses) {
       return;
     }
 
+    appHandle = stemProfessor.getRoot();
+    stemHandle = stemProfessor.handle;
+
     setDean({
-      root: stemProfessor.getRoot(),
+      root: appHandle,
       stem: stemProfessor,
     });
+    await syncHandles(appHandle, stemHandle)
   }, []);
 
   return (
