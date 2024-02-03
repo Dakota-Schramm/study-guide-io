@@ -43,6 +43,10 @@ export class BaseCourse {
     this.courseHandle = courseHandle;
   }
 
+  public getHandle(): FileSystemDirectoryHandle | undefined {
+    return this.courseHandle;
+  }
+
   public getName(): string {
     return this.name;
   }
