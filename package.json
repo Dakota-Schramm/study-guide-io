@@ -29,6 +29,7 @@
   "dependencies": {
     "@cucumber/cucumber": "^10.3.1",
     "@headlessui/react": "^1.7.18",
+    "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-popover": "^1.0.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
