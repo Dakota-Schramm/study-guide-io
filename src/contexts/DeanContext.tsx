@@ -37,10 +37,9 @@ export const DeanProvider = ({ children }: { children: ReactNode }) => {
     stem: undefined,
   });
 
-  const reSyncCourses = useCallback(async (userAction: boolean) => {
-    const handles = await setUpApp();
-
-    if (!handles?.stem) return;
+  const reSyncCourses = useCallback(async () => {
+    const stemProfessor = await new STEMProfessor();
+    await stemProfessor.initialize();
 
     const stemCourses = await instantiateCourses([handles.stem]);
     setDean({

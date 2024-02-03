@@ -12,7 +12,7 @@ export default function SettingsContent() {
 
   return (
     <>
-      <button type="button" onClick={() => reSyncCourses(true)}>
+      <button type="button" onClick={() => reSyncCourses()}>
         Setup directory
       </button>
     </>

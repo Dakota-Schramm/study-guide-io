@@ -37,8 +37,8 @@ function NewUserView() {
 
       <button
         type="button"
-        onClick={() => {
-          reSyncCourses(true);
+        onClick={async () => {
+          await reSyncCourses();
         }}
       >
         Setup permissions
@@ -55,8 +55,8 @@ function BasicView({
   const { dean } = useContext(DeanContext);
   const { stem } = dean;
 
-  if (stem?.length !== 0) {
-    throw new Error("Unreachable state met in HomeContent.tsx: BasicView()");
+  if (stem?.courses?.length !== 0) {
+    throw new Error(`Unreachable state met => StemLength: ${stem?.length}`);
   }
 
   return (
