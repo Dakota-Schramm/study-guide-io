@@ -38,7 +38,7 @@ export const DeanProvider = ({ children }: { children: ReactNode }) => {
   });
 
   const reSyncCourses = useCallback(async () => {
-    const stemProfessor = await new STEMProfessor();
+    const stemProfessor = new STEMProfessor();
     await stemProfessor.initialize();
     if (!stemProfessor.handle || !stemProfessor.courses) {
       return;

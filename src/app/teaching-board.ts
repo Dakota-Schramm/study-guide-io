@@ -1,6 +1,6 @@
 import { STEMCourse } from "@/app/course";
 import { BaseCourse } from "./course";
-import { findSubDirectory, setupHomeDirectory } from "./setUpApp";
+import { findSubDirectory, setupHomeDirectory } from "./fileHandleUtils";
 
 type findCourseHandleOptions = {
   create: boolean;
