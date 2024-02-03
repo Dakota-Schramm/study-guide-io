@@ -16,6 +16,20 @@ export class BaseProfessor {
     return this.root;
   }
 
+  public async findCourseHandle(
+    courseName: string,
+  ): Promise<FileSystemDirectoryHandle | null> {
+    let found = null;
+    if (!this.handle) return found;
+
+    for await (const subdirectory of this.handle.entries()) {
+      const [fileName, fileObj] = subdirectory;
+      if (fileName === courseName) found = fileObj;
+    }
+
+    return found;
+  }
+
   /**
    * Creates all courses for the current user
    */
