@@ -4,6 +4,7 @@ import { sitePath } from "@/lib/utils";
 
 /**
  * requires use of window
+ * @returns a handle for the user selected directory or null
  */
 async function requestDirectoryPermission() {
   try {
@@ -14,13 +15,13 @@ async function requestDirectoryPermission() {
 
     // TODO: Save the handle to the file system directory in IndexedDB
 
-    console.log({ fsdHandle });
     return fsdHandle;
   } catch (error: unknown) {
     const exception = error as DOMException;
     if (exception.name === "AbortError") return null;
 
     console.log(`${typeof exception}: ${exception.message}`);
+    return null;
   }
 }
 
@@ -31,9 +32,7 @@ async function requestDirectoryPermission() {
 export async function setupHomeDirectory() {
   const fsdHandle = await requestDirectoryPermission();
   if (!fsdHandle) {
-    // TODO: Fix message
-    // alert("You must allow access to your file system to use this app.");
-    return;
+    return null;
   }
 
   let homeDir = fsdHandle;

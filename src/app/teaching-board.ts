@@ -8,7 +8,7 @@ type findCourseHandleOptions = {
 
 // TODO: Create two professors and keep track of in TeachingBoard class?
 export class BaseProfessor {
-  private root?: FileSystemDirectoryHandle;
+  private root?: FileSystemDirectoryHandle | null;
   public handle?: FileSystemDirectoryHandle;
   public courses?: BaseCourse[];
 
