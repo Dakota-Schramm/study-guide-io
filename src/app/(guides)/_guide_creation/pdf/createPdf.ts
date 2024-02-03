@@ -1,6 +1,6 @@
 "use client";
 
-import { PDFDocument } from "pdf-lib";
+import { PDFDocument, PDFPage } from "pdf-lib";
 
 export async function createFileObjectUrl(pdfs: FileList, images: FileList) {
   const pdfBlob = await createPdf(pdfs, images);
@@ -76,7 +76,6 @@ async function embedImages(pdfDocument: PDFDocument, images: FileList) {
     }),
   );
 
-  // const jpgImageBundles = [];
   const jpgImageBundles = await Promise.all(
     Array.from(jpgs).map(async (file) => {
       const bytes = await file.arrayBuffer();
@@ -93,14 +92,36 @@ async function embedImages(pdfDocument: PDFDocument, images: FileList) {
   const imageBundles = [...pngImageBundles, ...jpgImageBundles];
 
   for (const imageBundle of imageBundles) {
-    const { image, dims } = imageBundle;
     const page = pdfDocument.addPage();
-
-    page.drawImage(image, {
-      x: page.getWidth() / 2 - dims.width / 2,
-      y: page.getHeight() / 2 - dims.height / 2 + 250,
-      width: dims.width,
-      height: dims.height,
-    });
+    drawFromImageBundle(page, imageBundle);
   }
+}
+
+function drawFromImageBundle(page: PDFPage, imageBundle: unknown) {
+  const { image, dims } = imageBundle;
+  console.log({ dims });
+
+  const calculatedScale = determineScale(
+    { width: page.getWidth(), height: page.getHeight() },
+    { width: dims.width, height: dims.height },
+  );
+
+  page.drawImage(image, calculatedScale);
+}
+
+function determineScale(page, image) {
+  const { width: pageWidth, height: pageHeight } = page;
+  const { width: imageWidth, height: imageHeight } = image;
+
+  // Calculate different sizes the scaledImage can resize to, noting the following:
+  // if the scaledImage is larger than the page
+  // if the image ratio is weird
+  // the largest ratio that the image can be kept at, without stretching it
+
+  return {
+    x: 0,
+    y: 0,
+    width: imageWidth,
+    height: imageHeight,
+  };
 }

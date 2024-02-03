@@ -56,11 +56,10 @@ export const PersonalView = () => {
   const { stem } = dean;
 
   return stem.courses.map((course: STEMCourse) => (
-    <div>
-      <CourseCard
-        title={course.getName()}
-        files={course.getFiles()?.length ?? 0}
-      />
-    </div>
+    <CourseCard
+      key={course.id}
+      title={course.getName()}
+      files={course.getFiles()?.length ?? 0}
+    />
   ));
 };

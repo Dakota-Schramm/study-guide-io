@@ -21,12 +21,15 @@ import { findSubDirectory } from "./fileHandleHelpers";
     - Add course end date
 */
 export class BaseCourse {
+  static _id = 0;
+  public id: number;
   private courseHandle?: FileSystemDirectoryHandle;
   private files?: FileSystemFileHandle[];
   private readonly name: string;
 
   public constructor(courseHandle: FileSystemDirectoryHandle) {
     // name cannot be changed after this initial definition, which has to be either at it's declaration or in the constructor.
+    this.id = BaseCourse._id++;
     this.courseHandle = courseHandle;
     this.name = courseHandle.name;
   }
