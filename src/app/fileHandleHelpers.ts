@@ -17,8 +17,9 @@ async function requestDirectoryPermission() {
 
     return fsdHandle;
   } catch (error: unknown) {
-    const exception = error as DOMException;
-    if (exception.name === "AbortError") return null;
+    if (error.name === "AbortError") {
+      return null;
+    }
 
     console.log(`${typeof exception}: ${exception.message}`);
     return null;
