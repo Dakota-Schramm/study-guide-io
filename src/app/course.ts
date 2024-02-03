@@ -14,7 +14,7 @@
 
 */
 
-import { findSubDirectory } from "./setUpApp";
+import { findSubDirectory } from "./fileHandleHelpers";
 
 /* 
   TODO: Add the following features:
