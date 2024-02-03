@@ -7,6 +7,7 @@ import { DeanContext } from "@/contexts/DeanContext";
 export default function CreateContent() {
   const { dean } = useContext(DeanContext);
 
+  // TODO: Fix this to redirect if dean state is not sufficient
   if (dean.stem === undefined) {
     if (window) window.location.href = "/";
   }

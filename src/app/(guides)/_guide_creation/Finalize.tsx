@@ -1,13 +1,21 @@
 "use client";
-import React from "react";
+import React, { useContext } from "react";
 
 import { createFileObjectUrl, createPdf } from "./pdf/createPdf";
+import { DeanContext } from "@/contexts/DeanContext";
+import { useRouter } from "next/router";
+
+type PDFComponents = {
+  pdfFiles: FileList;
+  attachmentFiles: FileList;
+  courseName: string;
+  fileName: string;
+};
 
 type FinalizeProps = {
   rendered: boolean;
   hidden: boolean;
-  pdfFiles: FileList;
-  attachmentFiles: FileList;
+  components: PDFComponents;
   handlePrevStep: () => void;
 };
 
@@ -15,33 +23,22 @@ type FinalizeProps = {
 export const Finalize = ({
   rendered,
   hidden,
-  pdfFiles,
-  attachmentFiles,
+  components,
   handlePrevStep,
 }: FinalizeProps) => {
-  console.log(`Finalize hidden: ${hidden}`);
+  // console.log(`Finalize hidden: ${hidden}`);
+
+  const router = useRouter();
+  const { dean } = useContext(DeanContext);
+  const { stem } = dean;
 
   if (!rendered) return;
 
-  async function handleDownload(
-    pdfFiles: FinalizeProps["pdfFiles"],
-    attachmentFiles: FinalizeProps["attachmentFiles"],
-    courseHandle: FileSystemDirectoryHandle,
-  ) {
-    if (!pdfFiles || !attachmentFiles) return;
-    startDownload(pdfFiles, attachmentFiles);
-    const pdfBlob = await createPdf(pdfFiles, attachmentFiles);
-    const draftHandle = await courseHandle.getFileHandle("draft.txt", {
-      create: true,
-    });
-    const writable = await draftHandle.createWritable();
-
-    // Write the contents of the file to the stream.
-    await writable.write(pdfBlob);
-
-    // Close the file and write the contents to disk.
-    await writable.close();
-  }
+  const files = {
+    pdfFiles: components?.pdfFiles,
+    attachmentFiles: components?.attachmentFiles,
+  };
+  const fileName = components?.fileName || "test.pdf";
 
   return (
     <div className={hidden ? "invisible" : undefined}>
@@ -53,7 +50,13 @@ export const Finalize = ({
       <button
         data-testid="downloadGuide"
         type="button"
-        onClick={() => handleDownload(pdfFiles, attachmentFiles)}
+        onClick={async () => {
+          const courseHandle = await stem?.findCourseHandle(
+            components?.courseName,
+          );
+          handleDownload(files, courseHandle, fileName);
+          router.push("/");
+        }}
       >
         Complete
       </button>
@@ -61,6 +64,9 @@ export const Finalize = ({
   );
 };
 
+/**
+ * Starts download into Downloads folder using old method
+ */
 function startDownload(pdfFiles, attachmentFiles) {
   let pdfUrl: string;
   createFileObjectUrl(pdfFiles, attachmentFiles)
@@ -78,4 +84,29 @@ function startDownload(pdfFiles, attachmentFiles) {
       if (pdfUrl) URL.revokeObjectURL(pdfUrl);
       console.log("exiting");
     });
+}
+
+async function handleDownload(
+  files: {
+    pdfFiles: PDFComponents["pdfFiles"];
+    attachmentFiles: PDFComponents["attachmentFiles"];
+  },
+  courseHandle: FileSystemDirectoryHandle | null,
+  fileName: string,
+) {
+  const { pdfFiles, attachmentFiles } = files;
+  if (!pdfFiles || !attachmentFiles) return;
+  if (!courseHandle) return;
+
+  const pdfBlob = await createPdf(pdfFiles, attachmentFiles);
+  const draftHandle = await courseHandle.getFileHandle(`${fileName}.pdf`, {
+    create: true,
+  });
+  const writable = await draftHandle.createWritable();
+
+  // Write the contents of the file to the stream.
+  await writable.write(pdfBlob);
+
+  // Close the file and write the contents to disk.
+  await writable.close();
 }
