@@ -28,11 +28,22 @@ export const Finalize = ({
 }: FinalizeProps) => {
   // console.log(`Finalize hidden: ${hidden}`);
 
-  const router = useRouter();
   const { dean } = useContext(DeanContext);
   const { stem } = dean;
 
   if (!rendered) return;
+
+  async function handleSubmit() {
+    if (!stem) return;
+
+    const courseHandle = await stem.findCourseHandle(components?.courseName, {
+      create: true,
+    });
+    await handleDownload(files, courseHandle, fileName);
+
+    // TODO: Fix so that doesn't require reload after redirect
+    window.location.href = "/";
+  }
 
   const files = {
     pdfFiles: components?.pdfFiles,
@@ -47,17 +58,7 @@ export const Finalize = ({
       <button type="button" onClick={handlePrevStep}>
         Previous
       </button>
-      <button
-        data-testid="downloadGuide"
-        type="button"
-        onClick={async () => {
-          const courseHandle = await stem?.findCourseHandle(
-            components?.courseName,
-          );
-          handleDownload(files, courseHandle, fileName);
-          router.push("/");
-        }}
-      >
+      <button data-testid="downloadGuide" type="button" onClick={handleSubmit}>
         Complete
       </button>
     </div>

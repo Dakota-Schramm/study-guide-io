@@ -2,6 +2,10 @@ import { STEMCourse } from "@/app/course";
 import { BaseCourse } from "./course";
 import { findSubDirectory, setupHomeDirectory } from "./setUpApp";
 
+type findCourseHandleOptions = {
+  create: boolean;
+};
+
 // TODO: Create two professors and keep track of in TeachingBoard class?
 export class BaseProfessor {
   private root?: FileSystemDirectoryHandle;
@@ -12,19 +16,39 @@ export class BaseProfessor {
     this.root = await setupHomeDirectory();
   }
 
+  public toString(): string {
+    if (this.handle === undefined) return "BaseProfessor";
+    return `${this.handle.name} Professor: ${
+      this.courses?.length ?? 0
+    } courses`;
+  }
+
   public getRoot() {
     return this.root;
   }
 
+  /**
+   *
+   * @param create whether the directory should be created if not found
+   * @returns the FileSystemDirectoryHandle if create is true or if the directory exists, null otherwise
+   */
   public async findCourseHandle(
     courseName: string,
+    options: findCourseHandleOptions = { create: false },
   ): Promise<FileSystemDirectoryHandle | null> {
     let found = null;
     if (!this.handle) return found;
 
-    for await (const subdirectory of this.handle.entries()) {
-      const [fileName, fileObj] = subdirectory;
-      if (fileName === courseName) found = fileObj;
+    const { create } = options;
+
+    for await (const [fileName, fileObj] of this.handle.entries()) {
+      if (fileName === courseName) {
+        found = fileObj;
+      }
+    }
+
+    if (!found && create) {
+      found = this.handle.getDirectoryHandle(courseName, { create });
     }
 
     return found;
