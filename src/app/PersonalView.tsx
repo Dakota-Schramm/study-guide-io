@@ -17,6 +17,7 @@ import {
 
 import { DeanContext } from "@/contexts/DeanContext";
 import { STEMCourse } from "./course";
+import PDFViewerDialog from "./PDFViewerDialog";
 
 type CourseCard = {
   title: string;
@@ -25,6 +26,7 @@ type CourseCard = {
 
 const CourseCard = ({ title, files }: CourseCard) => {
   const fileCount = files.length;
+
   return (
     <Card>
       <CardHeader>
@@ -42,10 +44,7 @@ const CourseCard = ({ title, files }: CourseCard) => {
           <PopoverContent>
             <div className="flex gap-4">
               {files.map((file) => (
-                <div>
-                  <div className="border border-solid border-black w-20 h-20" />
-                  <h3>{file.name}</h3>
-                </div>
+                <PDFViewerDialog fileHandle={file} />
               ))}
             </div>
           </PopoverContent>
@@ -78,7 +77,7 @@ export const PersonalView = () => {
         <CourseCard
           key={course.id}
           title={course.getName()}
-          files={course.getFiles()}
+          files={course.getFiles() ?? []}
         />
       ))}
       ;
