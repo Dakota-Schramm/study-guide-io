@@ -7,3 +7,5 @@ function checkIfSafari() {
 }
 
 export const isIncompatibleBrowser = isMozillaBrowser || isSafariBrowser;
+export const isAppBroken =
+  isIncompatibleBrowser && window.showDirectoryPicker === undefined;

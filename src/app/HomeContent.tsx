@@ -6,7 +6,7 @@ import Link from "next/link";
 import { DeanContext, IDean } from "@/contexts/DeanContext";
 import { PersonalView } from "./PersonalView";
 import { BaseCourse } from "./course";
-import { isIncompatibleBrowser } from "@/lib/browserHelpers";
+import { isAppBroken, isIncompatibleBrowser } from "@/lib/browserHelpers";
 
 // TODO: Replce with window.locatio.hash or URLSearchParams(window.location.href)
 // TODO: Fix so Create doesnt display until settings setup
@@ -26,9 +26,6 @@ type NewUserViewProps = {
   permissions: IDean["permissions"];
 };
 function NewUserView({ permissions }: NewUserViewProps) {
-  const isAppBroken =
-    isIncompatibleBrowser && window.showDirectoryPicker === undefined;
-
   if (isAppBroken) return <UnsupportedBrowserView />;
   if (permissions === undefined) return <UserBouncerView />;
   if (permissions === null) return <UserRefusedView />;
