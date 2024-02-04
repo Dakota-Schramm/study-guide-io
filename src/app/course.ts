@@ -19,6 +19,7 @@ import { findSubDirectory } from "./fileHandleHelpers";
 /* 
   TODO: Add the following features:
     - Add course end date
+  Save the settings for these features within a JSON file
 */
 export class BaseCourse {
   static _id = 0;
