@@ -2,6 +2,8 @@ import { STEMCourse } from "@/app/course";
 import { BaseCourse } from "./course";
 import { findSubDirectory, setupHomeDirectory } from "../lib/fileHandleHelpers";
 
+// TODO: Rename file to teaching-staff?
+
 type findCourseHandleOptions = {
   create: boolean;
 };
@@ -97,9 +99,10 @@ class STEMProfessor extends BaseProfessor {
 
   async initialize() {
     await super.initialize();
-    if (this.getRoot() === null) return;
+    const root = this.getRoot();
+    if (root === null) return;
 
-    const courseTypeHandle = await findSubDirectory(this.getRoot(), "STEM");
+    const courseTypeHandle = await findSubDirectory(root, "STEM");
     if (courseTypeHandle === null) {
       throw new Error(
         "STEMProfessor.initialize() => " + "STEM directory could not be found",

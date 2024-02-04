@@ -102,6 +102,7 @@ const GuideCreationProcess = () => {
     fileName: guideProgress.pdfName,
   };
 
+  // TODO: Create a Steps component that populates rendered and hidden based on child number
   return (
     <>
       <form id="pdf-create" className="flex flex-col">

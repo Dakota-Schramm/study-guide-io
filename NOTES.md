@@ -33,3 +33,6 @@ Potential Features:
 Maybe restrucuture project??
   - app directory only for next specific code?
   - components for all components?
+Features
+- add class for different user types
+  - implement underlying classes based on whether file system is available

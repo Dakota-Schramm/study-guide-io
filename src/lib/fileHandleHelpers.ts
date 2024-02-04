@@ -46,29 +46,6 @@ export async function setupHomeDirectory() {
 }
 
 /**
- * requires use of window
- */
-async function setupCourseTypeDirectories(root: FileSystemDirectoryHandle) {
-  const courseTypeDirectories = {
-    stem: undefined,
-    writing: undefined,
-  };
-
-  courseTypeDirectories.stem = await root.getDirectoryHandle("STEM", {
-    create: true,
-  });
-
-  if (
-    courseTypeDirectories.stem === undefined &&
-    courseTypeDirectories.writing === undefined
-  ) {
-    return;
-  }
-
-  return courseTypeDirectories;
-}
-
-/**
  * checks to see if subDirectory exists within the given fileHandle
  */
 export async function findSubDirectory(
