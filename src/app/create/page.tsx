@@ -14,13 +14,15 @@ export default function CreateContent() {
 
   // TODO: Disable buttons before check is ran
   return (
-    <>
+    <div className="grid grid-rows-7">
       <Link href="/stem" className="border h-24 lg:h-32 p-4">
         STEM
       </Link>
-      <Link href="/writing" className="border h-24 lg:h-32 p-4">
-        Writing
-      </Link>
-    </>
+      <section className="row-span-4">
+        <h4>Under Construction...</h4>
+        <div>Placeholder image</div>
+        <p>More coming soon!</p>
+      </section>
+    </div>
   );
 }
