@@ -3,10 +3,13 @@
 import React, { useContext } from "react";
 import Link from "next/link";
 
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+
 import { DeanContext, IDean } from "@/contexts/DeanContext";
 import { PersonalView } from "./PersonalView";
 import { BaseCourse } from "./course";
 import { isAppBroken, isIncompatibleBrowser } from "@/lib/browserHelpers";
+import { sitePath } from "@/lib/utils";
 
 // TODO: Use OPFS as fallback if user says no to showing directory
 export const HomeContent = () => {
@@ -50,14 +53,21 @@ function UserBouncerView() {
   const { reSyncCourses } = useContext(DeanContext);
 
   return (
-    <>
+    <div className="flex flex-col space-y-8">
       <div>Placeholder image...</div>
       <h2>We need some things from you to get started...</h2>
+
+      <Alert className="bg-red-700 text-white">
+        <AlertTitle>Choosing Your Home Directory</AlertTitle>
+        <AlertDescription>
+          {`Please select either your ${sitePath} folder or the one it's in.`}
+        </AlertDescription>
+      </Alert>
 
       <button type="button" onClick={reSyncCourses}>
         Setup permissions
       </button>
-    </>
+    </div>
   );
 }
 
