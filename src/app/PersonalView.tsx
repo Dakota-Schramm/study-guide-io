@@ -9,46 +9,62 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 import { DeanContext } from "@/contexts/DeanContext";
 import { STEMCourse } from "./course";
+import PDFViewerDialog from "./PDFViewerDialog";
 
 type CourseCard = {
   title: string;
-  files: number;
+  files: FileSystemFileHandle[];
 };
 
-const CourseCard = ({ title, files }: CourseCard) => (
-  <Card>
-    <CardHeader>
-      <CardTitle>{title}</CardTitle>
-      <CardDescription>STEM Course</CardDescription>
-    </CardHeader>
-    <CardContent>
-      <p>{files} files available</p>
-    </CardContent>
-    <CardFooter className="space-x-4">
-      <button
-        type="button"
-        className="p-2 text-white border border-solid border-gray-500 bg-blue-500"
-      >
-        Open
-      </button>
-      <button
-        type="button"
-        className="p-2 text-white border border-solid border-gray-500 bg-yellow-500"
-      >
-        Edit
-      </button>
-      <button
-        type="button"
-        className="p-2 text-white border border-solid border-gray-500 bg-red-500"
-      >
-        Delete
-      </button>
-    </CardFooter>
-  </Card>
-);
+const CourseCard = ({ title, files }: CourseCard) => {
+  const fileCount = files.length;
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>{title}</CardTitle>
+        <CardDescription>STEM Course</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <p>{fileCount} files available</p>
+      </CardContent>
+      <CardFooter className="space-x-4">
+        <Popover>
+          <PopoverTrigger className="p-2 text-white border border-solid border-gray-500 bg-blue-500">
+            Open
+          </PopoverTrigger>
+          <PopoverContent>
+            <div className="flex gap-4">
+              {files.map((file) => (
+                <PDFViewerDialog fileHandle={file} />
+              ))}
+            </div>
+          </PopoverContent>
+        </Popover>
+        <button
+          type="button"
+          className="p-2 text-white border border-solid border-gray-500 bg-yellow-500"
+        >
+          Edit
+        </button>
+        <button
+          type="button"
+          className="p-2 text-white border border-solid border-gray-500 bg-red-500"
+        >
+          Delete
+        </button>
+      </CardFooter>
+    </Card>
+  );
+};
 
 // TODO: Allow user to select a course to view in app
 export const PersonalView = () => {
@@ -61,7 +77,7 @@ export const PersonalView = () => {
         <CourseCard
           key={course.id}
           title={course.getName()}
-          files={course.getFiles()?.length ?? 0}
+          files={course.getFiles() ?? []}
         />
       ))}
       ;

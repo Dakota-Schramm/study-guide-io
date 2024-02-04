@@ -8,32 +8,30 @@ type LoadedPDF =
       status: "uninitialized";
     }
   | {
+      status: "loading";
+      file?: FileSystemFileHandle;
+    }
+  | {
       status: "loaded";
       pageTotal: number;
-      currentPage: number;
+      file: FileSystemFileHandle;
     };
 
 type PDFProps = {
-  filePath: string;
+  file: FileSystemFileHandle;
   handleDocumentLoadSuccess: (arg0: number) => void;
-  currentPage?: number;
   pageTotal?: number;
 };
 
-const PDF = ({
-  filePath,
-  handleDocumentLoadSuccess,
-  currentPage = 0,
-  pageTotal = 0,
-}: PDFProps) => {
-  console.log({ filePath });
+const PDF = ({ file, handleDocumentLoadSuccess, pageTotal = 0 }: PDFProps) => {
+  console.log({ file });
 
-  if (!filePath) return;
+  if (!file) return;
 
   // TODO: Add better handling here for large pdfs
   // TODO: Add drag-and-drop support for reordering pages of pdf
   return (
-    <Document file={filePath} onLoadSuccess={handleDocumentLoadSuccess}>
+    <Document onLoadSuccess={handleDocumentLoadSuccess} {...{ file }}>
       <details>
         <summary>Pages</summary>
         <div className="flex">
@@ -51,50 +49,37 @@ const PDF = ({
   );
 };
 
-const PDFViewer = ({ filePath }) => {
+const PDFViewer = ({ fileHandle }: { fileHandle: FileSystemFileHandle }) => {
   const [pdfStatus, setPdfStatus] = useState<LoadedPDF>({
     status: "uninitialized",
   });
-  const { status } = pdfStatus;
 
   function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
-    setPdfStatus({
+    setPdfStatus((prev) => ({
+      ...prev,
       status: "loaded",
-      currentPage: 1,
       pageTotal: numPages,
-    });
-  }
-
-  function handleDecrement() {
-    const currentPage = pdfStatus?.currentPage
-      ? Math.max(1, pdfStatus.currentPage - 1)
-      : 1;
-
-    setPdfStatus((prevStatus) => ({
-      ...prevStatus,
-      currentPage,
     }));
   }
 
-  function handleIncrement() {
-    const pageTotal = pdfStatus?.pageTotal ? pdfStatus.pageTotal : 0;
-
-    const currentPage = pdfStatus?.currentPage
-      ? Math.min(pageTotal, pdfStatus.currentPage + 1)
-      : 0;
-
-    setPdfStatus((prevStatus) => ({
-      ...prevStatus,
-      currentPage,
-    }));
-  }
+  useEffect(() => {
+    async function getFile() {
+      const file = await fileHandle.getFile();
+      setPdfStatus((prev) => ({
+        ...prev,
+        status: "loading",
+        file,
+      }));
+    }
+    getFile();
+  }, []);
 
   return (
     <div className="w-64 h-64">
       <PDF
         handleDocumentLoadSuccess={onDocumentLoadSuccess}
-        filePath={filePath}
         pageTotal={pdfStatus?.pageTotal}
+        file={pdfStatus.file}
       />
     </div>
   );
