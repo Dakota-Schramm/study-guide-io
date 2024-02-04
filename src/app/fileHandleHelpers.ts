@@ -13,8 +13,6 @@ async function requestDirectoryPermission() {
       startIn: "documents",
     });
 
-    // TODO: Save the handle to the file system directory in IndexedDB
-
     return fsdHandle;
   } catch (error: unknown) {
     if (error.name === "AbortError") {

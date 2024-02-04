@@ -1,18 +1,18 @@
 "use client";
 
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import Link from "next/link";
 import { DeanContext } from "@/contexts/DeanContext";
 
 export default function CreateContent() {
+  const [isLoaded, setIsLoaded] = useState(false);
   const { dean } = useContext(DeanContext);
+  const { permissions } = dean;
 
-  // TODO: Fix this to redirect if dean state is not sufficient
   if (dean.permissions === undefined) {
     if (window) window.location.href = "/";
   }
 
-  // TODO: Disable buttons before check is ran
   return (
     <div className="grid grid-rows-7">
       <Link href="/stem" className="border h-24 lg:h-32 p-4">

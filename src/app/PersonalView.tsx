@@ -50,7 +50,6 @@ const CourseCard = ({ title, files }: CourseCard) => (
   </Card>
 );
 
-// TODO: Allow user to select a course to view in app
 export const PersonalView = () => {
   const { dean } = useContext(DeanContext);
   const { stem } = dean;

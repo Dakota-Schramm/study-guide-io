@@ -8,8 +8,6 @@ import { PersonalView } from "./PersonalView";
 import { BaseCourse } from "./course";
 import { isAppBroken, isIncompatibleBrowser } from "@/lib/browserHelpers";
 
-// TODO: Replce with window.locatio.hash or URLSearchParams(window.location.href)
-// TODO: Fix so Create doesnt display until settings setup
 // TODO: Use OPFS as fallback if user says no to showing directory
 export const HomeContent = () => {
   const { dean } = useContext(DeanContext);
