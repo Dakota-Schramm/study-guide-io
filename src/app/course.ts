@@ -14,7 +14,7 @@
 
 */
 
-import { findSubDirectory } from "./fileHandleHelpers";
+import { findSubDirectory } from "../lib/fileHandleHelpers";
 
 /* 
   TODO: Add the following features:

@@ -29,3 +29,7 @@ Potential Features:
     - Sync with calendar?
       - Send reminders to user to review notes on particular days
   - Add note for firefox users to switch browsers
+
+Maybe restrucuture project??
+  - app directory only for next specific code?
+  - components for all components?
