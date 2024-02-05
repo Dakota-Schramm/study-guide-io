@@ -10,5 +10,4 @@ interface Window {
   showDirectoryPicker: (
     options: showDirectoryPickerOptions,
   ) => Promise<FileSystemDirectoryHandle>;
-  log: LogLevelLogger; // TODO fix this to correct type
 }
