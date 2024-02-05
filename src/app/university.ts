@@ -5,15 +5,32 @@ type TeachingBoard = {
   stem: STEMProfessor;
 };
 
+//? Maybe drop this class, since only one will be created? Move to hooks?
+//? ==> Only use classes if going to create multiple
 class University {
   private root?: FileSystemDirectoryHandle | null;
+  private teachingBoard?: TeachingBoard;
 
   async initialize() {
-    this.root = await this.setupHomeDirectory();
+    const root = await this.setupHomeDirectory();
+
+    const stemProfessor = await new STEMProfessor(root);
+    await stemProfessor.initialize();
+
+    const teachingBoard = {
+      stem: stemProfessor,
+    };
+
+    this.root = root;
+    this.teachingBoard = teachingBoard;
   }
 
   public getRoot() {
     return this.root;
+  }
+
+  public getTeachingBoard() {
+    return this.teachingBoard;
   }
 
   // TODO: Add localStorage check for initialization
