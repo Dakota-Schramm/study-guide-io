@@ -1,6 +1,7 @@
 import { STEMCourse } from "@/app/course";
 import { BaseCourse } from "./course";
-import { findSubDirectory, setupHomeDirectory } from "../lib/fileHandleHelpers";
+import { findSubDirectory, } from "../lib/fileHandleHelpers";
+import { sitePath } from "@/lib/utils";
 
 // TODO: Rename file to teaching-staff?
 
@@ -15,7 +16,7 @@ export class BaseProfessor {
   public courses?: BaseCourse[];
 
   async initialize() {
-    this.root = await setupHomeDirectory();
+    this.root = await this.setupHomeDirectory();
   }
 
   public toString(): string {
@@ -72,6 +73,7 @@ export class BaseProfessor {
         directoryHandle,
         courseConstructor,
       );
+      await newCourse.initialize(this.handle, "stem");
       courses.push(newCourse);
     }
 
@@ -91,6 +93,50 @@ export class BaseProfessor {
     newCourse.setFiles(files);
 
     return newCourse;
+  }
+
+  // TODO: Add localStorage check for initialization
+  /**
+   * requires use of window
+   * MUST BE a user action to work
+   */
+  private async setupHomeDirectory() {
+    const fsdHandle = await this.requestDirectoryPermission();
+    if (!fsdHandle) {
+      return null;
+    }
+
+    let homeDir = fsdHandle;
+    const isRootDirectoryAppDirectory = fsdHandle.name === sitePath;
+    if (!isRootDirectoryAppDirectory) {
+      homeDir = await fsdHandle.getDirectoryHandle(sitePath, {
+        create: true,
+      });
+    }
+
+    return homeDir;
+  }
+
+  /**
+   * requires use of window
+   * @returns a handle for the user selected directory or null
+   */
+  private async requestDirectoryPermission() {
+    try {
+      const fsdHandle = await window.showDirectoryPicker({
+        mode: "readwrite",
+        startIn: "documents",
+      });
+
+      return fsdHandle;
+    } catch (error: unknown) {
+      if (error.name === "AbortError") {
+        return null;
+      }
+
+      console.log(`${typeof error}: ${error.message}`);
+      return null;
+    }
   }
 }
 
