@@ -10,8 +10,47 @@ type findCourseHandleOptions = {
 
 // TODO: Create two professors and keep track of in TeachingBoard class?
 export class BaseProfessor {
+  private root?: FileSystemDirectoryHandle | null;
   public handle?: FileSystemDirectoryHandle;
   public courses?: BaseCourse[];
+
+  constructor(root: FileSystemDirectoryHandle | null) {
+    this.root = root;
+  }
+
+  async initialize(
+    type: "STEM",
+    courseConstructor: new (...args) => BaseCourse,
+  ) {
+    const root = this.getRoot();
+    if (root === null) return;
+
+    let courseTypeHandle: FileSystemDirectoryHandle | undefined;
+    try {
+      courseTypeHandle = await root?.getDirectoryHandle(type, {
+        create: true,
+      });
+    } catch (error: unknown) {
+      if (!(error instanceof Error)) return;
+
+      if (error.name === "NotAllowedError") {
+        alert("You need to allow readwrite access to the root directory");
+      }
+      console.log(`${error.name}" ${error.message}`);
+    }
+
+    this.handle = courseTypeHandle;
+    if (courseTypeHandle) {
+      this.courses = await this.instantiateCourses(
+        courseTypeHandle,
+        courseConstructor,
+      );
+    }
+  }
+
+  public getRoot(): FileSystemDirectoryHandle | null | undefined {
+    return this.root;
+  }
 
   public toString(): string {
     if (this.handle === undefined) return "BaseProfessor";
@@ -90,19 +129,7 @@ class STEMProfessor extends BaseProfessor {
   public courses?: STEMCourse[];
 
   async initialize() {
-    await super.initialize();
-    const root = this.getRoot();
-    if (root === null) return;
-
-    const courseTypeHandle = await findSubDirectory(root, "STEM");
-    if (courseTypeHandle === null) {
-      throw new Error(
-        "STEMProfessor.initialize() => " + "STEM directory could not be found",
-      );
-    }
-
-    this.handle = courseTypeHandle;
-    this.courses = await super.instantiateCourses(courseTypeHandle, STEMCourse);
+    await super.initialize("STEM", STEMCourse);
   }
 }
 
