@@ -14,6 +14,10 @@ export class CourseConfig {
   }
 
   public async initialize() {
+    window.log.info(
+      `Course Config ${this?.courseHandle?.name} being initialized...`,
+    );
+
     let handle: FileSystemFileHandle;
     try {
       handle = await this.courseHandle.getFileHandle("config.json");
@@ -34,23 +38,14 @@ export class CourseConfig {
     }
 
     this.handle = handle;
-
-    console.log(await this.read());
   }
 
   public async read() {
     if (!this.handle) return;
 
     const f = await this.handle.getFile();
-    const fReader = new FileReader();
+    const jsonResponse = await new Response(f).json();
 
-    fReader.readAsText(f);
-    while (fReader.readyState !== 2) {
-      function _() {}
-    }
-    const jsonResponse = JSON.parse(fReader.result);
-
-    console.log(jsonResponse);
     return jsonResponse;
   }
 
