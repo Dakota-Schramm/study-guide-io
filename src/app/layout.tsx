@@ -1,6 +1,7 @@
 "use client";
 
 import { pdfjs } from "react-pdf";
+import "./globals";
 import "./globals.css";
 import Link from "next/link";
 
