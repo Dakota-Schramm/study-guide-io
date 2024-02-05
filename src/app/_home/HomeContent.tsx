@@ -7,7 +7,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 import { DeanContext, IDean } from "@/contexts/DeanContext";
 import { PersonalView } from "./PersonalView";
-import { BaseCourse } from "./course";
+import { BaseCourse } from "../course";
 import { isAppBroken, isIncompatibleBrowser } from "@/lib/browserHelpers";
 import { sitePath } from "@/lib/utils";
 

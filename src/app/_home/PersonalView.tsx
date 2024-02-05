@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/card";
 
 import { DeanContext } from "@/contexts/DeanContext";
-import { STEMCourse } from "./course";
+import { STEMCourse } from "../course";
 
 type CourseCard = {
   title: string;

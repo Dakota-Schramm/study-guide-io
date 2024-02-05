@@ -4,7 +4,7 @@ import React, { useCallback, useContext, useEffect } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import SettingsContent from "./settings/page";
-import { HomeContent } from "./HomeContent";
+import { HomeContent } from "./_home/HomeContent";
 import CreateContent from "./create/page";
 import { isAppBroken } from "@/lib/browserHelpers";
 import { DeanContext } from "@/contexts/DeanContext";
