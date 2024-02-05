@@ -1,7 +1,6 @@
 import { STEMCourse } from "@/app/course";
 import { BaseCourse } from "./course";
 import { findSubDirectory, } from "../lib/fileHandleHelpers";
-import { sitePath } from "@/lib/utils";
 
 // TODO: Rename file to teaching-staff?
 
@@ -11,23 +10,14 @@ type findCourseHandleOptions = {
 
 // TODO: Create two professors and keep track of in TeachingBoard class?
 export class BaseProfessor {
-  private root?: FileSystemDirectoryHandle | null;
   public handle?: FileSystemDirectoryHandle;
   public courses?: BaseCourse[];
-
-  async initialize() {
-    this.root = await this.setupHomeDirectory();
-  }
 
   public toString(): string {
     if (this.handle === undefined) return "BaseProfessor";
     return `${this.handle.name} Professor: ${
       this.courses?.length ?? 0
     } courses`;
-  }
-
-  public getRoot() {
-    return this.root;
   }
 
   /**
@@ -93,50 +83,6 @@ export class BaseProfessor {
     newCourse.setFiles(files);
 
     return newCourse;
-  }
-
-  // TODO: Add localStorage check for initialization
-  /**
-   * requires use of window
-   * MUST BE a user action to work
-   */
-  private async setupHomeDirectory() {
-    const fsdHandle = await this.requestDirectoryPermission();
-    if (!fsdHandle) {
-      return null;
-    }
-
-    let homeDir = fsdHandle;
-    const isRootDirectoryAppDirectory = fsdHandle.name === sitePath;
-    if (!isRootDirectoryAppDirectory) {
-      homeDir = await fsdHandle.getDirectoryHandle(sitePath, {
-        create: true,
-      });
-    }
-
-    return homeDir;
-  }
-
-  /**
-   * requires use of window
-   * @returns a handle for the user selected directory or null
-   */
-  private async requestDirectoryPermission() {
-    try {
-      const fsdHandle = await window.showDirectoryPicker({
-        mode: "readwrite",
-        startIn: "documents",
-      });
-
-      return fsdHandle;
-    } catch (error: unknown) {
-      if (error.name === "AbortError") {
-        return null;
-      }
-
-      console.log(`${typeof error}: ${error.message}`);
-      return null;
-    }
   }
 }
 
