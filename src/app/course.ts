@@ -21,12 +21,8 @@
 
 */
 
-import { ensureError } from "@/lib/utils";
 import { findSubDirectory } from "../lib/fileHandleHelpers";
-
-const exampleCourseConfig = {
-  foo: "baz",
-};
+import { CourseConfig } from "./course-config";
 
 /* 
   TODO: Add the following features:
@@ -38,6 +34,7 @@ export class BaseCourse {
   public id: number;
   private courseHandle?: FileSystemDirectoryHandle;
   private files?: FileSystemFileHandle[];
+  private config?: CourseConfig;
 
   public constructor(courseHandle: FileSystemDirectoryHandle) {
     // name cannot be changed after this initial definition, which has to be either at it's declaration or in the constructor.
@@ -58,13 +55,15 @@ export class BaseCourse {
     }
 
     window.log.debug(`Setting up course for ${courseHandle.name}...`);
-    await this.setupCourseConfig(courseHandle);
+    const config = new CourseConfig(courseHandle);
+    await config.initialize();
 
     const files = (await Array.fromAsync(this.courseHandle.values())).filter(
       (handle) => handle.kind === "file",
     );
 
     this.courseHandle = courseHandle;
+    this.config = config;
     this.files = files;
   }
 
@@ -84,32 +83,6 @@ export class BaseCourse {
 
   public setFiles(files: FileSystemFileHandle[]): void {
     this.files = files;
-  }
-
-  private async setupCourseConfig(): Promise<void> {
-    if (!this.courseHandle) {
-      window.log.warn("Course handle not found");
-      return;
-    }
-
-    try {
-      await this.courseHandle.getFileHandle("config.json");
-    } catch (error: unknown) {
-      const err = ensureError(error);
-
-      if (err.name === "") {
-        const configHandle = await this.courseHandle.getFileHandle(
-          "config.json",
-          {
-            create: true,
-          },
-        );
-
-        const writable = await configHandle.createWritable();
-        await writable.write(JSON.stringify(exampleCourseConfig));
-        await writable.close();
-      }
-    }
   }
 }
 
