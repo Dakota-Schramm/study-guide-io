@@ -11,7 +11,7 @@ type findCourseHandleOptions = {
 
 // TODO: Create two professors and keep track of in TeachingBoard class?
 export class BaseProfessor {
-  private root?: FileSystemDirectoryHandle | null;
+  private root?: Nullable<FileSystemDirectoryHandle>;
   public handle?: FileSystemDirectoryHandle;
   public courses?: BaseCourse[];
 
@@ -19,9 +19,9 @@ export class BaseProfessor {
     this.root = root;
   }
 
-  async initialize(
-    type: "STEM",
-    courseConstructor: new (...args) => BaseCourse,
+  async initialize<C extends BaseCourse>(
+    type: Course,
+    courseConstructor: new (...args: FileSystemDirectoryHandle[]) => C,
   ) {
     const root = this.getRoot();
     if (root === null) return;
@@ -49,7 +49,7 @@ export class BaseProfessor {
     }
   }
 
-  public getRoot(): FileSystemDirectoryHandle | null | undefined {
+  public getRoot(): Nullable<FileSystemDirectoryHandle> {
     return this.root;
   }
 
@@ -90,10 +90,12 @@ export class BaseProfessor {
   /**
    * Creates all courses for the current user
    */
-  public async instantiateCourses<Course extends BaseCourse>(
+  private async instantiateCourses<C extends BaseCourse>(
     courseTypeDirectory: FileSystemDirectoryHandle,
-    courseConstructor: new (...args) => Course,
-  ): Promise<Course[]> {
+    courseConstructor: new (...args: FileSystemDirectoryHandle[]) => BaseCourse,
+  ): Promise<C[] | undefined> {
+    if (!this.handle) return;
+
     const courses = [];
 
     for await (const directoryHandle of courseTypeDirectory.values()) {
@@ -103,17 +105,17 @@ export class BaseProfessor {
         directoryHandle,
         courseConstructor,
       );
-      await newCourse.initialize(this.handle, "stem");
+      await newCourse.initialize(this.handle, "STEM");
       courses.push(newCourse);
     }
 
     return courses;
   }
 
-  private async instantiateCourse<Course extends BaseCourse>(
+  private async instantiateCourse<C extends BaseCourse>(
     courseHandle: FileSystemDirectoryHandle,
-    courseConstructor: new (...args) => Course,
-  ): Promise<Course> {
+    courseConstructor: new (...args: FileSystemDirectoryHandle[]) => C,
+  ): Promise<C> {
     const newCourse = new courseConstructor(courseHandle);
 
     const files = (await Array.fromAsync(courseHandle.values())).filter(

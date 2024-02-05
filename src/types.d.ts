@@ -12,4 +12,6 @@ interface Window {
   ) => Promise<FileSystemDirectoryHandle>;
 }
 
+type Nullable<T> = T | null | undefined;
+
 type Course = "STEM";
