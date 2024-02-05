@@ -37,30 +37,44 @@ export class BaseCourse {
   public id: number;
   private courseHandle?: FileSystemDirectoryHandle;
   private files?: FileSystemFileHandle[];
-  private readonly name: string;
 
   public constructor(courseHandle: FileSystemDirectoryHandle) {
     // name cannot be changed after this initial definition, which has to be either at it's declaration or in the constructor.
     this.id = BaseCourse._id++;
     this.courseHandle = courseHandle;
-    this.name = courseHandle.name;
   }
 
   async initialize(appHandle: FileSystemDirectoryHandle, courseType: Course) {
     const courseTypeHandle = await findSubDirectory(appHandle, courseType);
-    const courseHandle = await courseTypeHandle?.getDirectoryHandle(this.name, {
-      create: true,
-    });
+    const courseHandle = await courseTypeHandle?.getDirectoryHandle(
+      this.getName(),
+      { create: true },
+    );
 
-    if (courseHandle) {
-      await this.setupCourseConfig(courseHandle);
+    if (!courseHandle) {
+      window.log.warn("CourseHandle not found");
+      return;
     }
 
+    window.log.debug(`Setting up course for ${courseHandle.name}...`);
+    await this.setupCourseConfig(courseHandle);
+
+    const files = (await Array.fromAsync(this.courseHandle.values())).filter(
+      (handle) => handle.kind === "file",
+    );
+
     this.courseHandle = courseHandle;
+    this.files = files;
   }
 
-  public getName(): string {
-    return this.name;
+  public toString(): string {
+    return `${this.getName() ?? "Course"} with ${
+      this?.files?.length ?? 0
+    } files`;
+  }
+
+  public getName(): string | undefined {
+    return this.courseHandle?.name;
   }
 
   public getFiles(): FileSystemFileHandle[] | undefined {
@@ -71,16 +85,19 @@ export class BaseCourse {
     this.files = files;
   }
 
-  private async setupCourseConfig(
-    handle: FileSystemDirectoryHandle,
-  ): Promise<void> {
-    const configHandle = await handle.getFileHandle("config.txt", {
+  private async setupCourseConfig(): Promise<void> {
+    if (!this.courseHandle) {
+      window.log.warn("Course handle not found");
+      return;
+    }
+
+    const configHandle = await this.courseHandle.getFileHandle("config.txt", {
       create: true,
     });
     const writable = await configHandle.createWritable();
 
     // Write the contents of the file to the stream.
-    await writable.write('{ foo: "bar" }');
+    await writable.write('foo: "bar"');
 
     // Close the file and write the contents to disk.
     await writable.close();
@@ -88,7 +105,7 @@ export class BaseCourse {
 }
 
 class STEMCourse extends BaseCourse {
-  async initialize(appHandle: FileSystemDirectoryHandle, courseName: string) {
+  async initialize(appHandle: FileSystemDirectoryHandle) {
     await super.initialize(appHandle, "STEM");
   }
 }

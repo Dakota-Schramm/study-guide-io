@@ -1,6 +1,5 @@
 import { STEMCourse } from "@/app/course";
 import { BaseCourse } from "./course";
-import { findSubDirectory, } from "../lib/fileHandleHelpers";
 import { ensureError } from "@/lib/utils";
 
 // TODO: Rename file to teaching-staff?
@@ -23,30 +22,8 @@ export class BaseProfessor {
     type: Course,
     courseConstructor: new (...args: FileSystemDirectoryHandle[]) => C,
   ) {
-    const root = this.getRoot();
-    if (root === null) return;
-
-    let courseTypeHandle: FileSystemDirectoryHandle | undefined;
-    try {
-      courseTypeHandle = await root?.getDirectoryHandle(type, {
-        create: true,
-      });
-    } catch (error: unknown) {
-      const err = ensureError(error);
-
-      if (err.name === "NotAllowedError") {
-        alert("You need to allow readwrite access to the root directory");
-      }
-      console.log(`${err.name}" ${err.message}`);
-    }
-
-    this.handle = courseTypeHandle;
-    if (courseTypeHandle) {
-      this.courses = await this.instantiateCourses(
-        courseTypeHandle,
-        courseConstructor,
-      );
-    }
+    this.handle = await this.getCourseTypeHandle(type);
+    this.courses = await this.collectAndInitializeCourses(courseConstructor);
   }
 
   public getRoot(): Nullable<FileSystemDirectoryHandle> {
@@ -61,7 +38,7 @@ export class BaseProfessor {
   }
 
   /**
-   *
+   * Seems like this isn't needed???
    * @param create whether the directory should be created if not found
    * @returns the FileSystemDirectoryHandle if create is true or if the directory exists, null otherwise
    */
@@ -87,50 +64,50 @@ export class BaseProfessor {
     return found;
   }
 
-  /**
-   * Creates all courses for the current user
-   */
-  private async instantiateCourses<C extends BaseCourse>(
-    courseTypeDirectory: FileSystemDirectoryHandle,
-    courseConstructor: new (...args: FileSystemDirectoryHandle[]) => BaseCourse,
-  ): Promise<C[] | undefined> {
-    if (!this.handle) return;
-
-    const courses = [];
-
-    for await (const directoryHandle of courseTypeDirectory.values()) {
-      if (directoryHandle.kind !== "directory") continue;
-
-      const newCourse = await this.instantiateCourse(
-        directoryHandle,
-        courseConstructor,
-      );
-      await newCourse.initialize(this.handle, "STEM");
-      courses.push(newCourse);
+  private async getCourseTypeHandle(type: Course) {
+    if (this.root === null || this.root === undefined) {
+      return;
     }
 
-    return courses;
+    let courseTypeHandle: FileSystemDirectoryHandle | undefined;
+    try {
+      courseTypeHandle = await this.root.getDirectoryHandle(type, {
+        create: true,
+      });
+    } catch (error: unknown) {
+      const err = ensureError(error);
+
+      if (err.name === "NotAllowedError") {
+        alert("You need to allow readwrite access to the root directory");
+      }
+      console.log(`${err.name}" ${err.message}`);
+    }
+
+    return courseTypeHandle;
   }
 
-  private async instantiateCourse<C extends BaseCourse>(
-    courseHandle: FileSystemDirectoryHandle,
+  private async collectAndInitializeCourses(
     courseConstructor: new (...args: FileSystemDirectoryHandle[]) => C,
-  ): Promise<C> {
-    const newCourse = new courseConstructor(courseHandle);
+  ) {
+    const courseFiles = await Array.fromAsync(this.handle.entries());
+    const coursePromises = courseFiles.map(async ([_, courseFileHandle]) => {
+      if (courseFileHandle.kind !== "directory") {
+        console.log({ courseFileHandle });
+        return;
+      }
+      const course = new courseConstructor(courseFileHandle);
+      await course.initialize(this.root);
 
-    const files = (await Array.fromAsync(courseHandle.values())).filter(
-      (handle) => handle.kind === "file",
-    );
+      return course;
+    });
 
-    newCourse.setFiles(files);
-
-    return newCourse;
+    const courses = await Promise.all(coursePromises);
+    console.log({ courses });
+    return courses.filter((course) => course !== undefined);
   }
 }
 
 class STEMProfessor extends BaseProfessor {
-  public courses?: STEMCourse[];
-
   async initialize() {
     await super.initialize("STEM", STEMCourse);
   }
