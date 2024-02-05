@@ -28,16 +28,14 @@ export class CourseConfig {
         handle = await this.courseHandle.getFileHandle("config.json", {
           create: true,
         });
-
-        const writable = await handle.createWritable();
-        await writable.write(JSON.stringify(exampleCourseConfig));
-        await writable.close();
+        this.saveToFile(handle, exampleCourseConfig);
       } else {
         throw error;
       }
     }
 
     this.handle = handle;
+    await this.write([["test", "check"]]);
   }
 
   public async read() {
@@ -49,7 +47,21 @@ export class CourseConfig {
     return jsonResponse;
   }
 
-  public write() {
-    return;
+  public async write(kvPairs: string[][]) {
+    const configObj = await this.read();
+    for (const [k, v] of kvPairs) {
+      configObj[k] = v;
+    }
+
+    this.saveToFile(this.handle, configObj);
+  }
+
+  private async saveToFile(
+    fileHandle: FileSystemFileHandle,
+    json: typeof exampleCourseConfig,
+  ) {
+    const writable = await fileHandle.createWritable();
+    await writable.write(JSON.stringify(json));
+    await writable.close();
   }
 }
