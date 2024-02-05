@@ -1,6 +1,7 @@
 import { STEMCourse } from "@/app/course";
 import { BaseCourse } from "./course";
 import { findSubDirectory, } from "../lib/fileHandleHelpers";
+import { ensureError } from "@/lib/utils";
 
 // TODO: Rename file to teaching-staff?
 
@@ -31,12 +32,12 @@ export class BaseProfessor {
         create: true,
       });
     } catch (error: unknown) {
-      if (!(error instanceof Error)) return;
+      const err = ensureError(error);
 
-      if (error.name === "NotAllowedError") {
+      if (err.name === "NotAllowedError") {
         alert("You need to allow readwrite access to the root directory");
       }
-      console.log(`${error.name}" ${error.message}`);
+      console.log(`${err.name}" ${err.message}`);
     }
 
     this.handle = courseTypeHandle;

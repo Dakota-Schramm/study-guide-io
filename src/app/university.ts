@@ -1,4 +1,9 @@
-import { sitePath } from "@/lib/utils";
+import { ensureError, sitePath } from "@/lib/utils";
+import { BaseProfessor, STEMProfessor } from "./professor";
+
+type TeachingBoard = {
+  stem: STEMProfessor;
+};
 
 class University {
   private root?: FileSystemDirectoryHandle | null;
@@ -46,11 +51,12 @@ class University {
 
       return fsdHandle;
     } catch (error: unknown) {
-      if (error.name === "AbortError") {
+      const err = ensureError(error);
+      if (err.name === "AbortError") {
         return null;
       }
 
-      console.log(`${typeof error}: ${error.message}`);
+      console.log(`${err.name}: ${err.message}`);
       return null;
     }
   }
