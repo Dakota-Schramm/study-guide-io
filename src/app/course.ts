@@ -21,10 +21,11 @@
 
 */
 
+import { ensureError } from "@/lib/utils";
 import { findSubDirectory } from "../lib/fileHandleHelpers";
 
 const exampleCourseConfig = {
-  foo: "bar",
+  foo: "baz",
 };
 
 /* 
@@ -91,16 +92,24 @@ export class BaseCourse {
       return;
     }
 
-    const configHandle = await this.courseHandle.getFileHandle("config.txt", {
-      create: true,
-    });
-    const writable = await configHandle.createWritable();
+    try {
+      await this.courseHandle.getFileHandle("config.json");
+    } catch (error: unknown) {
+      const err = ensureError(error);
 
-    // Write the contents of the file to the stream.
-    await writable.write('foo: "bar"');
+      if (err.name === "") {
+        const configHandle = await this.courseHandle.getFileHandle(
+          "config.json",
+          {
+            create: true,
+          },
+        );
 
-    // Close the file and write the contents to disk.
-    await writable.close();
+        const writable = await configHandle.createWritable();
+        await writable.write(JSON.stringify(exampleCourseConfig));
+        await writable.close();
+      }
+    }
   }
 }
 
