@@ -36,3 +36,6 @@ Maybe restrucuture project??
 Features
 - add class for different user types
   - implement underlying classes based on whether file system is available
+
+Look into persisting file handles
+  <https://developer.chrome.com/blog/persistent-permissions-for-the-file-system-access-api>

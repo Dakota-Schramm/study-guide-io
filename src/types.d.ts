@@ -1,4 +1,6 @@
-import { LogLevelLogger } from "./app/globals";
+// TODO: Move these types into a different file and just import them.
+// d.ts files shouldn't be used since behavior is confusing...
+//! DO NOT PUT IMPORTS OR EXPORTS IN THIS FILE
 
 type showDirectoryPickerOptions = {
   id?: unknown;

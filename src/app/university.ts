@@ -14,7 +14,7 @@ class University {
   async initialize() {
     const root = await this.setupHomeDirectory();
 
-    const stemProfessor = await new STEMProfessor(root);
+    const stemProfessor = new STEMProfessor(root);
     await stemProfessor.initialize();
 
     const teachingBoard = {
@@ -31,6 +31,18 @@ class University {
 
   public getTeachingBoard() {
     return this.teachingBoard;
+  }
+
+  public showDebugInfo() {
+    const isDebugMode = window.log.getLevel() === window.log.levels.DEBUG;
+    if (!isDebugMode) return;
+
+    const courses = this.teachingBoard?.stem?.courses;
+    if (!courses) return;
+
+    for (const course of courses) {
+      window.log.debug(course);
+    }
   }
 
   // TODO: Add localStorage check for initialization

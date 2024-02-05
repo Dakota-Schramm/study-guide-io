@@ -38,6 +38,7 @@ export const DeanProvider = ({ children }: { children: ReactNode }) => {
   const reSyncCourses = useCallback(async () => {
     const university = new University();
     await university.initialize();
+    university.showDebugInfo();
 
     const root = university.getRoot() as FileSystemDirectoryHandle | null;
     const appPermissions = root !== null ? "readwrite" : null;
