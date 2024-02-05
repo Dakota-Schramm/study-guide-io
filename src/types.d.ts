@@ -11,3 +11,5 @@ interface Window {
     options: showDirectoryPickerOptions,
   ) => Promise<FileSystemDirectoryHandle>;
 }
+
+type Course = "STEM";

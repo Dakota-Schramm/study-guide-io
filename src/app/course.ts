@@ -3,18 +3,29 @@
   StudyGuideIO
   ├── STEM
   |   ├── Course1
-  |   ├   ├── File1
-  |   ├   ├── File2
+  |   ├   ├── config.json 
+  |   ├   ├── Exam1 
+  |   ├   |   ├── File1
+  |   ├   |   ├── File2
   |   ├── Course2
-  |   ├   ├── File1
-  |   ├   ├── File2
+  |   ├   ├── config.json 
+  |   ├   ├── Exam1 
+  |   ├   |   ├── File1
+  |   ├   |   ├── File2
   |-- Writing
   |   ├── Course1
-  |   ├── Course2
+  |   ├   ├── config.json 
+  |   ├   ├── Exam1 
+  |   ├   |   ├── File1
+  |   ├   |   ├── File2
 
 */
 
 import { findSubDirectory } from "../lib/fileHandleHelpers";
+
+const exampleCourseConfig = {
+  foo: "bar",
+};
 
 /* 
   TODO: Add the following features:
@@ -35,14 +46,15 @@ export class BaseCourse {
     this.name = courseHandle.name;
   }
 
-  async initialize(
-    appHandle: FileSystemDirectoryHandle,
-    courseType: "stem" | "writing",
-  ) {
+  async initialize(appHandle: FileSystemDirectoryHandle, courseType: Course) {
     const courseTypeHandle = await findSubDirectory(appHandle, courseType);
     const courseHandle = await courseTypeHandle?.getDirectoryHandle(this.name, {
       create: true,
     });
+
+    if (courseHandle) {
+      await this.setupCourseConfig(courseHandle);
+    }
 
     this.courseHandle = courseHandle;
   }
@@ -58,11 +70,26 @@ export class BaseCourse {
   public setFiles(files: FileSystemFileHandle[]): void {
     this.files = files;
   }
+
+  private async setupCourseConfig(
+    handle: FileSystemDirectoryHandle,
+  ): Promise<void> {
+    const configHandle = await handle.getFileHandle("config.txt", {
+      create: true,
+    });
+    const writable = await configHandle.createWritable();
+
+    // Write the contents of the file to the stream.
+    await writable.write('{ foo: "bar" }');
+
+    // Close the file and write the contents to disk.
+    await writable.close();
+  }
 }
 
 class STEMCourse extends BaseCourse {
   async initialize(appHandle: FileSystemDirectoryHandle, courseName: string) {
-    await super.initialize(appHandle, "stem");
+    await super.initialize(appHandle, "STEM");
   }
 }
 
