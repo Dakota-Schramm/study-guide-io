@@ -19,7 +19,6 @@ export const PersonalView = () => {
           files={course.getFiles()?.length ?? 0}
         />
       ))}
-      ;
     </div>
   );
 };
