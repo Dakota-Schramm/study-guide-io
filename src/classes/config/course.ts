@@ -1,7 +1,7 @@
 import { ensureError } from "@/lib/utils";
 
 const exampleCourseConfig = {
-  foo: "baz",
+  exams: [],
 };
 
 export class CourseConfig {
@@ -52,7 +52,11 @@ export class CourseConfig {
       configObj[k] = v;
     }
 
-    this.saveToFile(this.handle, configObj);
+    await this.saveToFile(this.handle, configObj);
+  }
+
+  public async replace(newConfig: typeof exampleCourseConfig) {
+    await this.saveToFile(this.handle, newConfig);
   }
 
   private async saveToFile(

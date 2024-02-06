@@ -88,6 +88,26 @@ export class BaseCourse {
   public changeConfigFile(kvPairs: [string, string][]) {
     this.config?.write(kvPairs);
   }
+
+  /**
+   * Creates a new array of files to add to the config's "exams" key
+   * @param filesToAssign
+   * @returns
+   */
+  public async assignFilesToExam(filesToAssign: string[]) {
+    const courseFiles = this.getFiles();
+    if (!courseFiles) return;
+
+    const selectedFiles = courseFiles.filter((f) =>
+      filesToAssign.includes(f.name),
+    );
+    const selectedFilesNames = selectedFiles.map((f) => f.name);
+
+    const configObj = await this.config?.read();
+    configObj.exams = (configObj.exams || []).concat([selectedFilesNames]);
+
+    await this.config?.replace(configObj);
+  }
 }
 
 class STEMCourse extends BaseCourse {
