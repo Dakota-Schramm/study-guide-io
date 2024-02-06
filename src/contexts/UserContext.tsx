@@ -34,12 +34,9 @@ function useUser() {
   useEffect(function setUpConfig() {
     // TODO: Copy from view that checks user type
 
-    let config;
-    if (userType === "FullAccessUser") {
-      config = new FullAccessUserConfig();
-    } else {
-      config = new RestrictedAccessUserConfig();
-    }
+    const config = determineUserAppAccess() === "FullAccessUser"
+      ? new FullAccessUserConfig()
+      ? new RestrictedAccessUserConfig();
 
     setUser((prev) => ({ ...prev, config }));
   }, []);
@@ -109,7 +106,6 @@ type UserContext = {
   setUser: (user: IUser) => void;
   reSyncCourses: () => void;
   findCourseHandle: () => void;
-
 };
 
 export const UserContext = createContext<UserContext>({
@@ -190,4 +186,22 @@ async function getCourseTypeHandle(
   }
 
   return courseTypeHandle;
+}
+
+
+function determineUserAppAccess() {
+  const isMozillaBrowser = /mozilla/i.test(navigator.userAgent);
+  const isSafariBrowser = checkIfSafari();
+
+  function checkIfSafari() {
+    const ua = navigator.userAgent.toLowerCase();
+    return ua.includes("safari") && !ua.includes("chrome");
+  }
+
+  const isIncompatibleBrowser = isMozillaBrowser || isSafariBrowser;
+  const isAppBroken = isIncompatibleBrowser && window.showDirectoryPicker === undefined;
+
+  return isAppBroken
+    ? "RestrictedAccessUser"
+    : "FullAccessUser";
 }

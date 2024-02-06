@@ -8,25 +8,34 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { UserContext, IUser } from "@/contexts/UserContext";
 import { PersonalView } from "./PersonalView";
 import { BaseCourse } from "../../classes/course";
-import { isAppBroken, isIncompatibleBrowser } from "@/lib/browserHelpers";
 import { sitePath } from "@/lib/utils";
+import { FullAccessUserConfig } from "@/classes/config/user/full-access";
 
 // TODO: Use OPFS as fallback if user says no to showing directory
 export const HomeContent = () => {
   const { user } = useContext(UserContext);
-  const { permissions, stem } = dean;
+  const { courses } = user;
+
+  let permissions;
+  if (user.config) {
+    permissions =
+      user.config instanceof FullAccessUserConfig ? "readwrite" : null;
+  }
 
   return {
     personal: <PersonalView />,
     basic: <BasicView />,
-    newUser: <NewUserView {...{ permissions }} />,
-  }[checkPageType(stem?.courses)];
+    newUser: (
+      <NewUserView isAppBroken={permissions === null} {...{ permissions }} />
+    ),
+  }[checkPageType(courses)];
 };
 
 type NewUserViewProps = {
-  permissions: IUser["permissions"];
+  isAppBroken: boolean;
+  permissions: string | null | undefined;
 };
-function NewUserView({ permissions }: NewUserViewProps) {
+function NewUserView({ permissions, isAppBroken }: NewUserViewProps) {
   if (isAppBroken) return <UnsupportedBrowserView />;
   if (permissions === undefined) return <UserBouncerView />;
   if (permissions === null) return <UserRefusedView />;

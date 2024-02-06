@@ -5,11 +5,9 @@ import Link from "next/link";
 import { UserContext } from "@/contexts/UserContext";
 
 export default function CreateContent() {
-  const [isLoaded, setIsLoaded] = useState(false);
   const { user } = useContext(UserContext);
-  const { permissions } = dean;
 
-  if (dean.permissions === undefined) {
+  if (user?.config === undefined) {
     if (window) window.location.href = "/";
   }
 
