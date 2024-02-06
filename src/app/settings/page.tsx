@@ -1,14 +1,11 @@
 "use client";
 
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 
 import { UserContext } from "@/contexts/UserContext";
 
 export default function SettingsContent() {
-  const { user, reSyncCourses } = useContext(UserContext);
-  const { stem } = dean;
-
-  useEffect(() => console.log({ stem }), [stem]);
+  const { reSyncCourses } = useContext(UserContext);
 
   return (
     <>
