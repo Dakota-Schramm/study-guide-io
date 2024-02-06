@@ -1,14 +1,32 @@
 import { ensureError, sitePath } from "@/lib/utils";
 
+type UserFileSystemHandles = {
+  [key: string]: Nullable<FileSystemDirectoryHandle>;
+};
+
 export class FullAccessUserConfig {
-  private root: Nullable<FileSystemDirectoryHandle>;
+  private handles?: UserFileSystemHandles;
 
   async initialize() {
-    this.root = await this.setupHomeDirectory();
+    const handles = {
+      root: await this.setupHomeDirectory(),
+    };
+
+    for await (const [name, handle] of handles.root?.values()) {
+      handles[name] = handle;
+    }
+
+    this.handles = handles;
   }
 
   public getRoot(): Nullable<FileSystemDirectoryHandle> {
-    return this.root;
+    return this.handles?.root;
+  }
+
+  public getCourseTypeHandles(): [string, FileSystemDirectoryHandle[]] | null {
+    if (!this.handles) return null;
+
+    return Object.entries(this.handles).filter(([k]) => k !== "root");
   }
 
   // TODO: Add localStorage check for initialization
