@@ -22,7 +22,7 @@
 */
 
 import { findSubDirectory } from "../lib/fileHandleHelpers";
-import { CourseConfig } from "./course-config";
+import { CourseConfig } from "./config/course";
 
 /* 
   TODO: Add the following features:
