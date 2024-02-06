@@ -2,7 +2,7 @@
 import React, { useContext } from "react";
 
 import { createFileObjectUrl, createPdf } from "./pdf/createPdf";
-import { DeanContext } from '@/contexts/UserContext';
+import { UserContext } from "@/contexts/UserContext";
 
 type PDFComponents = {
   pdfFiles: FileList;
@@ -27,7 +27,7 @@ export const Finalize = ({
 }: FinalizeProps) => {
   // console.log(`Finalize hidden: ${hidden}`);
 
-  const { dean } = useContext(DeanContext);
+  const { user } = useContext(UserContext);
   const { root, stem } = dean;
 
   if (!rendered) return;

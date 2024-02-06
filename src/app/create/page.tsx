@@ -2,11 +2,11 @@
 
 import React, { useContext, useState } from "react";
 import Link from "next/link";
-import { DeanContext } from '@/contexts/UserContext';
+import { UserContext } from "@/contexts/UserContext";
 
 export default function CreateContent() {
   const [isLoaded, setIsLoaded] = useState(false);
-  const { dean } = useContext(DeanContext);
+  const { user } = useContext(UserContext);
   const { permissions } = dean;
 
   if (dean.permissions === undefined) {

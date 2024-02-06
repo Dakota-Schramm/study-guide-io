@@ -2,12 +2,12 @@
 
 import React, { useContext } from "react";
 
-import { DeanContext } from '@/contexts/UserContext';
+import { UserContext } from "@/contexts/UserContext";
 import { STEMCourse } from "../../classes/course";
 import { CourseCard } from "./CourseCard";
 
 export const PersonalView = () => {
-  const { dean } = useContext(DeanContext);
+  const { user } = useContext(UserContext);
   const { stem } = dean;
 
   return (

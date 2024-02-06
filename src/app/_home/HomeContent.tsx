@@ -5,7 +5,7 @@ import Link from "next/link";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
-import { DeanContext, IDean } from '@/contexts/UserContext';
+import { UserContext, IUser } from "@/contexts/UserContext";
 import { PersonalView } from "./PersonalView";
 import { BaseCourse } from "../../classes/course";
 import { isAppBroken, isIncompatibleBrowser } from "@/lib/browserHelpers";
@@ -13,7 +13,7 @@ import { sitePath } from "@/lib/utils";
 
 // TODO: Use OPFS as fallback if user says no to showing directory
 export const HomeContent = () => {
-  const { dean } = useContext(DeanContext);
+  const { user } = useContext(UserContext);
   const { permissions, stem } = dean;
 
   return {
@@ -24,7 +24,7 @@ export const HomeContent = () => {
 };
 
 type NewUserViewProps = {
-  permissions: IDean["permissions"];
+  permissions: IUser["permissions"];
 };
 function NewUserView({ permissions }: NewUserViewProps) {
   if (isAppBroken) return <UnsupportedBrowserView />;
@@ -50,7 +50,7 @@ function UnsupportedBrowserView() {
 }
 
 function UserBouncerView() {
-  const { reSyncCourses } = useContext(DeanContext);
+  const { reSyncCourses } = useContext(UserContext);
 
   return (
     <div className="flex flex-col space-y-8">

@@ -2,10 +2,10 @@
 
 import React, { useContext, useEffect } from "react";
 
-import { DeanContext } from '@/contexts/UserContext';
+import { UserContext } from "@/contexts/UserContext";
 
 export default function SettingsContent() {
-  const { dean, reSyncCourses } = useContext(DeanContext);
+  const { user, reSyncCourses } = useContext(UserContext);
   const { stem } = dean;
 
   useEffect(() => console.log({ stem }), [stem]);

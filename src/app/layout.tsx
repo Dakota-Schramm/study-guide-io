@@ -5,7 +5,7 @@ import "./globals";
 import "./globals.css";
 import Link from "next/link";
 
-import { DeanProvider } from '@/contexts/UserContext';
+import { UserProvider } from "@/contexts/UserContext";
 
 // export const metadata: Metadata = {
 //   title: "Create Next App",
@@ -34,14 +34,14 @@ const RootLayout = ({
 }: Readonly<{
   children: React.ReactNode;
 }>) => (
-  <DeanProvider>
+  <UserProvider>
     <html lang="en" className="w-full h-full box-border">
       <body className="w-full h-full box-border">
         <HomeHeader />
         {children}
       </body>
     </html>
-  </DeanProvider>
+  </UserProvider>
 );
 
 export default RootLayout;

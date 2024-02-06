@@ -7,10 +7,10 @@ import SettingsContent from "./settings/page";
 import { HomeContent } from "./_home/HomeContent";
 import CreateContent from "./create/page";
 import { isAppBroken } from "@/lib/browserHelpers";
-import { DeanContext } from '@/contexts/UserContext';
+import { UserContext } from "@/contexts/UserContext";
 
 const Home = () => {
-  const { setDean } = useContext(DeanContext);
+  const { setUser } = useContext(UserContext);
 
   let index = "home";
   const path = window.location.href;
@@ -25,7 +25,7 @@ const Home = () => {
 
   useEffect(() => {
     if (isAppBroken) {
-      setDean((prev) => ({
+      setUser((prev) => ({
         permissions: null,
       }));
     }

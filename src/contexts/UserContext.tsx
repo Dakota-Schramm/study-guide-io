@@ -6,15 +6,8 @@ import {
   useState,
 } from "react";
 
-import { STEMProfessor } from "@/classes/professor";
 import { FullAccessUserConfig } from "@/classes/config/user/full-access";
 import { BaseCourse, STEMCourse } from "@/classes/course";
-
-export type IDean = {
-  permissions: Nullable<"read" | "readwrite">;
-  root: Nullable<FileSystemDirectoryHandle>;
-  stem?: STEMProfessor;
-};
 
 export type IUser = {
   config?: BaseConfig;
@@ -111,30 +104,32 @@ function useUser() {
   };
 }
 
-type DeanContext = {
-  dean: IDean;
-  setDean: (professor: IDean) => void;
+type UserContext = {
+  user: IUser;
+  setUser: (user: IUser) => void;
   reSyncCourses: () => void;
+  findCourseHandle: () => void;
+
 };
 
-export const DeanContext = createContext<DeanContext>({
-  dean: {
-    permissions: undefined,
-    root: undefined,
-    stem: undefined,
+export const UserContext = createContext<UserContext>({
+  user: {
+    config: undefined,
+    courses: undefined,
   },
-  setDean: (professor: IDean) => {},
+  setUser: (user: IUser) => {},
   reSyncCourses: () => {},
+  findCourseHandle: () => {},
 });
 
 /**
  * The provider that handles globals for the app
  */
-export const DeanProvider = ({ children }: { children: ReactNode }) => {
+export const UserProvider = ({ children }: { children: ReactNode }) => {
   const userState = useUser();
 
   return (
-    <DeanContext.Provider value={userState}>{children}</DeanContext.Provider>
+    <UserContext.Provider value={userState}>{children}</UserContext.Provider>
   );
 };
 
