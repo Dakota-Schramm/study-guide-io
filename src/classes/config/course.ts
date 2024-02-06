@@ -35,7 +35,6 @@ export class CourseConfig {
     }
 
     this.handle = handle;
-    await this.write([["test", "check"]]);
   }
 
   public async read() {
@@ -47,7 +46,7 @@ export class CourseConfig {
     return jsonResponse;
   }
 
-  public async write(kvPairs: string[][]) {
+  public async write(kvPairs: [string, string][]) {
     const configObj = await this.read();
     for (const [k, v] of kvPairs) {
       configObj[k] = v;

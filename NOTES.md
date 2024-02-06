@@ -117,3 +117,5 @@ Student profile
 Move notes into project
 
 Check if Github Copilot can generate tests using Cypress?
+Dark Mode
+  - <https://ui.shadcn.com/docs/dark-mode/next>

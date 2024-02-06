@@ -84,6 +84,10 @@ export class BaseCourse {
   set files(files: FileSystemFileHandle[]) {
     this._files = files;
   }
+
+  public changeConfigFile(kvPairs: [string, string][]) {
+    this.config?.write(kvPairs);
+  }
 }
 
 class STEMCourse extends BaseCourse {
