@@ -39,11 +39,14 @@ export class BaseProfessor {
 
   /**
    * Change the course's config.json
+   * @param courseName
+   * @param exams fileNames of files to list under exam, in Object.entries style => ([key, value])
    */
-  public adjustSyllabus(courseName: string, kvPairs: [string, string][]): void {
+  public addExamToSyllabus(courseName: string, exams: string[]): void {
     const course = this.courses?.find((c) => c.getName() === courseName);
     if (!course) return;
-    course.changeConfigFile(kvPairs);
+
+    course.assignFilesToExam(exams);
   }
 
   /**
