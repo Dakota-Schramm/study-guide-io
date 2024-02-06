@@ -1,7 +1,7 @@
 import { ReactNode, createContext, useCallback, useState } from "react";
 
-import { STEMProfessor } from "@/app/professor";
-import { University } from "@/app/university";
+import { STEMProfessor } from "@/classes/professor";
+import { University } from "@/classes/university";
 
 export type IDean = {
   permissions: Nullable<"read" | "readwrite">;

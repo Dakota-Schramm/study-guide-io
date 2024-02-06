@@ -1,4 +1,4 @@
-import { STEMCourse } from "@/app/course";
+import { STEMCourse } from "@/classes/course";
 import { BaseCourse } from "./course";
 import { ensureError } from "@/lib/utils";
 

@@ -3,7 +3,7 @@
 import React, { useContext } from "react";
 
 import { DeanContext } from "@/contexts/DeanContext";
-import { STEMCourse } from "../course";
+import { STEMCourse } from "../../classes/course";
 import { CourseCard } from "./CourseCard";
 
 export const PersonalView = () => {
