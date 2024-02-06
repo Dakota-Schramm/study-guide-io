@@ -5,7 +5,7 @@ import Link from "next/link";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
-import { DeanContext, IDean } from "@/contexts/DeanContext";
+import { DeanContext, IDean } from '@/contexts/UserContext';
 import { PersonalView } from "./PersonalView";
 import { BaseCourse } from "../../classes/course";
 import { isAppBroken, isIncompatibleBrowser } from "@/lib/browserHelpers";

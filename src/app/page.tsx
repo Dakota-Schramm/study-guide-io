@@ -7,7 +7,7 @@ import SettingsContent from "./settings/page";
 import { HomeContent } from "./_home/HomeContent";
 import CreateContent from "./create/page";
 import { isAppBroken } from "@/lib/browserHelpers";
-import { DeanContext } from "@/contexts/DeanContext";
+import { DeanContext } from '@/contexts/UserContext';
 
 const Home = () => {
   const { setDean } = useContext(DeanContext);

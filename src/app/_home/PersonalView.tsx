@@ -2,7 +2,7 @@
 
 import React, { useContext } from "react";
 
-import { DeanContext } from "@/contexts/DeanContext";
+import { DeanContext } from '@/contexts/UserContext';
 import { STEMCourse } from "../../classes/course";
 import { CourseCard } from "./CourseCard";
 

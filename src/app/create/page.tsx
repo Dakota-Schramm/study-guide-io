@@ -2,7 +2,7 @@
 
 import React, { useContext, useState } from "react";
 import Link from "next/link";
-import { DeanContext } from "@/contexts/DeanContext";
+import { DeanContext } from '@/contexts/UserContext';
 
 export default function CreateContent() {
   const [isLoaded, setIsLoaded] = useState(false);

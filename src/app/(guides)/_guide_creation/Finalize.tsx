@@ -2,7 +2,7 @@
 import React, { useContext } from "react";
 
 import { createFileObjectUrl, createPdf } from "./pdf/createPdf";
-import { DeanContext } from "@/contexts/DeanContext";
+import { DeanContext } from '@/contexts/UserContext';
 
 type PDFComponents = {
   pdfFiles: FileList;

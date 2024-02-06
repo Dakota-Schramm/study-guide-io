@@ -5,7 +5,7 @@ import "./globals";
 import "./globals.css";
 import Link from "next/link";
 
-import { DeanProvider } from "@/contexts/DeanContext";
+import { DeanProvider } from '@/contexts/UserContext';
 
 // export const metadata: Metadata = {
 //   title: "Create Next App",

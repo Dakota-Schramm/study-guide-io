@@ -2,7 +2,7 @@
 
 import React, { useContext, useEffect } from "react";
 
-import { DeanContext } from "@/contexts/DeanContext";
+import { DeanContext } from '@/contexts/UserContext';
 
 export default function SettingsContent() {
   const { dean, reSyncCourses } = useContext(DeanContext);
