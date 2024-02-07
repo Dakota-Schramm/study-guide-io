@@ -9,6 +9,7 @@ import {
 import { FullAccessUserConfig } from "@/classes/config/user/full-access";
 import { BaseCourse, STEMCourse } from "@/classes/course";
 import { RestrictedAccessUserConfig } from "@/classes/config/user/restricted-access";
+import { BaseUserConfig } from "@/classes/config/user/base";
 
 /**
  * @param config a User's associated app configuration
@@ -36,44 +37,45 @@ function useUser() {
   useEffect(function setUpConfig() {
     async function initConfig() {
       const config = determineUserConfig();
-      await config.initialize();
       setUser((prev) => ({ ...prev, config }));
     }
     initConfig();
   }, []);
 
-  const reSyncCourses = useCallback(async () => {
-    const userConfig = determineUserConfig();
-    await userConfig.initialize();
+  const reSyncCourses = useCallback(
+    async (userConfig = determineUserConfig()) => {
+      await userConfig.initialize();
 
-    if (userConfig instanceof RestrictedAccessUserConfig) return;
+      if (userConfig instanceof RestrictedAccessUserConfig) return;
 
-    const root = userConfig.getRoot();
-    if (!root) return;
+      const root = userConfig.getRoot();
+      if (!root) return;
 
-    const courseTypeHandles = userConfig.getCourseTypeHandles();
+      const courseTypeHandles = userConfig.getCourseTypeHandles();
 
-    const courses: BaseCourse[] = [];
-    if (courseTypeHandles) {
-      for (const [key, handle] of courseTypeHandles) {
-        const courseConstructor = ResyncConfig[key];
+      const courses: BaseCourse[] = [];
+      if (courseTypeHandles) {
+        for (const [key, handle] of courseTypeHandles) {
+          const courseConstructor = ResyncConfig[key];
 
-        const loadedCourses = await collectAndInitializeCoursesForCourseType(
-          root,
-          handle,
-          courseConstructor,
-        );
-        courses.push(...loadedCourses);
+          const loadedCourses = await collectAndInitializeCoursesForCourseType(
+            root,
+            handle,
+            courseConstructor,
+          );
+          courses.push(...loadedCourses);
+        }
       }
-    }
-    showDebugInfo(courses);
+      showDebugInfo(courses);
 
-    const newUserState: IUser = {
-      config: userConfig,
-      courses,
-    };
-    setUser(newUserState);
-  }, []);
+      const newUserState: IUser = {
+        config: userConfig,
+        courses,
+      };
+      setUser(newUserState);
+    },
+    [],
+  );
 
   return {
     user,
@@ -85,7 +87,7 @@ function useUser() {
 type UserContext = {
   user: IUser;
   setUser: (user: IUser) => void;
-  reSyncCourses: () => void;
+  reSyncCourses: (userConfig?: BaseUserConfig | null) => void;
 };
 
 export const UserContext = createContext<UserContext>({

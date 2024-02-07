@@ -50,7 +50,7 @@ function UnsupportedBrowserView() {
 }
 
 function UserBouncerView() {
-  const { reSyncCourses } = useContext(UserContext);
+  const { user, reSyncCourses } = useContext(UserContext);
 
   return (
     <div className="flex flex-col space-y-8">
@@ -64,7 +64,7 @@ function UserBouncerView() {
         </AlertDescription>
       </Alert>
 
-      <button type="button" onClick={reSyncCourses}>
+      <button type="button" onClick={() => reSyncCourses(user?.config)}>
         Setup permissions
       </button>
     </div>

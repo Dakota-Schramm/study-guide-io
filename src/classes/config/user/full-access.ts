@@ -16,6 +16,7 @@ export class FullAccessUserConfig extends BaseUserConfig {
 
   async initialize() {
     const root = await this.setupHomeDirectory();
+    if (!root) return;
 
     const handles = { root };
     await this.setupHandles(handles);
