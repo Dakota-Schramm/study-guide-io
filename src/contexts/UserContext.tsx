@@ -8,6 +8,7 @@ import {
 
 import { FullAccessUserConfig } from "@/classes/config/user/full-access";
 import { BaseCourse, STEMCourse } from "@/classes/course";
+import { RestrictedAccessUserConfig } from "@/classes/config/user/restricted-access";
 
 export type IUser = {
   config?: BaseConfig;
@@ -24,15 +25,9 @@ function useUser() {
     courses: undefined,
   });
 
-  // TODO: Just change checks looking at this to use instanceof
-  const permissions = user?.config?.getRoot() !== null ? "readwrite" : null;
-
   useEffect(function setUpConfig() {
     async function initConfig() {
-      const config =
-        determineUserAppAccess() === "FullAccessUser"
-          ? new FullAccessUserConfig()
-          : new RestrictedAccessUserConfig();
+      const config = determineUserConfig();
       await config.initialize();
       setUser((prev) => ({ ...prev, config }));
     }
@@ -40,8 +35,10 @@ function useUser() {
   }, []);
 
   const reSyncCourses = useCallback(async () => {
-    const userConfig = new FullAccessUserConfig();
+    const userConfig = determineUserConfig();
     await userConfig.initialize();
+
+    if (userConfig instanceof RestrictedAccessUserConfig) return;
 
     const courseTypeHandles = userConfig.getCourseTypeHandles();
     const courses: BaseCourse[] = [];
@@ -77,7 +74,6 @@ type UserContext = {
   user: IUser;
   setUser: (user: IUser) => void;
   reSyncCourses: () => void;
-  findCourseHandle: () => void;
 };
 
 export const UserContext = createContext<UserContext>({
@@ -87,7 +83,6 @@ export const UserContext = createContext<UserContext>({
   },
   setUser: (user: IUser) => {},
   reSyncCourses: () => {},
-  findCourseHandle: () => {},
 });
 
 /**
@@ -132,6 +127,15 @@ async function collectAndInitializeCoursesForCourseType<C extends BaseCourse>(
   const courses = await Promise.all(coursePromises);
   console.log({ courses });
   return courses.filter((course) => course !== undefined);
+}
+
+function determineUserConfig() {
+  const config =
+    determineUserAppAccess() === "FullAccessUser"
+      ? new FullAccessUserConfig()
+      : new RestrictedAccessUserConfig();
+
+  return config;
 }
 
 function determineUserAppAccess() {
