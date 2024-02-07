@@ -8,6 +8,7 @@ import { UserContext } from "@/contexts/UserContext";
 const STEM = () => {
   const { user } = useContext(UserContext);
 
+  // TODO: Move into middleware?
   if (user?.config === undefined) {
     if (window) window.location.href = "/";
   }
