@@ -85,6 +85,18 @@ export class BaseCourse {
     this._files = files;
   }
 
+  public getCourseFiles() {
+    if (!this.files) return [];
+
+    const courseFiles = this.files?.filter((f) => {
+      const isSettingsFile = ["config.json"].includes(f.name);
+
+      return !isSettingsFile;
+    });
+
+    return courseFiles;
+  }
+
   public changeConfigFile(kvPairs: [string, string][]) {
     this.config?.write(kvPairs);
   }
@@ -95,7 +107,7 @@ export class BaseCourse {
    * @returns
    */
   public async assignFilesToExam(filesToAssign: string[]) {
-    const courseFiles = this.getFiles();
+    const courseFiles = this.files;
     if (!courseFiles) return;
 
     const selectedFiles = courseFiles.filter((f) =>

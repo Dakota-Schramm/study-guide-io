@@ -82,8 +82,15 @@ function useUser() {
   const addExamToCourse = useCallback(
     async (courseName: string, exams: string[]) => {
       const course = courses?.find((c) => c.getName() === courseName);
-      if (!course) return;
+      if (!course) {
+        throw new Error(
+          `Course could not be found with courseName: ${courseName}`,
+        );
+      }
 
+      window.log.info(
+        `Creating exam for ${course.getName()} with files: ${exams.join(", ")}`,
+      );
       await course.assignFilesToExam(exams);
     },
     [JSON.stringify(courses)],
