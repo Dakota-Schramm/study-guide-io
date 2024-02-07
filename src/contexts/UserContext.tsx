@@ -15,11 +15,7 @@ export type IUser = {
 };
 
 const ResyncConfig = {
-  stem: { constructor: STEMCourse },
-};
-
-type findCourseHandleOptions = {
-  create: boolean;
+  STEM: STEMCourse,
 };
 
 function useUser() {
@@ -32,13 +28,15 @@ function useUser() {
   const permissions = user?.config?.getRoot() !== null ? "readwrite" : null;
 
   useEffect(function setUpConfig() {
-    // TODO: Copy from view that checks user type
-
-    const config = determineUserAppAccess() === "FullAccessUser"
-      ? new FullAccessUserConfig()
-      ? new RestrictedAccessUserConfig();
-
-    setUser((prev) => ({ ...prev, config }));
+    async function initConfig() {
+      const config =
+        determineUserAppAccess() === "FullAccessUser"
+          ? new FullAccessUserConfig()
+          : new RestrictedAccessUserConfig();
+      await config.initialize();
+      setUser((prev) => ({ ...prev, config }));
+    }
+    initConfig();
   }, []);
 
   const reSyncCourses = useCallback(async () => {
@@ -49,9 +47,12 @@ function useUser() {
     const courses: BaseCourse[] = [];
     if (courseTypeHandles) {
       for (const [key, handle] of courseTypeHandles) {
+        const courseConstructor = ResyncConfig[key];
+
         const loadedCourses = await collectAndInitializeCoursesForCourseType(
+          userConfig.getRoot(),
           handle,
-          ResyncConfig[key],
+          courseConstructor,
         );
         courses.push(...loadedCourses);
       }
@@ -65,39 +66,10 @@ function useUser() {
     setUser(newUserState);
   }, []);
 
-  // TODO: Wrap in useCallback
-  // TODO: Move to FullAccessConfig
-  /**
-   * @param create whether the directory should be created if not found
-   * @returns the FileSystemDirectoryHandle if create is true or if the directory exists, null otherwise
-   */
-  async function findCourseHandle(
-    courseName: string,
-    options: findCourseHandleOptions = { create: false },
-  ): Promise<FileSystemDirectoryHandle | null> {
-    let found = null;
-    if (!this.handle) return found;
-
-    const { create } = options;
-
-    for await (const [fileName, fileObj] of this.handle.entries()) {
-      if (fileName === courseName) {
-        found = fileObj;
-      }
-    }
-
-    if (!found && create) {
-      found = this.handle.getDirectoryHandle(courseName, { create });
-    }
-
-    return found;
-  }
-
   return {
     user,
     setUser,
     reSyncCourses,
-    findCourseHandle,
   };
 }
 
@@ -141,6 +113,7 @@ function showDebugInfo(courses) {
 }
 
 async function collectAndInitializeCoursesForCourseType<C extends BaseCourse>(
+  root: FileSystemDirectoryHandle,
   courseTypeHandle: FileSystemDirectoryHandle,
   courseConstructor: new (...args: FileSystemDirectoryHandle[]) => C,
 ) {
@@ -151,7 +124,7 @@ async function collectAndInitializeCoursesForCourseType<C extends BaseCourse>(
       return;
     }
     const course = new courseConstructor(courseFileHandle);
-    await course.initialize(this.root);
+    await course.initialize(root, "STEM");
 
     return course;
   });
@@ -160,34 +133,6 @@ async function collectAndInitializeCoursesForCourseType<C extends BaseCourse>(
   console.log({ courses });
   return courses.filter((course) => course !== undefined);
 }
-
-/**
- *
- * @param type
- * @returns
- */
-async function getCourseTypeHandle(
-  type: Course,
-  root: FileSystemDirectoryHandle,
-) {
-  let courseTypeHandle: FileSystemDirectoryHandle | undefined;
-
-  try {
-    courseTypeHandle = await root.getDirectoryHandle(type, {
-      create: true,
-    });
-  } catch (error: unknown) {
-    const err = ensureError(error);
-
-    if (err.name === "NotAllowedError") {
-      alert("You need to allow readwrite access to the root directory");
-    }
-    console.log(`${err.name}" ${err.message}`);
-  }
-
-  return courseTypeHandle;
-}
-
 
 function determineUserAppAccess() {
   const isMozillaBrowser = /mozilla/i.test(navigator.userAgent);
@@ -199,9 +144,8 @@ function determineUserAppAccess() {
   }
 
   const isIncompatibleBrowser = isMozillaBrowser || isSafariBrowser;
-  const isAppBroken = isIncompatibleBrowser && window.showDirectoryPicker === undefined;
+  const isAppBroken =
+    isIncompatibleBrowser && window.showDirectoryPicker === undefined;
 
-  return isAppBroken
-    ? "RestrictedAccessUser"
-    : "FullAccessUser";
+  return isAppBroken ? "RestrictedAccessUser" : "FullAccessUser";
 }
