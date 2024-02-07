@@ -120,6 +120,11 @@ export class BaseCourse {
 
     await this.config?.replace(configObj);
   }
+
+  public async getExams() {
+    const jsonObj = await this.config?.read();
+    return jsonObj.exams;
+  }
 }
 
 class STEMCourse extends BaseCourse {

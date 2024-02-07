@@ -39,7 +39,7 @@ export const ExamDialog = ({ courseName, files }: ExamDialogProps) => {
 
   return (
     <Dialog>
-      <DialogTrigger>Open</DialogTrigger>
+      <DialogTrigger>Add Exam</DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Add an Exam</DialogTitle>
