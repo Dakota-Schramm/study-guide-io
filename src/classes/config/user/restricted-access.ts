@@ -1,11 +1,16 @@
+import { PDFComponents } from "@/app/(guides)/_guide_creation/Finalize";
 import { createFileObjectUrl } from "@/app/(guides)/_guide_creation/pdf/createPdf";
+import { BaseUserConfig } from "./base";
 
-export class RestrictedAccessUserConfig {
+export class RestrictedAccessUserConfig extends BaseUserConfig {
   async initialize() {}
 
   // TODO: Use cookie to track file download
   // https://stackoverflow.com/questions/1106377/detect-when-a-browser-receives-a-file-download
-  public downloadGuide(pdfFiles: FileList, attachmentFiles: FileList) {
+  public downloadGuide(
+    pdfFiles: PDFComponents["pdfFiles"],
+    attachmentFiles: PDFComponents["attachmentFiles"],
+  ) {
     window.log.info({ pdfFiles, attachmentFiles });
     let pdfUrl: string;
 

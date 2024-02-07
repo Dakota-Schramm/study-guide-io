@@ -7,10 +7,7 @@ Biome.js linter has no support for caching?
 - Or Mozilla note?? Note: If you want to access or process all the files in a selected folder, you can do so using <input type="file" webkitdirectory="true"/> to select the folder and return all the files it contains.
 
 Maybe use?
-  [Storing files or blobs locally with IndexedDB using the idb-file-storage library.](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Working_with_files#store_files_data_locally_using_the_indexeddb_file_storage_library)
-
-
-maybe use?
+- [Storing files or blobs locally with IndexedDB using the idb-file-storage library.](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Working_with_files#store_files_data_locally_using_the_indexeddb_file_storage_library)
 - class-variance-authority?
 - clsx?
 
@@ -33,9 +30,90 @@ Potential Features:
 Maybe restrucuture project??
   - app directory only for next specific code?
   - components for all components?
-Features
-- add class for different user types
-  - implement underlying classes based on whether file system is available
 
 Look into persisting file handles
   <https://developer.chrome.com/blog/persistent-permissions-for-the-file-system-access-api>
+
+Go over feature set, potential things to add
+Add payment integration with stripe
+
+- spreadsheet for users
+Analytics?
+What other things are necessary for first go
+
+## Instead of jsons for keeping track of course progress
+
+- use idb/localStorage
+- This way will keep basic functionality working on all browsers
+Create two types of users
+- full app functionality
+- Restricted permissions app
+
+Setup will depend on user type
+
+Once permissions set, user chosen
+Write out features available for each user type, then implement
+
+Change course object to allow assigning midterm groups of files
+
+- final will group all of these together
+Save specific class settings inside JSON to persist
+
+Add fallbacks for certain features??
+
+Try to figure out best way to structure file system??
+- restructure eventually for combining file systems/fallbacks
+- Write out feature list
+- Create different user types
+- Use classes/methods based on type of user
+
+Make class for user type
+User methods
+
+- getCourses
+- saveToStorage
+  - canReaccess - boolean
+
+FullAccessUser
+
+- save file handles in idb
+- Store files locally on user pc
+
+LimitedAccessUser
+
+- save file blobs in other storage?
+-
+
+Combine dean into user?
+
+Do more research, reading so that can architect the app better going forward
+
+- once have bases covered, start design
+
+Rearchitect before too much further??
+
+- change professor to track? Courseload?
+- Plan to allow for diff types in future
+- Change dean to university?
+- Move dean class to hook
+
+Only use class for things made more than once
+
+useUser
+
+- check type and assign config
+- Full access
+  - request permissions
+  - instantiate courses
+- Partial
+  - Save blobs into idb
+  - save course settings on localStorage
+- User methods implemented based on options in config for user
+
+Student profile
+
+- merge professor, dean into this
+
+Move notes into project
+
+Check if Github Copilot can generate tests using Cypress?

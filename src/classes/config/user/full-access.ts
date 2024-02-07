@@ -1,6 +1,7 @@
 import { PDFComponents } from "@/app/(guides)/_guide_creation/Finalize";
 import { createPdf } from "@/app/(guides)/_guide_creation/pdf/createPdf";
 import { ensureError, sitePath } from "@/lib/utils";
+import { BaseUserConfig, FullAccessDownloadGuideOptions } from "./base";
 
 type UserFileSystemHandles = {
   [key: string]: Nullable<FileSystemDirectoryHandle>;
@@ -10,7 +11,7 @@ type findCourseHandleOptions = {
   create: boolean;
 };
 
-export class FullAccessUserConfig {
+export class FullAccessUserConfig extends BaseUserConfig {
   private handles?: UserFileSystemHandles;
 
   async initialize() {
@@ -26,15 +27,12 @@ export class FullAccessUserConfig {
     return this.handles?.root;
   }
 
-  public async downloadGuide(
-    files: {
-      pdfFiles: PDFComponents["pdfFiles"];
-      attachmentFiles: PDFComponents["attachmentFiles"];
-    },
-    courseName: string,
-    fileName: string,
+  async downloadGuide(
+    pdfFiles: PDFComponents["pdfFiles"],
+    attachmentFiles: PDFComponents["attachmentFiles"],
+    fullAccessOptions: FullAccessDownloadGuideOptions,
   ) {
-    const { pdfFiles, attachmentFiles } = files;
+    const { courseName, fileName } = fullAccessOptions;
     if (!pdfFiles || !attachmentFiles) return;
 
     const courseHandle = await this.findCourseHandle("STEM", courseName, {

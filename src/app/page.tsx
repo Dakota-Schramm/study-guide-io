@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useCallback, useContext, useEffect } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import React from "react";
 
 import SettingsContent from "./settings/page";
 import { HomeContent } from "./_home/HomeContent";
