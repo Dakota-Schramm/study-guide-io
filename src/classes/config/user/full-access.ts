@@ -2,6 +2,11 @@ import { PDFComponents } from "@/app/(guides)/_guide_creation/Finalize";
 import { createPdf } from "@/app/(guides)/_guide_creation/pdf/createPdf";
 import { ensureError, sitePath } from "@/lib/utils";
 import { BaseUserConfig, FullAccessDownloadGuideOptions } from "./base";
+import {
+  getAppHandlesFromDB,
+  saveAppHandlesToDB,
+  syncHandles,
+} from "@/lib/idbUtils";
 
 type UserFileSystemHandles = {
   [key: string]: Nullable<FileSystemDirectoryHandle>;
@@ -15,13 +20,7 @@ export class FullAccessUserConfig extends BaseUserConfig {
   private handles?: UserFileSystemHandles;
 
   async initialize() {
-    const root = await this.setupHomeDirectory();
-    if (!root) return;
-
-    const handles = { root };
-    await this.setupHandles(handles);
-
-    this.handles = handles;
+    this.handles = await this.setupHandles();
   }
 
   public getRoot(): Nullable<FileSystemDirectoryHandle> {
@@ -104,9 +103,11 @@ export class FullAccessUserConfig extends BaseUserConfig {
    * @param handles
    * modifies the Object passed to the function
    */
-  private async setupHandles(handles: UserFileSystemHandles): Promise<void> {
-    const root = handles.root;
-    if (!root) throw new Error("handles.root not initialized yet");
+  private async setupHandles(): Promise<{
+    [key: string]: FileSystemDirectoryHandle;
+  }> {
+    const root = await this.getHomeDirectory();
+    const handles = { root };
 
     try {
       for await (const courseType of ["STEM"]) {
@@ -122,14 +123,30 @@ export class FullAccessUserConfig extends BaseUserConfig {
       }
       window.log.error(`${err.name}" ${err.message}`);
     }
+
+    return handles;
   }
 
-  // TODO: Add localStorage check for initialization
+  private async getHomeDirectory() {
+    const handles = await getAppHandlesFromDB();
+    console.log({ handles });
+    let root = handles?.find((h) => h.name === sitePath);
+    if (!root) {
+      root = await this.initializeHomeDirectory();
+    } else {
+      await root.requestPermission({
+        mode: "readwrite",
+      });
+    }
+
+    return root;
+  }
+
   /**
    * requires use of window
    * MUST BE a user action to work
    */
-  private async setupHomeDirectory() {
+  private async initializeHomeDirectory() {
     const fsdHandle = await this.requestDirectoryPermission();
     if (!fsdHandle) {
       return null;
@@ -143,6 +160,7 @@ export class FullAccessUserConfig extends BaseUserConfig {
       });
     }
 
+    await saveAppHandlesToDB({ root: homeDir });
     return homeDir;
   }
 
