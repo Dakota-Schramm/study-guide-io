@@ -33,7 +33,7 @@ export class BaseCourse {
   static _id = 0;
   public id: number;
   private courseHandle?: FileSystemDirectoryHandle;
-  private files?: FileSystemFileHandle[];
+  private _files?: FileSystemFileHandle[];
   private config?: CourseConfig;
 
   public constructor(courseHandle: FileSystemDirectoryHandle) {
@@ -77,12 +77,12 @@ export class BaseCourse {
     return this.courseHandle?.name;
   }
 
-  public getFiles(): FileSystemFileHandle[] | undefined {
-    return this.files;
+  get files(): FileSystemFileHandle[] | undefined {
+    return this._files;
   }
 
-  public setFiles(files: FileSystemFileHandle[]): void {
-    this.files = files;
+  set files(files: FileSystemFileHandle[]) {
+    this._files = files;
   }
 }
 

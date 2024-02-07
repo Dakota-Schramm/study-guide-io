@@ -15,7 +15,7 @@ export const PersonalView = () => {
         <CourseCard
           key={course.id}
           title={course.getName()}
-          files={course.getFiles()?.length ?? 0}
+          files={course.files?.length ?? 0}
         />
       ))}
     </div>
