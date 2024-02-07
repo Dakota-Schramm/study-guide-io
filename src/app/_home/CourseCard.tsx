@@ -18,26 +18,7 @@ import {
 import { ExamDialog } from "./ExamDialog";
 import { UserContext } from "@/contexts/UserContext";
 import { BaseCourse, STEMCourse } from "@/classes/course";
-
-/* TODO: User should be able to...
-    - create exams
-    - download "study guides" for the exams
-    - download a final exam study guide
-*/
-/* Feature ideas
-    - study guides build based on questions user has gone over and gotten right /wrong
-    - integrate with anki??
-*/
-
-const ExamEditListItem = ({ exam, idx }) => {
-  return (
-    <div className="flex">
-      <p>Exam {idx}</p>
-      <button>View</button>
-      <button>Delete</button>
-    </div>
-  );
-};
+import { ExamEditListItem } from "./ExamEditListItem";
 
 // TODO: Make "Edit" button open disclosure exam edit is in
 const ExamEditList = ({ exams }) => {
@@ -95,7 +76,7 @@ export const CourseCard = ({ course }: { course: BaseCourse }) => {
       setExams(exams);
     }
     getExams();
-  }, []);
+  }, [course]);
 
   return (
     <Card>
@@ -126,7 +107,7 @@ export const CourseCard = ({ course }: { course: BaseCourse }) => {
 };
 
 function getTypeOfCourse(course: BaseCourse) {
-  let type;
+  let type: string = "";
   if (course instanceof STEMCourse) {
     type = "STEM";
   }
