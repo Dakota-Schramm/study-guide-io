@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useContext } from "react";
 
 import { UserContext } from "@/contexts/UserContext";
@@ -41,7 +42,10 @@ export const Finalize = ({
     if (user?.config instanceof FullAccessUserConfig) {
       await user?.config.downloadGuide(files, courseName, fileName);
     } else {
-      user?.config.downloadGuide(...Object.values(files));
+      user?.config?.downloadGuide(
+        components?.pdfFiles,
+        components?.attachmentFiles,
+      );
     }
   }
 

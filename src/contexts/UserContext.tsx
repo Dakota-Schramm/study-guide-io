@@ -11,7 +11,7 @@ import { BaseCourse, STEMCourse } from "@/classes/course";
 import { RestrictedAccessUserConfig } from "@/classes/config/user/restricted-access";
 
 export type IUser = {
-  config?: BaseConfig;
+  config?: FullAccessUserConfig | RestrictedAccessUserConfig;
   courses?: BaseCourse[];
 };
 
@@ -115,7 +115,6 @@ async function collectAndInitializeCoursesForCourseType<C extends BaseCourse>(
   const courseFiles = await Array.fromAsync(courseTypeHandle.entries());
   const coursePromises = courseFiles.map(async ([_, courseFileHandle]) => {
     if (courseFileHandle.kind !== "directory") {
-      console.log({ courseFileHandle });
       return;
     }
     const course = new courseConstructor(courseFileHandle);
@@ -125,7 +124,6 @@ async function collectAndInitializeCoursesForCourseType<C extends BaseCourse>(
   });
 
   const courses = await Promise.all(coursePromises);
-  console.log({ courses });
   return courses.filter((course) => course !== undefined);
 }
 

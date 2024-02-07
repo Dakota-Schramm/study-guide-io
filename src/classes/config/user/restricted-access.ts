@@ -6,7 +6,7 @@ export class RestrictedAccessUserConfig {
   // TODO: Use cookie to track file download
   // https://stackoverflow.com/questions/1106377/detect-when-a-browser-receives-a-file-download
   public downloadGuide(pdfFiles: FileList, attachmentFiles: FileList) {
-    console.log({ pdfFiles, attachmentFiles });
+    window.log.info({ pdfFiles, attachmentFiles });
     let pdfUrl: string;
 
     createFileObjectUrl(pdfFiles, attachmentFiles)
@@ -16,13 +16,13 @@ export class RestrictedAccessUserConfig {
         downloadEle.download = "test.pdf";
         downloadEle.click();
 
-        console.log("Download succeeded");
+        window.log.info("Download succeeded");
         pdfUrl = fileObjectUrl;
       })
-      .catch(() => console.log("Download failed"))
+      .catch(() => window.log.error("Download failed"))
       .finally(() => {
         if (pdfUrl) URL.revokeObjectURL(pdfUrl);
-        console.log("exiting");
+        window.log.info("exiting");
       });
   }
 }

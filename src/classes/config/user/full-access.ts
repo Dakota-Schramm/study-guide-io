@@ -121,7 +121,7 @@ export class FullAccessUserConfig {
       if (err.name === "NotAllowedError") {
         alert("You need to allow readwrite access to the root directory");
       }
-      console.log(`${err.name}" ${err.message}`);
+      window.log.error(`${err.name}" ${err.message}`);
     }
   }
 
@@ -165,7 +165,7 @@ export class FullAccessUserConfig {
         return null;
       }
 
-      console.log(`${err.name}: ${err.message}`);
+      window.log.error(`${err.name}: ${err.message}`);
       return null;
     }
   }
