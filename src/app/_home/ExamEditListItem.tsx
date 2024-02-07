@@ -11,9 +11,12 @@ export const ExamEditListItem = ({ exam, idx }) => {
         <Disclosure.Button>View</Disclosure.Button>
         <button type="button">Delete</button>
       </div>
-      <Disclosure.Panel className="text-gray-500">
-        Yes! You can purchase a license that you can share with your entire
-        team.
+      <Disclosure.Panel>
+        <ol>
+          {exam.map((fileName, idx) => (
+            <li key={idx}>{fileName}</li>
+          ))}
+        </ol>
       </Disclosure.Panel>
     </Disclosure>
   );

@@ -49,8 +49,10 @@ export const ExamDialog = ({ courseName, files }: ExamDialogProps) => {
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
-          {files.map((f) => (
-            <FileListItem name={f.name} />
+          {files.map((f, idx) => (
+            <FileListItem 
+              key={`${f.name}~${new Date().getTime()}`}
+              name={f.name} />
           ))}
           <DialogClose asChild>
             <button type="submit">Create exam</button>

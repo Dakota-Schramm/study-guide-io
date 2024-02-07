@@ -15,6 +15,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+
 import { ExamDialog } from "./ExamDialog";
 import { UserContext } from "@/contexts/UserContext";
 import { BaseCourse, STEMCourse } from "@/classes/course";
@@ -22,6 +23,7 @@ import { ExamEditListItem } from "./ExamEditListItem";
 
 // TODO: Make "Edit" button open disclosure exam edit is in
 const ExamEditList = ({ exams }) => {
+  console.log({ exams })
   if (exams === undefined) {
     return <p>Loading...</p>;
   }
@@ -29,13 +31,16 @@ const ExamEditList = ({ exams }) => {
   return (
     <>
       {exams.map((exam, idx) => (
-        <ExamEditListItem {...{ exam, idx }} />
+        <ExamEditListItem
+          key={`${idx}~${new Date().getTime()}`}
+          {...{ exam, idx }}
+        />
       ))}
     </>
   );
 };
 
-type CourseSyllabusProps = {
+type EditPopoverProps = {
   courseName: string;
   files: FileSystemFileHandle[];
   exams?: unknown[];
@@ -44,7 +49,7 @@ type CourseSyllabusProps = {
 /**
  * @returns Edit popover for a course
  */
-const CourseSyllabus = ({ courseName, files, exams }: CourseSyllabusProps) => {
+const EditPopover = ({ courseName, files, exams }: EditPopoverProps) => {
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -94,7 +99,7 @@ export const CourseCard = ({ course }: { course: BaseCourse }) => {
         >
           Open
         </button>
-        <CourseSyllabus {...{ courseName, files, exams }} />
+        <EditPopover {...{ courseName, files, exams }} />
         <button
           type="button"
           className="p-2 text-white border border-solid border-gray-500 bg-red-500"

@@ -123,7 +123,9 @@ export class BaseCourse {
 
   public async getExams() {
     const jsonObj = await this.config?.read();
-    return jsonObj.exams;
+    const allExams = jsonObj.exams;
+
+    return allExams
   }
 }
 
