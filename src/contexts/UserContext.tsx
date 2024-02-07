@@ -33,6 +33,7 @@ function useUser() {
     config: undefined,
     courses: undefined,
   });
+  const { courses } = user;
 
   useEffect(function setUpConfig() {
     async function initConfig() {
@@ -77,10 +78,22 @@ function useUser() {
     [],
   );
 
+  // TODO: Add requirement that courseNames are unique
+  const addExamToCourse = useCallback(
+    async (courseName: string, exams: string[]) => {
+      const course = courses?.find((c) => c.getName() === courseName);
+      if (!course) return;
+
+      await course.assignFilesToExam(exams);
+    },
+    [JSON.stringify(courses)],
+  );
+
   return {
     user,
     setUser,
     reSyncCourses,
+    addExamToCourse,
   };
 }
 
@@ -88,6 +101,7 @@ type UserContext = {
   user: IUser;
   setUser: (user: IUser) => void;
   reSyncCourses: (userConfig?: BaseUserConfig | null) => void;
+  addExamToCourse: (courseName: string, exams: string[]) => void;
 };
 
 export const UserContext = createContext<UserContext>({
@@ -97,6 +111,7 @@ export const UserContext = createContext<UserContext>({
   },
   setUser: (user: IUser) => {},
   reSyncCourses: () => {},
+  addExamToCourse: () => {},
 });
 
 /**
