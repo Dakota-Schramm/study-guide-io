@@ -10,8 +10,16 @@ import { FullAccessUserConfig } from "@/classes/config/user/full-access";
 import { BaseCourse, STEMCourse } from "@/classes/course";
 import { RestrictedAccessUserConfig } from "@/classes/config/user/restricted-access";
 
+/**
+ * @param config a User's associated app configuration
+ *  - FullAccessUserConfig => user has accepted on full access browser
+ *  - RestrictedAccessUserConfig => using a restricted access browser
+ *  - null => user has rejected access on full access browser
+ *  - undefined => user is uninitialized
+ *
+ */
 export type IUser = {
-  config?: FullAccessUserConfig | RestrictedAccessUserConfig;
+  config?: FullAccessUserConfig | RestrictedAccessUserConfig | null;
   courses?: BaseCourse[];
 };
 
@@ -40,14 +48,18 @@ function useUser() {
 
     if (userConfig instanceof RestrictedAccessUserConfig) return;
 
+    const root = userConfig.getRoot();
+    if (!root) return;
+
     const courseTypeHandles = userConfig.getCourseTypeHandles();
+
     const courses: BaseCourse[] = [];
     if (courseTypeHandles) {
       for (const [key, handle] of courseTypeHandles) {
         const courseConstructor = ResyncConfig[key];
 
         const loadedCourses = await collectAndInitializeCoursesForCourseType(
-          userConfig.getRoot(),
+          root,
           handle,
           courseConstructor,
         );

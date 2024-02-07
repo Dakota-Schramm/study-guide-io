@@ -147,6 +147,8 @@ export class FullAccessUserConfig {
     return homeDir;
   }
 
+  // TODO: Add more options for control of folders
+  // ==> add another subclass of user
   /**
    * requires use of window
    * @returns a handle for the user selected directory or null

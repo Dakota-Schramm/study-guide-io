@@ -5,40 +5,31 @@ import Link from "next/link";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
-import { UserContext, IUser } from "@/contexts/UserContext";
+import { UserContext } from "@/contexts/UserContext";
 import { PersonalView } from "./PersonalView";
 import { BaseCourse } from "../../classes/course";
 import { sitePath } from "@/lib/utils";
-import { FullAccessUserConfig } from "@/classes/config/user/full-access";
+import { RestrictedAccessUserConfig } from "@/classes/config/user/restricted-access";
 
 // TODO: Use OPFS as fallback if user says no to showing directory
 export const HomeContent = () => {
   const { user } = useContext(UserContext);
-  const { courses } = user;
-
-  let permissions;
-  if (user.config) {
-    permissions =
-      user.config instanceof FullAccessUserConfig ? "readwrite" : null;
-  }
 
   return {
     personal: <PersonalView />,
     basic: <BasicView />,
-    newUser: (
-      <NewUserView isAppBroken={permissions === null} {...{ permissions }} />
-    ),
-  }[checkPageType(courses)];
+    newUser: <NewUserView />,
+  }[checkPageType(user.courses)];
 };
 
-type NewUserViewProps = {
-  isAppBroken: boolean;
-  permissions: string | null | undefined;
-};
-function NewUserView({ permissions, isAppBroken }: NewUserViewProps) {
-  if (isAppBroken) return <UnsupportedBrowserView />;
-  if (permissions === undefined) return <UserBouncerView />;
-  if (permissions === null) return <UserRefusedView />;
+// TODO: Fix flashing of UserBouncerView that occurs on restricted users
+function NewUserView() {
+  const { user } = useContext(UserContext);
+
+  if (user.config instanceof RestrictedAccessUserConfig)
+    return <UnsupportedBrowserView />;
+  if (user.config === null) return <UserRefusedView />;
+  return <UserBouncerView />;
 }
 
 function UnsupportedBrowserView() {
