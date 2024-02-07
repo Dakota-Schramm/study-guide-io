@@ -1,3 +1,5 @@
+import { PDFComponents } from "@/app/(guides)/_guide_creation/Finalize";
+import { createPdf } from "@/app/(guides)/_guide_creation/pdf/createPdf";
 import { ensureError, sitePath } from "@/lib/utils";
 
 type UserFileSystemHandles = {
@@ -24,6 +26,39 @@ export class FullAccessUserConfig {
     return this.handles?.root;
   }
 
+  public async downloadGuide(
+    files: {
+      pdfFiles: PDFComponents["pdfFiles"];
+      attachmentFiles: PDFComponents["attachmentFiles"];
+    },
+    courseName: string,
+    fileName: string,
+  ) {
+    const { pdfFiles, attachmentFiles } = files;
+    if (!pdfFiles || !attachmentFiles) return;
+
+    const courseHandle = await this.findCourseHandle("STEM", courseName, {
+      create: true,
+    });
+    if (!courseHandle) return;
+
+    const pdfBlob = await createPdf(pdfFiles, attachmentFiles);
+    const draftHandle = await courseHandle.getFileHandle(`${fileName}.pdf`, {
+      create: true,
+    });
+    const writable = await draftHandle.createWritable();
+
+    // Write the contents of the file to the stream.
+    await writable.write(pdfBlob);
+
+    // Close the file and write the contents to disk.
+    await writable.close();
+
+    // TODO: Fix so that doesn't require app reload after redirect
+    // Permission state doesnt stay after full page refresh
+    // window.location.href = "/";
+  }
+
   public getCourseTypeHandles(): [string, FileSystemDirectoryHandle[]] {
     if (!this.handles) {
       throw new Error("Handles not initialized");
@@ -44,7 +79,6 @@ export class FullAccessUserConfig {
   ): Promise<FileSystemDirectoryHandle> {
     const { create } = options;
 
-    let found;
     const courseTypeHandle = this.getCourseTypeHandles().find(
       ([k, v]) => k === courseType,
     )?.[1] as FileSystemDirectoryHandle;
@@ -53,9 +87,9 @@ export class FullAccessUserConfig {
       throw new Error("Course type directories not initialized");
     }
 
-    let courseHandle = Array.fromAsync(courseTypeHandle?.entries() ?? []).find(
-      ([k, v]) => k === courseName,
-    )?.[1];
+    let courseHandle = (
+      await Array.fromAsync(courseTypeHandle?.entries() ?? [])
+    ).find(([k, v]) => k === courseName)?.[1];
 
     if (!courseHandle && create) {
       courseHandle = courseTypeHandle.getDirectoryHandle(courseName, {
