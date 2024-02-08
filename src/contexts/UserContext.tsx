@@ -7,10 +7,10 @@ import {
 } from "react";
 
 import { FullAccessUserConfig } from "@/classes/config/user/full-access";
-import { BaseCourse, STEMCourse } from "@/classes/course";
+import { BaseCourse, STEMCourse } from "@/classes/course/base";
 import { RestrictedAccessUserConfig } from "@/classes/config/user/restricted-access";
 import { BaseUserConfig } from "@/classes/config/user/base";
-import { CourseFactory } from "@/classes/course-factory";
+import { CourseFactory } from "@/classes/course/factory";
 
 /**
  * @param config a User's associated app configuration

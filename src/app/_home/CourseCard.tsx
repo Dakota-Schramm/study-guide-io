@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/popover";
 
 import { ExamDialog } from "./ExamDialog";
-import { BaseCourse, STEMCourse } from "@/classes/course";
+import { BaseCourse, STEMCourse } from "@/classes/course/base";
 import { ExamEditListItem } from "./ExamEditListItem";
 import CourseActions from "./CourseActions";
 

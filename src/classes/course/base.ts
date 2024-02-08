@@ -21,8 +21,8 @@
 
 */
 
-import { findSubDirectory } from "../lib/fileHandleHelpers";
-import { CourseConfig } from "./config/course";
+import { findSubDirectory } from "../../lib/fileHandleHelpers";
+import { CourseConfig } from "../config/course";
 
 /* 
   TODO: Add the following features:
