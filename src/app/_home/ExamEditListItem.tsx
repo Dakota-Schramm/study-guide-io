@@ -19,6 +19,7 @@ export const ExamEditListItem = ({
       <div className="flex">
         <p>Exam {idx}</p>
         <Disclosure.Button>View</Disclosure.Button>
+        {/* TODO: Make this a button that has to be clicked twice within a short time frame to have action go thru */}
         <button type="button" onClick={() => handleDelete(idx)}>
           Delete
         </button>

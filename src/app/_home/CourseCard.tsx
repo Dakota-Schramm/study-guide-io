@@ -19,6 +19,7 @@ import {
 import { ExamDialog } from "./ExamDialog";
 import { BaseCourse, STEMCourse } from "@/classes/course";
 import { ExamEditListItem } from "./ExamEditListItem";
+import CourseActions from "./CourseActions";
 
 const ExamEditList = ({ course }: { course: BaseCourse }) => {
   const [exams, setExams] = useState<string[][] | undefined>(undefined);
@@ -91,12 +92,7 @@ export const CourseCard = ({ course }: { course: BaseCourse }) => {
         <p>{files.length ?? 0} files available</p>
       </CardContent>
       <CardFooter className="space-x-4">
-        <button
-          type="button"
-          className="p-2 text-white border border-solid border-gray-500 bg-blue-500"
-        >
-          Open
-        </button>
+        <CourseActions course={course} />
         <EditPopover course={course} />
         <button
           type="button"

@@ -23,8 +23,9 @@ export async function createPdf(pdfs: FileList, images: FileList) {
 }
 
 async function copyPages(pdfDocument: PDFDocument, pdfs: FileList) {
-  // const fileType = pdfs[0].type;
-  // if (fileType !== "pdf") throw new Error("Incorrect file type found");
+  const fileType = pdfs[0].type;
+  if (fileType !== "application/pdf")
+    throw new Error("Incorrect file type found");
 
   const filesPdfBytes = await Promise.all(
     Array.from(pdfs).map(async (file) => await file.arrayBuffer()),

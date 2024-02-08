@@ -24,7 +24,7 @@ export class RestrictedAccessUserConfig extends BaseUserConfig {
         window.log.info("Download succeeded");
         pdfUrl = fileObjectUrl;
       })
-      .catch(() => window.log.error("Download failed"))
+      .catch((err) => window.log.error({ err }))
       .finally(() => {
         if (pdfUrl) URL.revokeObjectURL(pdfUrl);
         window.log.info("exiting");
