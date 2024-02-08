@@ -8,7 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { BaseCourse } from "@/classes/course/base";
+import { BaseCourse } from "@/classes/course/full-access";
 import { UserContext } from "@/contexts/UserContext";
 import { RestrictedAccessUserConfig } from "@/classes/config/user/restricted-access";
 

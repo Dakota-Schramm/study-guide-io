@@ -1,6 +1,6 @@
 import { FullAccessUserConfig } from "@/classes/config/user/full-access";
 import { RestrictedAccessUserConfig } from "../config/user/restricted-access";
-import { BaseCourse, STEMCourse } from "./base";
+import { BaseCourse, STEMCourse } from "./full-access";
 
 export class CourseFactory {
   private userConfig: FullAccessUserConfig | RestrictedAccessUserConfig;

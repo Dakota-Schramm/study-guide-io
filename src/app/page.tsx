@@ -5,7 +5,7 @@ import React, { useContext } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 import { UserContext } from "@/contexts/UserContext";
-import { BaseCourse } from "../classes/course/base";
+import { BaseCourse } from "../classes/course/abstract";
 import { sitePath } from "@/lib/utils";
 import { RestrictedAccessUserConfig } from "@/classes/config/user/restricted-access";
 import { useRouter } from "next/navigation";

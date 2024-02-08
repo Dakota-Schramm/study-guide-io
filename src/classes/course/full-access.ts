@@ -23,22 +23,20 @@
 
 import { findSubDirectory } from "../../lib/fileHandleHelpers";
 import { CourseConfig } from "../config/course";
+import { BaseCourse } from "./abstract";
 
 /* 
   TODO: Add the following features:
     - Add course end date
   Save the settings for these features within a JSON file
 */
-export class BaseCourse {
-  static _id = 0;
-  public id: number;
+export class FullAccessBaseCourse extends BaseCourse {
   private courseHandle?: FileSystemDirectoryHandle;
-  private _files?: FileSystemFileHandle[];
   private config?: CourseConfig;
 
   public constructor(courseHandle: FileSystemDirectoryHandle) {
     // name cannot be changed after this initial definition, which has to be either at it's declaration or in the constructor.
-    this.id = BaseCourse._id++;
+    super();
     this.courseHandle = courseHandle;
   }
 
@@ -75,14 +73,6 @@ export class BaseCourse {
 
   public getName(): string | undefined {
     return this.courseHandle?.name;
-  }
-
-  get files(): FileSystemFileHandle[] | undefined {
-    return this._files;
-  }
-
-  set files(files: FileSystemFileHandle[]) {
-    this._files = files;
   }
 
   public getCourseFiles() {
