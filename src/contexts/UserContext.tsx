@@ -10,6 +10,7 @@ import { FullAccessUserConfig } from "@/classes/config/user/full-access";
 import { BaseCourse, STEMCourse } from "@/classes/course";
 import { RestrictedAccessUserConfig } from "@/classes/config/user/restricted-access";
 import { BaseUserConfig } from "@/classes/config/user/base";
+import { CourseFactory } from "@/classes/course-factory";
 
 /**
  * @param config a User's associated app configuration
@@ -22,10 +23,6 @@ import { BaseUserConfig } from "@/classes/config/user/base";
 export type IUser = {
   config?: FullAccessUserConfig | RestrictedAccessUserConfig | null;
   courses?: BaseCourse[];
-};
-
-const ResyncConfig = {
-  STEM: STEMCourse,
 };
 
 function useUser() {
@@ -52,21 +49,10 @@ function useUser() {
       const root = userConfig.getRoot();
       if (!root) return;
 
-      const courseTypeHandles = userConfig.getCourseTypeHandles();
+      const courseFactory = new CourseFactory(userConfig);
+      await courseFactory.initialize(root);
+      const courses = courseFactory.courses;
 
-      const courses: BaseCourse[] = [];
-      if (courseTypeHandles) {
-        for (const [key, handle] of courseTypeHandles) {
-          const courseConstructor = ResyncConfig[key];
-
-          const loadedCourses = await collectAndInitializeCoursesForCourseType(
-            root,
-            handle,
-            courseConstructor,
-          );
-          courses.push(...loadedCourses);
-        }
-      }
       showDebugInfo(courses);
 
       const newUserState: IUser = {
@@ -141,26 +127,6 @@ function showDebugInfo(courses) {
   for (const course of courses) {
     window.log.debug(course);
   }
-}
-
-async function collectAndInitializeCoursesForCourseType<C extends BaseCourse>(
-  root: FileSystemDirectoryHandle,
-  courseTypeHandle: FileSystemDirectoryHandle,
-  courseConstructor: new (...args: FileSystemDirectoryHandle[]) => C,
-) {
-  const courseFiles = await Array.fromAsync(courseTypeHandle.entries());
-  const coursePromises = courseFiles.map(async ([_, courseFileHandle]) => {
-    if (courseFileHandle.kind !== "directory") {
-      return;
-    }
-    const course = new courseConstructor(courseFileHandle);
-    await course.initialize(root, "STEM");
-
-    return course;
-  });
-
-  const courses = await Promise.all(coursePromises);
-  return courses.filter((course) => course !== undefined);
 }
 
 function determineUserConfig() {
