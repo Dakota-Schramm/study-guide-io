@@ -123,9 +123,22 @@ export class BaseCourse {
 
   public async getExams() {
     const jsonObj = await this.config?.read();
+    const allExams = jsonObj.exams as string[][];
+
+    return allExams;
+  }
+
+  public async deleteExam(idxToDelete: number): Promise<string[][]> {
+    const jsonObj = await this.config?.read();
     const allExams = jsonObj.exams;
 
-    return allExams
+    const examsWithoutDeletedExam = allExams.filter(
+      (_, idx) => idx !== idxToDelete,
+    );
+    jsonObj.exams = examsWithoutDeletedExam;
+
+    await this.config?.replace(jsonObj);
+    return examsWithoutDeletedExam;
   }
 }
 

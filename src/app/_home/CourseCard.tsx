@@ -17,13 +17,20 @@ import {
 } from "@/components/ui/popover";
 
 import { ExamDialog } from "./ExamDialog";
-import { UserContext } from "@/contexts/UserContext";
 import { BaseCourse, STEMCourse } from "@/classes/course";
 import { ExamEditListItem } from "./ExamEditListItem";
 
-// TODO: Make "Edit" button open disclosure exam edit is in
-const ExamEditList = ({ exams }) => {
-  console.log({ exams })
+const ExamEditList = ({ course }: { course: BaseCourse }) => {
+  const [exams, setExams] = useState<string[][] | undefined>(undefined);
+
+  useEffect(() => {
+    async function getExams() {
+      const exams = await course.getExams();
+      setExams(exams);
+    }
+    getExams();
+  }, []);
+
   if (exams === undefined) {
     return <p>Loading...</p>;
   }
@@ -33,6 +40,10 @@ const ExamEditList = ({ exams }) => {
       {exams.map((exam, idx) => (
         <ExamEditListItem
           key={`${idx}~${new Date().getTime()}`}
+          handleDelete={async () => {
+            const remainingExams = await course.deleteExam(idx);
+            setExams(remainingExams);
+          }}
           {...{ exam, idx }}
         />
       ))}
@@ -40,16 +51,10 @@ const ExamEditList = ({ exams }) => {
   );
 };
 
-type EditPopoverProps = {
-  courseName: string;
-  files: FileSystemFileHandle[];
-  exams?: unknown[];
-};
-
 /**
  * @returns Edit popover for a course
  */
-const EditPopover = ({ courseName, files, exams }: EditPopoverProps) => {
+const EditPopover = ({ course }: { course: BaseCourse }) => {
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -61,27 +66,20 @@ const EditPopover = ({ courseName, files, exams }: EditPopoverProps) => {
         </button>
       </PopoverTrigger>
       <PopoverContent>
-        <ExamDialog {...{ courseName, files }} />
-        <ExamEditList {...{ exams }} />
+        <ExamDialog
+          courseName={course.getName()}
+          files={course.getCourseFiles()}
+        />
+        <ExamEditList {...{ course }} />
       </PopoverContent>
     </Popover>
   );
 };
 
 export const CourseCard = ({ course }: { course: BaseCourse }) => {
-  const [exams, setExams] = useState(undefined);
-
   const courseName = course.getName();
   const files = course.getCourseFiles();
   const type = getTypeOfCourse(course);
-
-  useEffect(() => {
-    async function getExams() {
-      const exams = await course.getExams();
-      setExams(exams);
-    }
-    getExams();
-  }, [course]);
 
   return (
     <Card>
@@ -99,7 +97,7 @@ export const CourseCard = ({ course }: { course: BaseCourse }) => {
         >
           Open
         </button>
-        <EditPopover {...{ courseName, files, exams }} />
+        <EditPopover course={course} />
         <button
           type="button"
           className="p-2 text-white border border-solid border-gray-500 bg-red-500"
@@ -112,7 +110,7 @@ export const CourseCard = ({ course }: { course: BaseCourse }) => {
 };
 
 function getTypeOfCourse(course: BaseCourse) {
-  let type: string = "";
+  let type = "";
   if (course instanceof STEMCourse) {
     type = "STEM";
   }
