@@ -53,7 +53,7 @@ const CourseActions = ({ course }: { course: BaseCourse }) => {
       return;
     }
 
-    new RestrictedAccessUserConfig().downloadGuide(pdfFiles, attachmentFiles);
+    user.config?.download(pdfFiles, attachmentFiles);
   }
 
   async function handleFinalDownload() {

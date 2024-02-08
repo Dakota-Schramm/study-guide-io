@@ -2,11 +2,7 @@ import { PDFComponents } from "@/app/(guides)/_guide_creation/Finalize";
 import { createPdf } from "@/app/(guides)/_guide_creation/pdf/createPdf";
 import { ensureError, sitePath } from "@/lib/utils";
 import { BaseUserConfig, FullAccessDownloadGuideOptions } from "./base";
-import {
-  getAppHandlesFromDB,
-  saveAppHandlesToDB,
-  syncHandles,
-} from "@/lib/idbUtils";
+import { getAppHandlesFromDB, saveAppHandlesToDB } from "@/lib/idbUtils";
 
 type UserFileSystemHandles = {
   [key: string]: Nullable<FileSystemDirectoryHandle>;
@@ -27,7 +23,7 @@ export class FullAccessUserConfig extends BaseUserConfig {
     return this.handles?.root;
   }
 
-  async downloadGuide(
+  async downloadGuideToFileSystem(
     pdfFiles: PDFComponents["pdfFiles"],
     attachmentFiles: PDFComponents["attachmentFiles"],
     fullAccessOptions: FullAccessDownloadGuideOptions,

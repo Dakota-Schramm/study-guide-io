@@ -40,9 +40,9 @@ export const Finalize = ({
 
   async function handleSubmit() {
     if (user?.config instanceof FullAccessUserConfig) {
-      await user?.config.downloadGuide(files, courseName, fileName);
+      await user?.config.downloadGuideToFileSystem(files, courseName, fileName);
     } else {
-      user?.config?.downloadGuide(
+      user?.config?.downloadGuideToFileSystem(
         components?.pdfFiles,
         components?.attachmentFiles,
       );
