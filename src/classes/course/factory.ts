@@ -69,7 +69,7 @@ export class CourseFactory {
         return;
       }
       const course = new courseConstructor(courseFileHandle);
-      await course.initialize(root, "STEM");
+      await course.initialize();
 
       return course;
     });

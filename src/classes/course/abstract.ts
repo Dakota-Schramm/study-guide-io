@@ -31,6 +31,6 @@ export abstract class BaseCourse {
    */
   abstract assignFilesToExam(filesToAssign: string[]): void;
 
-  abstract getExams(): string[][];
+  abstract getExams(): Promise<string[][]>;
   abstract deleteExam(idxToDelete: number): Promise<string[][]>;
 }

@@ -40,27 +40,20 @@ export class FullAccessBaseCourse extends BaseCourse {
     this.courseHandle = courseHandle;
   }
 
-  async initialize(appHandle: FileSystemDirectoryHandle, courseType: Course) {
-    const courseTypeHandle = await findSubDirectory(appHandle, courseType);
-    const courseHandle = await courseTypeHandle?.getDirectoryHandle(
-      this.getName(),
-      { create: true },
-    );
-
-    if (!courseHandle) {
+  async initialize() {
+    if (!this.courseHandle) {
       window.log.warn("CourseHandle not found");
       return;
     }
 
-    window.log.debug(`Setting up course for ${courseHandle.name}...`);
-    const config = new CourseConfig(courseHandle);
+    window.log.debug(`Setting up course for ${this.getName()}...`);
+    const config = new CourseConfig(this.courseHandle);
     await config.initialize();
 
     const files = (await Array.fromAsync(this.courseHandle.values())).filter(
       (handle) => handle.kind === "file",
     );
 
-    this.courseHandle = courseHandle;
     this.config = config;
     this.files = files;
   }
@@ -132,7 +125,7 @@ export class FullAccessBaseCourse extends BaseCourse {
   }
 }
 
-class STEMCourse extends BaseCourse {
+class STEMCourse extends FullAccessBaseCourse {
   async initialize(appHandle: FileSystemDirectoryHandle) {
     await super.initialize(appHandle, "STEM");
   }
