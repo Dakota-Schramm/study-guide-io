@@ -119,3 +119,8 @@ Move notes into project
 Check if Github Copilot can generate tests using Cypress?
 Dark Mode
   - <https://ui.shadcn.com/docs/dark-mode/next>
+
+
+NextJS Error Boundaries
+- Would be nice if can get to work for pages?
+- For now, just create a page component for error handling??
