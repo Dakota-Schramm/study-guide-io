@@ -1,72 +1,133 @@
 'use client'
 
 import React from 'react'
-import { PDFDocument, rgb } from 'pdf-lib'
+import { PDFDocument, PDFEmbeddedPage, PDFFont, PDFPage, rgb } from 'pdf-lib'
 import fontkit from '@pdf-lib/fontkit'
 
-async function  handleDownload() {
-  // This should be a Uint8Array or ArrayBuffer
-  // This data can be obtained in a number of different ways
-  // If you're running in a Node environment, you could use fs.readFile()
-  // In the browser, you could make a fetch() call and use res.arrayBuffer()
-  const fontBytes = await (await fetch("./mullish.ttf"))
-    .arrayBuffer();
-
-  // Create a new PDFDocument
-  const pdfDoc = await PDFDocument.create()
-
-  // Register the `fontkit` instance
-  pdfDoc.registerFontkit(fontkit)
-
-  // Embed our custom font in the document
-  const customFont = await pdfDoc.embedFont(fontBytes)
-
-  // Add a blank page to the document
-  const page = pdfDoc.addPage()
-
-  // Create a string of text and measure its width and height in our custom font
-  const text = "Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur assumenda a nihil nulla officia quidem sint consectetur quisquam praesentium, tempora, cumque tempore odio reprehenderit! Sint asperiores doloribus quisquam quia officia! Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur assumenda a nihil nulla officia quidem sint consectetur quisquam praesentium, tempora, cumque tempore odio reprehenderit! Sint asperiores doloribus quisquam quia officia!  Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur assumenda a nihil nulla officia quidem sint consectetur quisquam praesentium, tempora, cumque tempore odio reprehenderit! Sint asperiores doloribus quisquam quia officia!  Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur assumenda a nihil nulla officia quidem sint consectetur quisquam praesentium, tempora, cumque tempore odio reprehenderit! Sint asperiores doloribus quisquam quia officia!  "
-  const textSize = 8 
-  const textWidth = customFont.widthOfTextAtSize(text, textSize)
-  const textHeight = customFont.heightAtSize(textSize)
-
-  // Draw the string of text on the page
-  page.drawText(text, {
-    x: 40,
-    y: 450,
-    size: textSize,
-    lineHeight: 8,
-    font: customFont,
-    color: rgb(0, 0, 0),
-    maxWidth: 200,
-  })
-
-  // Draw a box around the string of text
-  page.drawRectangle({
-    x: 40,
-    y: 450,
-    width: textWidth,
-    height: textHeight,
-    borderColor: rgb(1, 0, 0),
-    borderWidth: 1.5,
-  })
-
-  // Serialize the PDFDocument to bytes (a Uint8Array)
-  const pdfBytes = await pdfDoc.save()
-  const blob = new Blob([pdfBytes], { type: "application/pdf" });
+async function handleDownload(
+  fileName: string = "test.pdf",
+) {
+  const cornellArrayBytes = await setupCornellNotes();
+  const blob = new Blob([cornellArrayBytes], { type: "application/pdf" });
   const fileObjectUrl = URL.createObjectURL(blob);
 
   const downloadEle = document.createElement("a");
   downloadEle.href = fileObjectUrl;
-  downloadEle.download = "test.pdf";
+  downloadEle.download = fileName;
   downloadEle.click();
 }
+
+async function setupCornellNotes() {
+  const pdfDoc = await PDFDocument.create()
+
+  const fontBytes = await (await fetch("./mullish.ttf"))
+    .arrayBuffer();
+
+  pdfDoc.registerFontkit(fontkit)
+  const customFont = await pdfDoc.embedFont(fontBytes)
+
+  const sciencePdfBytes = await fetch("science.pdf").then((res) =>
+    res.arrayBuffer(),
+  );
+  const sciencePdf = await PDFDocument.load(sciencePdfBytes);
+
+  for (const page of sciencePdf.getPages()) {
+    // Add a blank page to the document
+    const docPage = pdfDoc.addPage()
+    console.log({ width: page.getWidth(), height: page.getHeight() })
+
+    const embedPage = await pdfDoc.embedPage(page);
+
+    setupCornellPage(docPage, embedPage, customFont, [
+      { question: "What is the main idea of this text? Write out using the terms defined in the first class.", yPos: 750 },
+      { question: "What are the key details of this passage? How does it impact later events in the book?", yPos: 700 },
+      { question: "What are the key vocabulary words?", yPos: 650 },
+      { question: "What is the author's purpose? How does this help to define the direction of his storeis? How does it specifically affect this one?", yPos: 600 },
+    ], "This is a summary")
+  }
+
+  // Serialize the PDFDocument to bytes (a Uint8Array)
+  const pdfBytes = await pdfDoc.save()
+  return pdfBytes;
+
+}
+
+async function setupCornellPage(
+  page: PDFPage,
+  embeddedContent: PDFEmbeddedPage,
+  font: PDFFont,
+  questions: { question: string; yPos: number }[],
+  summary: string
+) {
+  const { width, height } = page.getSize()
+  const questionColumnWidth = .3 * width;
+  const noteSectionWidth = .7 * width;
+  const contentHeight = .81 * height;
+  const summarySectionHeight = .19 * height;
+  const margin = 8;
+
+  // const textWidth = customFont.widthOfTextAtSize(text, textSize)
+  // const textHeight = customFont.heightAtSize(textSize)
+
+  const fontSize = 8
+  const color = rgb(0, 0, 0);
+
+  // SETUP BORDERS
+  page.drawRectangle({
+    x: questionColumnWidth,
+    y: summarySectionHeight,
+    width: noteSectionWidth,
+    height: contentHeight,
+    borderColor: rgb(0, 0, 0),
+    borderWidth: 1.5,
+  })
+
+  page.drawRectangle({
+    x: 0,
+    y: 0,
+    width: width,
+    height: summarySectionHeight,
+    borderColor: color,
+    borderWidth: 1.5,
+  })
+
+  page.drawPage(embeddedContent, {
+    width: noteSectionWidth,
+    height: contentHeight,
+    x: questionColumnWidth,
+    y: 0,
+  })
+
+  // SETUP QUESTIONS + SUMMARY
+  questions.forEach(({ question, yPos }) => {
+    page.drawText(question, {
+      x: margin,
+      y: yPos,
+      size: fontSize,
+      lineHeight: 8,
+      font: font,
+      color: color,
+      maxWidth: questionColumnWidth - margin,
+    })
+  })
+
+  page.drawText(summary, {
+    x: margin,
+    y: summarySectionHeight - margin,
+    size: fontSize,
+    lineHeight: 8,
+    font: font,
+    color: color,
+    maxWidth: questionColumnWidth - (2 * margin),
+  })
+}
+
 
 const page = () => {
   return (
     <div>
       <h1>page</h1>
-      <button onClick={handleDownload}>Click</button>
+      <button onClick={() => handleDownload()}>Click</button>
     </div>
   )
 }
