@@ -1,18 +1,19 @@
-'use client'
+"use client";
 
-import Link from 'next/link'
+import Link from "next/link";
 
 export default function Error({
   error,
   reset,
 }: {
-  error: Error & { digest?: string }
-  reset: () => void
+  error: Error & { digest?: string };
+  reset: () => void;
 }) {
   if (error.message === "RestrictedAccessUserConfig::NotSupported") {
-    return <UnsupportedBrowserView />
-  } else if (error.message === "RestrictedAccessUserConfig::PermissionRejected") {
-    return <UserRefusedView />
+    return <UnsupportedBrowserView />;
+  }
+  if (error.message === "RestrictedAccessUserConfig::PermissionRejected") {
+    return <UserRefusedView />;
   }
 
   return (
@@ -20,7 +21,7 @@ export default function Error({
       <h2>Something went wrong!</h2>
       <button onClick={() => reset()}>Try again</button>
     </div>
-  )
+  );
 }
 
 function UnsupportedBrowserView() {

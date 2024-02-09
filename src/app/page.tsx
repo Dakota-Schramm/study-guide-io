@@ -33,8 +33,8 @@ function NewUserView() {
   const { user } = useContext(UserContext);
 
   if (user.config instanceof RestrictedAccessUserConfig)
-    throw new Error("RestrictedAccessUserConfig::NotSupported")
-  if (user.config === null) 
+    throw new Error("RestrictedAccessUserConfig::NotSupported");
+  if (user.config === null)
     throw new Error("RestrictedAccessUserConfig::PermissionRejected");
 
   return <UserBouncerView />;
@@ -72,11 +72,11 @@ function BasicView() {
 }
 
 function checkPageType(courses: BaseCourse[] | undefined) {
-  let index: "personal" | "basic" | "newUser";
+  let index: "personal" | "newUser";
 
   if (typeof courses === "undefined") index = "newUser";
   else if (courses.length) index = "personal";
-  else index = "basic";
+  else throw new Error("RestrictedAccessUserConfig::PermissionRejected");
 
   return index;
 }
