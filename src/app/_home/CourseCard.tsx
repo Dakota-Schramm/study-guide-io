@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useContext, useEffect, useState } from "react";
+import Link from "next/link";
 
 import {
   Card,
@@ -85,7 +86,9 @@ export const CourseCard = ({ course }: { course: BaseCourse }) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{courseName}</CardTitle>
+        <Link href={`/courses/${course.getName()}`}>
+          <CardTitle>{courseName}</CardTitle>
+        </Link>
         <CardDescription>{type} Course</CardDescription>
       </CardHeader>
       <CardContent>
