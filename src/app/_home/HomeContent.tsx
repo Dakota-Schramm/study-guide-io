@@ -6,20 +6,25 @@ import Link from "next/link";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 import { UserContext } from "@/contexts/UserContext";
-import { PersonalView } from "./PersonalView";
 import { BaseCourse } from "../../classes/course";
 import { sitePath } from "@/lib/utils";
 import { RestrictedAccessUserConfig } from "@/classes/config/user/restricted-access";
+import { useRouter } from "next/navigation";
 
 // TODO: Use OPFS as fallback if user says no to showing directory
 export const HomeContent = () => {
   const { user } = useContext(UserContext);
+  const router = useRouter();
+
+  const pageType = checkPageType(user.courses);
+
+  if (pageType === "personal") router.push("/courses");
 
   return {
-    personal: <PersonalView />,
     basic: <BasicView />,
     newUser: <NewUserView />,
-  }[checkPageType(user.courses)];
+    personal: undefined,
+  }[pageType];
 };
 
 // TODO: Fix flashing of UserBouncerView that occurs on restricted users

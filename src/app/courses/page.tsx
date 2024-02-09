@@ -1,12 +1,17 @@
 "use client";
 
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext } from "react";
 
 import { UserContext } from "@/contexts/UserContext";
-import { CourseCard } from "./CourseCard";
+import { CourseCard } from "../_home/CourseCard";
 
-export const PersonalView = () => {
+const CoursesPage = () => {
   const { user } = useContext(UserContext);
+
+  if (!user?.courses) {
+    if (window) window.location.href = "/";
+  }
+
   return (
     <div className="grid grid-cols-3 gap-8">
       {user?.courses?.map((course) => (
@@ -15,3 +20,5 @@ export const PersonalView = () => {
     </div>
   );
 };
+
+export default CoursesPage;
