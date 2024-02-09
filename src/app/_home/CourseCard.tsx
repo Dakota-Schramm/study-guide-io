@@ -18,9 +18,10 @@ import {
 } from "@/components/ui/popover";
 
 import { ExamDialog } from "./ExamDialog";
-import { BaseCourse, STEMCourse } from "@/classes/course/full-access";
+import { FullAccessSTEMCourse } from "@/classes/course/full-access";
 import { ExamEditListItem } from "./ExamEditListItem";
 import CourseActions from "./CourseActions";
+import { BaseCourse } from "@/classes/course/abstract";
 
 const ExamEditList = ({ course }: { course: BaseCourse }) => {
   const [exams, setExams] = useState<string[][] | undefined>(undefined);
@@ -110,7 +111,7 @@ export const CourseCard = ({ course }: { course: BaseCourse }) => {
 
 function getTypeOfCourse(course: BaseCourse) {
   let type = "";
-  if (course instanceof STEMCourse) {
+  if (course instanceof FullAccessSTEMCourse) {
     type = "STEM";
   }
 

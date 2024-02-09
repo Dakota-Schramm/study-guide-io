@@ -125,10 +125,6 @@ export class FullAccessBaseCourse extends BaseCourse {
   }
 }
 
-class STEMCourse extends FullAccessBaseCourse {
-  async initialize(appHandle: FileSystemDirectoryHandle) {
-    await super.initialize(appHandle, "STEM");
-  }
-}
+class FullAccessSTEMCourse extends FullAccessBaseCourse {}
 
-export { STEMCourse };
+export { FullAccessSTEMCourse };

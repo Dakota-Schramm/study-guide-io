@@ -1,6 +1,6 @@
 import { FullAccessUserConfig } from "@/classes/config/user/full-access";
 import { RestrictedAccessUserConfig } from "../config/user/restricted-access";
-import { BaseCourse, STEMCourse } from "./full-access";
+import { FullAccessBaseCourse, FullAccessSTEMCourse } from "./full-access";
 
 export class CourseFactory {
   private userConfig: FullAccessUserConfig | RestrictedAccessUserConfig;
@@ -35,12 +35,12 @@ export class CourseFactory {
     }
 
     const ResyncConfig = {
-      STEM: STEMCourse,
+      STEM: FullAccessSTEMCourse,
     };
 
     const courseTypeHandles = this.userConfig.getCourseTypeHandles();
 
-    const courses: BaseCourse[] = [];
+    const courses: FullAccessBaseCourse[] = [];
     if (courseTypeHandles) {
       for (const [key, handle] of courseTypeHandles) {
         const courseConstructor = ResyncConfig[key];
@@ -58,7 +58,9 @@ export class CourseFactory {
     return courses;
   }
 
-  async collectAndInitializeCoursesForCourseType<C extends BaseCourse>(
+  async collectAndInitializeCoursesForCourseType<
+    C extends FullAccessBaseCourse,
+  >(
     root: FileSystemDirectoryHandle,
     courseTypeHandle: FileSystemDirectoryHandle,
     courseConstructor: new (...args: FileSystemDirectoryHandle[]) => C,
