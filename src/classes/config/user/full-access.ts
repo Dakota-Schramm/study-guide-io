@@ -118,9 +118,6 @@ export class FullAccessUserConfig extends BaseUserConfig {
     } catch (error: unknown) {
       const err = ensureError(error);
 
-      if (err.name === "NotAllowedError") {
-        alert("You need to allow readwrite access to the root directory");
-      }
       window.log.error(`${err.name}" ${err.message}`);
     }
 
