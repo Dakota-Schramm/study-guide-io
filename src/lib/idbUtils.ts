@@ -1,5 +1,6 @@
 import { openDB } from "idb";
-import { ensureError, sitePath } from "./utils";
+
+import { ensureError } from "./utils";
 import { STORE_NAME, idb } from "@/app/idb";
 
 // TODO: Look into https://www.npmjs.com/package/idb-keyval instead?
@@ -31,9 +32,25 @@ export async function getAppHandlesFromDB() {
   return handles;
 }
 
-export async function getDatabaseVersion(databaseName: string) {
+export async function getDatabaseInfo(databaseName: string): Promise<{
+  version: number;
+  objectStoreNames: DOMStringList;
+}> {
   const db = await openDB(databaseName);
   const version = db.version;
+  const objectStoreNames = db.objectStoreNames;
   db.close();
-  return version;
+
+  return {
+    version,
+    objectStoreNames,
+  };
+}
+
+export async function checkIfObjectStoreExists(
+  databaseName: string,
+  objectStoreName: string,
+) {
+  const { objectStoreNames } = await getDatabaseInfo(databaseName);
+  return objectStoreNames.contains(objectStoreName);
 }
