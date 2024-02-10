@@ -4,6 +4,7 @@ import React, { useContext } from "react";
 
 import { UserContext } from "@/contexts/UserContext";
 import { FullAccessUserConfig } from "@/classes/config/user/full-access";
+import { useRouter } from "next/navigation";
 
 export type PDFComponents = {
   pdfFiles: FileList;
@@ -27,6 +28,7 @@ export const Finalize = ({
   handlePrevStep,
 }: FinalizeProps) => {
   const { user } = useContext(UserContext);
+  const router = useRouter();
   // console.log(`Finalize hidden: ${hidden}`);
 
   if (!rendered) return;
@@ -42,11 +44,13 @@ export const Finalize = ({
     if (user?.config instanceof FullAccessUserConfig) {
       await user?.config.downloadGuideToFileSystem(files, courseName, fileName);
     } else {
-      user?.config?.downloadGuideToFileSystem(
+      await user?.config?.downloadGuideToFileSystem(
         components?.pdfFiles,
         components?.attachmentFiles,
+        { courseName, fileName },
       );
     }
+    router.push("/courses");
   }
 
   return (
