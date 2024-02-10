@@ -1,6 +1,10 @@
+import { openDB } from "idb";
+
 import { FullAccessUserConfig } from "@/classes/config/user/full-access";
 import { RestrictedAccessUserConfig } from "../config/user/restricted-access";
 import { FullAccessBaseCourse, FullAccessSTEMCourse } from "./full-access";
+import { RestrictedSTEMCourse } from "./restricted-access";
+import { BaseCourse } from "./abstract";
 
 export class CourseFactory {
   private userConfig: FullAccessUserConfig | RestrictedAccessUserConfig;
@@ -11,7 +15,7 @@ export class CourseFactory {
   }
 
   async initialize(root?: FileSystemDirectoryHandle): Promise<void> {
-    let courses = [];
+    let courses: BaseCourse[] = [];
     if (this.userConfig instanceof FullAccessUserConfig) {
       courses = await this.initializeFullAccessCourses(root);
     } else if (this.userConfig instanceof RestrictedAccessUserConfig) {
@@ -81,7 +85,22 @@ export class CourseFactory {
   }
 
   async initializeRestrictedAccessCourses() {
+    const CourseConstructors = {
+      STEM: RestrictedSTEMCourse,
+    };
+
+    const idb = await openDB("courses");
+
     const courses = [];
+
+    for (const objectStoreName of idb.objectStoreNames) {
+      // const courseType = await idb.get(objectStoreName, "type");
+
+      const courseConstructor = CourseConstructors.STEM;
+      const course = new courseConstructor(objectStoreName);
+      await course.initialize();
+      courses.push(course);
+    }
 
     return courses;
   }
