@@ -2,7 +2,7 @@ import { PDFComponents } from "@/app/(guides)/_guide_creation/Finalize";
 import { createFileObjectUrl } from "@/app/(guides)/_guide_creation/pdf/createPdf";
 // TODO: Implement base class for Full Access and Restricted users
 
-export type FullAccessDownloadGuideOptions = {
+export type DownloadGuideOptions = {
   courseName: string;
   fileName: string;
 };
@@ -40,6 +40,6 @@ export abstract class BaseUserConfig {
   abstract downloadGuideToFileSystem(
     pdfFiles: PDFComponents["pdfFiles"],
     attachmentFiles: PDFComponents["attachmentFiles"],
-    fullAccessOptions?: FullAccessDownloadGuideOptions,
+    options?: DownloadGuideOptions,
   ): void | Promise<void>;
 }

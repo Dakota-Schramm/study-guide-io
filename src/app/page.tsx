@@ -17,10 +17,12 @@ const Home = () => {
 
   const pageType = checkPageType(user.courses);
 
-  if (pageType === "personal") router.push("/courses");
+  if (
+    pageType === "personal" ||
+    user.config instanceof RestrictedAccessUserConfig
+  )
+    router.push("/courses");
 
-  if (user.config instanceof RestrictedAccessUserConfig)
-    throw new Error("RestrictedAccessUserConfig::NotSupported");
   if (user.config === null)
     throw new Error("RestrictedAccessUserConfig::PermissionRejected");
 
