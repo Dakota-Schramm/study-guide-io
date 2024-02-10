@@ -1,3 +1,4 @@
+import { openDB } from "idb";
 import { ensureError, sitePath } from "./utils";
 import { STORE_NAME, idb } from "@/app/idb";
 
@@ -28,4 +29,11 @@ export async function getAppHandlesFromDB() {
   }
 
   return handles;
+}
+
+export async function getDatabaseVersion(databaseName: string) {
+  const db = await openDB(databaseName);
+  const version = db.version;
+  db.close();
+  return version;
 }
