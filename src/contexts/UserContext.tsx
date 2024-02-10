@@ -44,10 +44,12 @@ function useUser() {
     async (userConfig = determineUserConfig()) => {
       await userConfig.initialize();
 
-      if (userConfig instanceof RestrictedAccessUserConfig) return;
-
-      const root = userConfig.getRoot();
-      if (!root) return;
+      let root;
+      console.log(userConfig, userConfig instanceof FullAccessUserConfig);
+      if (userConfig instanceof FullAccessUserConfig) {
+        root = userConfig.getRoot();
+        if (!root) return;
+      }
 
       const courseFactory = new CourseFactory(userConfig);
       await courseFactory.initialize(root);

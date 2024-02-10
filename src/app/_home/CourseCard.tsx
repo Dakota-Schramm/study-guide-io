@@ -32,7 +32,7 @@ const ExamEditList = ({ course }: { course: BaseCourse }) => {
       setExams(exams);
     }
     getExams();
-  }, []);
+  }, [course]);
 
   if (exams === undefined) {
     return <p>Loading...</p>;
@@ -93,7 +93,7 @@ export const CourseCard = ({ course }: { course: BaseCourse }) => {
         <CardDescription>{type} Course</CardDescription>
       </CardHeader>
       <CardContent>
-        <p>{files.length ?? 0} files available</p>
+        <p>{files?.length ?? 0} files available</p>
       </CardContent>
       <CardFooter className="space-x-4">
         <CourseActions course={course} />
