@@ -3,9 +3,14 @@ import { openDB } from "idb";
 import { createPdf } from "@/app/(guides)/_guide_creation/pdf/createPdf";
 import { BaseUserConfig, DownloadGuideOptions } from "./base";
 import { getDatabaseInfo } from "@/lib/idbUtils";
+import { ensureError } from "@/lib/utils";
 
 export class RestrictedAccessUserConfig extends BaseUserConfig {
-  async initialize() {}
+  async initialize() {
+    const root = await navigator.storage.getDirectory();
+    await super.initialize(root);
+  }
+
   async downloadGuideToFileSystem(
     pdfFiles: FileList,
     attachmentFiles: FileList,
@@ -20,28 +25,5 @@ export class RestrictedAccessUserConfig extends BaseUserConfig {
 
     console.log(options.courseName, pdfBlob, options.fileName);
     await db.put(options.courseName, pdfBlob, options.fileName);
-  }
-
-  private async setupDatabaseWithStore(
-    dbName: string,
-    objectStoreName: string,
-  ) {
-    const { version, objectStoreNames } = await getDatabaseInfo(dbName);
-    let db;
-
-    // This is dumb but you have to have the version number to upgrade the db to the next version
-    // since createObjectStore must be done in an upgrade transaction
-    const objectStoreExists = objectStoreNames.contains(objectStoreName);
-    if (objectStoreExists) {
-      db = await openDB(dbName, version);
-    } else {
-      db = await openDB(dbName, version + 1, {
-        upgrade(db) {
-          db.createObjectStore(objectStoreName);
-        },
-      });
-    }
-
-    return db;
   }
 }
