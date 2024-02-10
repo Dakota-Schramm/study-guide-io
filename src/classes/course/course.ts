@@ -1,3 +1,5 @@
+import { CourseConfig } from "../config/course";
+
 /*
   File structure that's generated will look like
   StudyGuideIO
@@ -21,22 +23,20 @@
 
 */
 
-import { findSubDirectory } from "../../lib/fileHandleHelpers";
-import { CourseConfig } from "../config/course";
-import { BaseCourse } from "./abstract";
-
 /* 
   TODO: Add the following features:
     - Add course end date
   Save the settings for these features within a JSON file
 */
-export class FullAccessBaseCourse extends BaseCourse {
+export abstract class Course {
+  static _id = 0;
+  public id: number;
   private courseHandle?: FileSystemDirectoryHandle;
   private config?: CourseConfig;
+  protected _files?: FileSystemFileHandle[];
 
   public constructor(courseHandle: FileSystemDirectoryHandle) {
-    // name cannot be changed after this initial definition, which has to be either at it's declaration or in the constructor.
-    super();
+    this.id = Course._id++;
     this.courseHandle = courseHandle;
   }
 
@@ -58,14 +58,22 @@ export class FullAccessBaseCourse extends BaseCourse {
     this.files = files;
   }
 
+  public getName(): string | undefined {
+    return this.courseHandle?.name;
+  }
+
   public toString(): string {
     return `${this.getName() ?? "Course"} with ${
       this?.files?.length ?? 0
     } files`;
   }
 
-  public getName(): string | undefined {
-    return this.courseHandle?.name;
+  get files(): FileSystemFileHandle[] | undefined {
+    return this._files;
+  }
+
+  set files(files: FileSystemFileHandle[]) {
+    this._files = files;
   }
 
   public getCourseFiles() {
@@ -124,7 +132,3 @@ export class FullAccessBaseCourse extends BaseCourse {
     return examsWithoutDeletedExam;
   }
 }
-
-class FullAccessSTEMCourse extends FullAccessBaseCourse {}
-
-export { FullAccessSTEMCourse };
