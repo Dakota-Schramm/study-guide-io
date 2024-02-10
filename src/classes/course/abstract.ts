@@ -1,7 +1,7 @@
 export abstract class BaseCourse {
   static _id = 0;
   public id: number;
-  private _files?: FileSystemFileHandle[];
+  protected _files?: FileSystemFileHandle[];
 
   public constructor() {
     this.id = BaseCourse._id++;
