@@ -12,15 +12,22 @@ import {
 } from "@/components/ui/tooltip";
 
 import { FaNotesMedical } from "react-icons/fa6";
+import Link from "next/link";
 
-const CreateStudyGuideButton = ({ file }) => {
+const CreateStudyGuideButton = ({
+  courseName,
+  file,
+}: {
+  courseName: string;
+  file: FileSystemFileHandle;
+}) => {
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button>
+          <Link href={`/cornell-notes/${courseName}/${file.name}/create`}>
             <FaNotesMedical />
-          </Button>
+          </Link>
         </TooltipTrigger>
         <TooltipContent>Create a study guide for {file.name}</TooltipContent>
       </Tooltip>
@@ -28,7 +35,13 @@ const CreateStudyGuideButton = ({ file }) => {
   );
 };
 
-export const FileTableRow = ({ file, idx }) => {
+type FileTableRowProps = {
+  courseName: string;
+  file: FileSystemFileHandle;
+  idx: number;
+};
+
+export const FileTableRow = ({ courseName, file, idx }: FileTableRowProps) => {
   const { name } = file;
   const [fileName, extension] = name.split(".");
 
@@ -37,7 +50,7 @@ export const FileTableRow = ({ file, idx }) => {
       <TableCell>{fileName}</TableCell>
       <TableCell>{extension}</TableCell>
       <TableCell>
-        <CreateStudyGuideButton file={file} />
+        <CreateStudyGuideButton {...{ courseName, file }} />
       </TableCell>
     </TableRow>
   );

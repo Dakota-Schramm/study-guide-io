@@ -103,30 +103,6 @@ const PDFViewer = ({
     });
   }
 
-  function handleDecrement() {
-    const currentPage = pdfStatus?.currentPage
-      ? Math.max(1, pdfStatus.currentPage - 1)
-      : 1;
-
-    setPdfStatus((prevStatus) => ({
-      ...prevStatus,
-      currentPage,
-    }));
-  }
-
-  function handleIncrement() {
-    const pageTotal = pdfStatus?.pageTotal ? pdfStatus.pageTotal : 0;
-
-    const currentPage = pdfStatus?.currentPage
-      ? Math.min(pageTotal, pdfStatus.currentPage + 1)
-      : 0;
-
-    setPdfStatus((prevStatus) => ({
-      ...prevStatus,
-      currentPage,
-    }));
-  }
-
   return (
     <Dialog>
       <DialogTrigger>View PDF Details</DialogTrigger>

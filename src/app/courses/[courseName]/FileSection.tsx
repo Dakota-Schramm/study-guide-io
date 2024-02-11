@@ -28,7 +28,7 @@ export const FileSection = ({ courseName, files }) => {
       </TableHeader>
       <TableBody>
         {files.map((file, idx) => (
-          <FileTableRow {...{ file, idx }} />
+          <FileTableRow {...{ courseName, file, idx }} />
         ))}
       </TableBody>
     </Table>
