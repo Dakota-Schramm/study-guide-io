@@ -4,6 +4,8 @@ import React, { useContext } from "react";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
+import { GoAlertFill } from "react-icons/go";
+
 import { UserContext } from "@/contexts/UserContext";
 import { sitePath } from "@/lib/utils";
 
@@ -18,7 +20,8 @@ const Home = () => {
         <div>Placeholder image...</div>
         <h2>We need some things from you to get started...</h2>
 
-        <Alert className="bg-red-700 text-white">
+        <Alert className="bg-red-700 text-white relative">
+          <GoAlertFill className="absolute left-0 fill-white text-[26px] " />
           <AlertTitle>Choosing Your Home Directory</AlertTitle>
           <AlertDescription>
             {`Please select either your ${sitePath} folder or the one it's in.`}
