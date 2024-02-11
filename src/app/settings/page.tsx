@@ -16,7 +16,9 @@ export default function SettingsContent() {
       <Button className="flex flex-col" onClick={() => reSyncCourses()}>
         <span className="font-bold">Setup directory</span>
         <ul className="opacity-50">
-          <li>Reinitialize your courses as if you're logging in</li>
+          <li className="text-white text-sm text-muted-foreground">
+            Reinitialize your courses as if you're logging in
+          </li>
         </ul>
       </Button>
     </>

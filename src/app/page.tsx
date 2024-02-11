@@ -20,7 +20,9 @@ const Home = () => {
     <main className="flex w-full h-full justify-center items-between space-x-8">
       <div className="flex flex-col space-y-8">
         <div>Placeholder image...</div>
-        <h2>We need some things from you to get started...</h2>
+        <h2 className="text-xl text-muted-foreground">
+          We need some things from you to get started...
+        </h2>
 
         <Alert className="bg-red-700 text-white relative">
           <GoAlertFill className="absolute left-0 fill-white text-[26px] " />
