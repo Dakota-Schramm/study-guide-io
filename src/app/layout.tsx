@@ -3,9 +3,9 @@
 import { pdfjs } from "react-pdf";
 import "./globals";
 import "./globals.css";
-import Link from "next/link";
 
 import { UserProvider } from "@/contexts/UserContext";
+import { HomeHeader } from "./HomeHeader";
 
 // export const metadata: Metadata = {
 //   title: "Create Next App",
@@ -13,22 +13,6 @@ import { UserProvider } from "@/contexts/UserContext";
 // };
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
-// pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-//   'pdfjs-dist/build/pdf.worker.min.js',
-//   import.meta.url,
-// ).toString();
-
-// TODO: Maybe attach a ref to make invisible in some views?
-const HomeHeader = () => {
-  return (
-    <header className="p-4 space-x-8 divide-x">
-      <Link href="/">Home</Link>
-      <Link href="/create">Create</Link>
-      <Link href="/settings">Settings</Link>
-    </header>
-  );
-};
-
 const RootLayout = ({
   children,
 }: Readonly<{
