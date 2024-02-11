@@ -49,9 +49,11 @@ export const FileTableRow = ({ courseName, file, idx }: FileTableRowProps) => {
     <TableRow key={idx}>
       <TableCell>{fileName}</TableCell>
       <TableCell>{extension}</TableCell>
-      <TableCell>
-        <CreateStudyGuideButton {...{ courseName, file }} />
-      </TableCell>
+      {extension === "pdf" ? (
+        <TableCell>
+          <CreateStudyGuideButton {...{ courseName, file }} />
+        </TableCell>
+      ) : undefined}
     </TableRow>
   );
 };
