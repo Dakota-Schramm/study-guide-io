@@ -8,11 +8,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { BaseCourse } from "@/classes/course/full-access";
+import { Course } from "@/classes/course/course";
 import { UserContext } from "@/contexts/UserContext";
 import { RestrictedAccessUserConfig } from "@/classes/config/user/restricted-access";
 
-const CourseActions = ({ course }: { course: BaseCourse }) => {
+const CourseActions = ({ course }: { course: Course }) => {
   const { user } = useContext(UserContext);
 
   const [exams, setExams] = useState<string[][]>([]);

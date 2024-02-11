@@ -1,3 +1,5 @@
+"use client";
+
 import {
   ReactNode,
   createContext,
@@ -10,7 +12,8 @@ import { FullAccessUserConfig } from "@/classes/config/user/full-access";
 import { RestrictedAccessUserConfig } from "@/classes/config/user/restricted-access";
 import { BaseUserConfig } from "@/classes/config/user/base";
 import { CourseFactory } from "@/classes/course/factory";
-import { BaseCourse } from "@/classes/course/abstract";
+import { Course } from "@/classes/course/course";
+import { useRouter } from "next/navigation";
 
 /**
  * @param config a User's associated app configuration
@@ -22,7 +25,7 @@ import { BaseCourse } from "@/classes/course/abstract";
  */
 export type IUser = {
   config?: FullAccessUserConfig | RestrictedAccessUserConfig | null;
-  courses?: BaseCourse[];
+  courses?: Course[];
 };
 
 function useUser() {
@@ -31,6 +34,7 @@ function useUser() {
     courses: undefined,
   });
   const { courses } = user;
+  const router = useRouter();
 
   useEffect(function setUpConfig() {
     async function initConfig() {
@@ -44,15 +48,8 @@ function useUser() {
     async (userConfig = determineUserConfig()) => {
       await userConfig.initialize();
 
-      let root;
-      console.log(userConfig, userConfig instanceof FullAccessUserConfig);
-      if (userConfig instanceof FullAccessUserConfig) {
-        root = userConfig.getRoot();
-        if (!root) return;
-      }
-
       const courseFactory = new CourseFactory(userConfig);
-      await courseFactory.initialize(root);
+      await courseFactory.initialize();
       const courses = courseFactory.courses;
 
       showDebugInfo(courses);
@@ -62,6 +59,7 @@ function useUser() {
         courses,
       };
       setUser(newUserState);
+      router.push("/courses");
     },
     [],
   );

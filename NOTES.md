@@ -124,3 +124,7 @@ Dark Mode
 NextJS Error Boundaries
 - Would be nice if can get to work for pages?
 - For now, just create a page component for error handling??
+
+TODO:
+- Declare roots on user config
+  - different depending on what fs used

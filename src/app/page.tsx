@@ -5,24 +5,10 @@ import React, { useContext } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 import { UserContext } from "@/contexts/UserContext";
-import { BaseCourse } from "../classes/course/abstract";
 import { sitePath } from "@/lib/utils";
-import { RestrictedAccessUserConfig } from "@/classes/config/user/restricted-access";
-import { useRouter } from "next/navigation";
 
-// TODO: Use OPFS as fallback if user says no to showing directory
 const Home = () => {
   const { user, reSyncCourses } = useContext(UserContext);
-  const router = useRouter();
-
-  const pageType = checkPageType(user.courses);
-
-  if (
-    pageType === "personal" ||
-    user.config instanceof RestrictedAccessUserConfig
-  )
-    router.push("/courses");
-
   if (user.config === null)
     throw new Error("RestrictedAccessUserConfig::PermissionRejected");
 
@@ -46,15 +32,5 @@ const Home = () => {
     </main>
   );
 };
-
-function checkPageType(courses: BaseCourse[] | undefined) {
-  let index: "personal" | "newUser";
-
-  if (typeof courses === "undefined") index = "newUser";
-  else if (courses.length) index = "personal";
-  else throw new Error("RestrictedAccessUserConfig::PermissionRejected");
-
-  return index;
-}
 
 export default Home;
