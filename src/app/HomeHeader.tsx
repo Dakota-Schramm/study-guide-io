@@ -1,12 +1,19 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import { FaHouseChimney } from "react-icons/fa6";
 import { FaGear } from "react-icons/fa6";
 import { FaFileCirclePlus } from "react-icons/fa6";
 
 export const HomeHeader = () => {
+  const pathName = usePathname();
+
+  if (pathName.endsWith("/")) {
+    return;
+  }
+
   return (
     <header className="flex p-4 space-x-8 divide-x">
       <Link href="/">
