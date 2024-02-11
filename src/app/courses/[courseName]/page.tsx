@@ -1,11 +1,12 @@
 "use client";
 
 import React, { useContext, useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
+import { notFound, usePathname } from "next/navigation";
 
 import { UserContext } from "@/contexts/UserContext";
 import { ExamSection } from "./ExamSection";
 import { FileSection } from "./FileSection";
+import { Separator } from "@/components/ui/separator";
 
 type CourseDetails = {
   exams?: string[][];
@@ -41,15 +42,16 @@ const SingleCoursePage = () => {
     (course) => course.getName() === courseName,
   );
 
-  if (!course) {
-    return <div>Course not found</div>;
-  }
+  if (!course) notFound();
 
   return (
     <div>
       <h1>{course.getName()}</h1>
-      <ExamSection {...{ exams, courseName }} />
-      <FileSection {...{ files, courseName }} />
+      <div className="container space-y-16">
+        <FileSection {...{ files, courseName }} />
+        <Separator />
+        <ExamSection {...{ exams, courseName }} />
+      </div>
     </div>
   );
 };

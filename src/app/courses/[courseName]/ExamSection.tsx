@@ -18,23 +18,25 @@ export const ExamSection = ({ courseName, exams }) => {
   }
 
   return (
-    <Table>
+    <Table className="bg-blue-500 dark:bg-blue-900">
       <TableCaption>A list of all exams for {courseName}.</TableCaption>
       <TableHeader>
         <TableRow>
           <TableHead className="text-right">Exam Number</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Method</TableHead>
-          <TableHead className="text-right">Amount</TableHead>
+          <TableHead>Files Included</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {exams.map((exam, idx) => (
           <TableRow key={idx}>
             <TableCell className="text-right">{idx + 1}</TableCell>
-            {exam.map((file) => (
-              <TableCell>{file}</TableCell>
-            ))}
+            <TableCell>
+              <ul className="flex space-x-4">
+                {exam.map((file) => (
+                  <li>{file}</li>
+                ))}
+              </ul>
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>
