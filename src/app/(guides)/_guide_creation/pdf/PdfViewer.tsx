@@ -1,7 +1,19 @@
 "use client";
 
+import "react-pdf/dist/esm/Page/TextLayer.css";
+import "react-pdf/dist/esm/Page/AnnotationLayer.css";
+
 import React, { useEffect, useState } from "react";
 import { Document, Page } from "react-pdf";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 type LoadedPDF =
   | {
@@ -26,7 +38,7 @@ const PDF = ({
   currentPage = 0,
   pageTotal = 0,
 }: PDFProps) => {
-  console.log({ filePath });
+  window.log.info({ filePath, pageTotal });
 
   if (!filePath) return;
 
@@ -36,7 +48,7 @@ const PDF = ({
     <Document file={filePath} onLoadSuccess={handleDocumentLoadSuccess}>
       <details>
         <summary>Pages</summary>
-        <div className="flex">
+        <div className="flex flex-col w-64 h-64 overflow-x-hidden overflow-y-auto">
           {Array.from(new Array(pageTotal), (_, index) => (
             <Page
               //! key={`base_ordering_${index}`} Replace with crypto hash at creation?
@@ -90,13 +102,20 @@ const PDFViewer = ({ filePath }) => {
   }
 
   return (
-    <div className="w-64 h-64">
-      <PDF
-        handleDocumentLoadSuccess={onDocumentLoadSuccess}
-        filePath={filePath}
-        pageTotal={pdfStatus?.pageTotal}
-      />
-    </div>
+    <Dialog>
+      <DialogTrigger>View PDF Details</DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>PDF: </DialogTitle>
+          <DialogDescription>See your pdf in detail.</DialogDescription>
+        </DialogHeader>
+        <PDF
+          handleDocumentLoadSuccess={onDocumentLoadSuccess}
+          filePath={filePath}
+          pageTotal={pdfStatus?.pageTotal}
+        />
+      </DialogContent>
+    </Dialog>
   );
 };
 
