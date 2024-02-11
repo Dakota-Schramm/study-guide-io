@@ -3,8 +3,10 @@
 import React, { useContext } from "react";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 
 import { GoAlertFill } from "react-icons/go";
+import { FaLockOpen } from "react-icons/fa6";
 
 import { UserContext } from "@/contexts/UserContext";
 import { sitePath } from "@/lib/utils";
@@ -28,9 +30,10 @@ const Home = () => {
           </AlertDescription>
         </Alert>
 
-        <button type="button" onClick={() => reSyncCourses(user?.config)}>
+        <Button onClick={() => reSyncCourses(user?.config)}>
+          <FaLockOpen className="mr-4" />
           Setup permissions
-        </button>
+        </Button>
       </div>
     </main>
   );
