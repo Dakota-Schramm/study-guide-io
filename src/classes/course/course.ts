@@ -46,16 +46,16 @@ export class Course {
   }
 
   async initialize() {
-    if (!this.courseHandle) {
+    if (!this.handle) {
       window.log.warn("CourseHandle not found");
       return;
     }
 
     window.log.debug(`Setting up course for ${this.getName()}...`);
-    const config = new CourseConfig(this.courseHandle);
+    const config = new CourseConfig(this.handle);
     await config.initialize();
 
-    const files = (await Array.fromAsync(this.courseHandle.values())).filter(
+    const files = (await Array.fromAsync(this.handle.values())).filter(
       (handle) => handle.kind === "file",
     );
 
