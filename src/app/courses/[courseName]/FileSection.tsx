@@ -6,23 +6,11 @@ import {
   Table,
   TableBody,
   TableCaption,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-const FileTableRow = ({ file, idx }) => {
-  const { name } = file;
-  const [fileName, extension] = name.split(".");
-
-  return (
-    <TableRow key={idx}>
-      <TableCell>{fileName}</TableCell>
-      <TableCell>{extension}</TableCell>
-    </TableRow>
-  );
-};
+import { FileTableRow } from "./FileTableRow";
 
 export const FileSection = ({ courseName, files }) => {
   if (!files) {
