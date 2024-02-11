@@ -6,6 +6,7 @@ import "./globals.css";
 
 import { UserProvider } from "@/contexts/UserContext";
 import { HomeHeader } from "./HomeHeader";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 
 // export const metadata: Metadata = {
 //   title: "Create Next App",
@@ -18,14 +19,21 @@ const RootLayout = ({
 }: Readonly<{
   children: React.ReactNode;
 }>) => (
-  <UserProvider>
-    <html lang="en" className="w-full h-full box-border">
-      <body className="w-full h-full box-border">
-        <HomeHeader />
-        {children}
-      </body>
-    </html>
-  </UserProvider>
+  <html lang="en" className="w-full h-full box-border">
+    <UserProvider>
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="system"
+        enableSystem
+        disableTransitionOnChange
+      >
+        <body className="w-full h-full box-border">
+          <HomeHeader />
+          {children}
+        </body>
+      </ThemeProvider>
+    </UserProvider>
+  </html>
 );
 
 export default RootLayout;
