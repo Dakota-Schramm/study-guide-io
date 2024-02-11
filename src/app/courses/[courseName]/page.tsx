@@ -13,7 +13,8 @@ type CourseDetails = {
   files?: unknown[];
 };
 
-const SingleCoursePage = () => {
+const SingleCoursePage = ({ params }: { params: { courseName: string } }) => {
+  const { courseName } = params;
   const { user } = useContext(UserContext);
   const [details, setDetails] = useState<CourseDetails>({
     exams: undefined,
@@ -35,9 +36,6 @@ const SingleCoursePage = () => {
     if (window) window.location.href = "/";
   }
 
-  const pathName = usePathname();
-
-  const courseName = pathName.split("/").at(-1);
   const course = user.courses?.find(
     (course) => course.getName() === courseName,
   );
