@@ -28,16 +28,21 @@ import { CourseConfig } from "../config/course";
     - Add course end date
   Save the settings for these features within a JSON file
 */
-export abstract class Course {
+export class Course {
   static _id = 0;
   public id: number;
+  private _type?: "STEM";
   private courseHandle?: FileSystemDirectoryHandle;
   private config?: CourseConfig;
   protected _files?: FileSystemFileHandle[];
 
-  public constructor(courseHandle: FileSystemDirectoryHandle) {
+  public constructor(
+    courseHandle: FileSystemDirectoryHandle,
+    type: "STEM" = "STEM",
+  ) {
     this.id = Course._id++;
     this.courseHandle = courseHandle;
+    this._type = type;
   }
 
   async initialize() {
@@ -74,6 +79,10 @@ export abstract class Course {
 
   set files(files: FileSystemFileHandle[]) {
     this._files = files;
+  }
+
+  get type(): "STEM" | undefined {
+    return this._type;
   }
 
   public getCourseFiles() {

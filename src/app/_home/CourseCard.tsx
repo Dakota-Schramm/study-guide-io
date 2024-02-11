@@ -18,12 +18,11 @@ import {
 } from "@/components/ui/popover";
 
 import { ExamDialog } from "./ExamDialog";
-import { FullAccessSTEMCourse } from "@/classes/course/full-access";
 import { ExamEditListItem } from "./ExamEditListItem";
 import CourseActions from "./CourseActions";
-import { BaseCourse } from "@/classes/course/abstract";
+import { Course } from "@/classes/course/course";
 
-const ExamEditList = ({ course }: { course: BaseCourse }) => {
+const ExamEditList = ({ course }: { course: Course }) => {
   const [exams, setExams] = useState<string[][] | undefined>(undefined);
 
   useEffect(() => {
@@ -57,7 +56,7 @@ const ExamEditList = ({ course }: { course: BaseCourse }) => {
 /**
  * @returns Edit popover for a course
  */
-const EditPopover = ({ course }: { course: BaseCourse }) => {
+const EditPopover = ({ course }: { course: Course }) => {
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -79,10 +78,10 @@ const EditPopover = ({ course }: { course: BaseCourse }) => {
   );
 };
 
-export const CourseCard = ({ course }: { course: BaseCourse }) => {
+export const CourseCard = ({ course }: { course: Course }) => {
   const courseName = course.getName();
   const files = course.getCourseFiles();
-  const type = getTypeOfCourse(course);
+  const type = course.type;
 
   return (
     <Card>
@@ -108,12 +107,3 @@ export const CourseCard = ({ course }: { course: BaseCourse }) => {
     </Card>
   );
 };
-
-function getTypeOfCourse(course: BaseCourse) {
-  let type = "";
-  if (course instanceof FullAccessSTEMCourse) {
-    type = "STEM";
-  }
-
-  return type;
-}

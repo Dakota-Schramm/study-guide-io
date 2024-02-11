@@ -1,57 +1,36 @@
-import { openDB } from "idb";
-
 import { FullAccessUserConfig } from "@/classes/config/user/full-access";
 import { RestrictedAccessUserConfig } from "../config/user/restricted-access";
-import { FullAccessBaseCourse, FullAccessSTEMCourse } from "./full-access";
-import { RestrictedSTEMCourse } from "./restricted-access";
-import { BaseCourse } from "./abstract";
+import { Course } from "./course";
 
 export class CourseFactory {
   private userConfig: FullAccessUserConfig | RestrictedAccessUserConfig;
-  private _courses: string[] = [];
+  private _courses: Course[] = [];
 
   constructor(config: FullAccessUserConfig | RestrictedAccessUserConfig) {
     this.userConfig = config;
   }
 
-  async initialize(root?: FileSystemDirectoryHandle): Promise<void> {
-    let courses: BaseCourse[] = [];
-    if (this.userConfig instanceof FullAccessUserConfig) {
-      courses = await this.initializeFullAccessCourses(root);
-    } else if (this.userConfig instanceof RestrictedAccessUserConfig) {
-      courses = await this.initializeRestrictedAccessCourses();
+  async initialize(): Promise<void> {
+    const root = await this.userConfig.getRoot();
+
+    if (root === undefined || root === null) {
+      throw new Error("Root must exist for course initialization");
     }
 
-    this._courses = courses;
-  }
-
-  get courses(): string[] {
-    return this._courses;
-  }
-
-  set courses(courses: string[]) {
-    this._courses = courses;
-  }
-
-  async initializeFullAccessCourses(root?: FileSystemDirectoryHandle) {
-    if (root === undefined) {
-      throw new Error("Root directory handle must be passed to this function");
-    }
-
+    // TODO: Allow for different course types
     const ResyncConfig = {
-      STEM: FullAccessSTEMCourse,
+      STEM: Course,
     };
 
     const courseTypeHandles = this.userConfig.getCourseTypeHandles();
 
-    const courses: FullAccessBaseCourse[] = [];
+    const courses: Course[] = [];
     if (courseTypeHandles) {
       for (const [key, handle] of courseTypeHandles) {
         const courseConstructor = ResyncConfig[key];
 
         const loadedCourses =
           await this.collectAndInitializeCoursesForCourseType(
-            root,
             handle,
             courseConstructor,
           );
@@ -59,13 +38,18 @@ export class CourseFactory {
       }
     }
 
-    return courses;
+    this._courses = courses;
   }
 
-  async collectAndInitializeCoursesForCourseType<
-    C extends FullAccessBaseCourse,
-  >(
-    root: FileSystemDirectoryHandle,
+  get courses(): Course[] {
+    return this._courses;
+  }
+
+  set courses(courses: Course[]) {
+    this._courses = courses;
+  }
+
+  async collectAndInitializeCoursesForCourseType<C extends Course>(
     courseTypeHandle: FileSystemDirectoryHandle,
     courseConstructor: new (...args: FileSystemDirectoryHandle[]) => C,
   ) {
@@ -82,26 +66,5 @@ export class CourseFactory {
 
     const courses = await Promise.all(coursePromises);
     return courses.filter((course) => course !== undefined);
-  }
-
-  async initializeRestrictedAccessCourses() {
-    const CourseConstructors = {
-      STEM: RestrictedSTEMCourse,
-    };
-
-    const idb = await openDB("courses");
-
-    const courses = [];
-
-    for (const objectStoreName of idb.objectStoreNames) {
-      // const courseType = await idb.get(objectStoreName, "type");
-
-      const courseConstructor = CourseConstructors.STEM;
-      const course = new courseConstructor(objectStoreName);
-      await course.initialize();
-      courses.push(course);
-    }
-
-    return courses;
   }
 }
