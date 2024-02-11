@@ -8,7 +8,7 @@ const PdfUploader = forwardRef(function PdfUploader(
   ref,
 ) {
   const [uploaded, setUploaded] = useState(false);
-  const filePath = ref?.current?.files?.[0];
+  const filePath = (ref?.current as HTMLInputElement)?.files?.[0];
 
   console.log(`PdfUploader hidden: ${hidden}`);
   console.log(`PdfUploader ref: ${ref}`);

@@ -26,7 +26,7 @@ type LoadedPDF =
     };
 
 type PDFProps = {
-  filePath: string;
+  filePath: File;
   handleDocumentLoadSuccess: (arg0: number) => void;
   currentPage?: number;
   pageTotal?: number;
@@ -79,7 +79,7 @@ const PDFViewer = ({
   dialogSize,
   pageSize,
 }: {
-  filePath: string;
+  filePath: File;
   dialogSize: { width: number; height: number };
   pageSize: { width: number; height: number };
 }) => {
