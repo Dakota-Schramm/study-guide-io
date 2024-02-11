@@ -33,7 +33,11 @@ const PdfUploader = forwardRef(function PdfUploader(
       </label>
       {uploaded && (
         <>
-          <PDFViewer {...{ filePath }} />
+          <PDFViewer
+            // dialogSize={{ width: 800, height: 800 }}
+            pageSize={{ width: 400, height: 400 }}
+            {...{ filePath }}
+          />
           <button type="button" onClick={handleNextStep}>
             Next
           </button>

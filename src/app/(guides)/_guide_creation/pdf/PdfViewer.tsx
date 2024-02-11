@@ -30,6 +30,8 @@ type PDFProps = {
   handleDocumentLoadSuccess: (arg0: number) => void;
   currentPage?: number;
   pageTotal?: number;
+  width: number;
+  height: number;
 };
 
 const PDF = ({
@@ -37,6 +39,8 @@ const PDF = ({
   handleDocumentLoadSuccess,
   currentPage = 0,
   pageTotal = 0,
+  width,
+  height,
 }: PDFProps) => {
   window.log.info({ filePath, pageTotal });
 
@@ -44,16 +48,23 @@ const PDF = ({
 
   // TODO: Add better handling here for large pdfs
   // TODO: Add drag-and-drop support for reordering pages of pdf
+  // TODO: Keep widths and heights consistent between styles and page props
   return (
     <Document file={filePath} onLoadSuccess={handleDocumentLoadSuccess}>
       <details>
         <summary>Pages</summary>
-        <div className="flex flex-col w-64 h-64 overflow-x-hidden overflow-y-auto">
+        <div
+          className="flex flex-col overflow-x-hidden overflow-y-auto"
+          style={{
+            width: `${width + width * 0.05}px`,
+            height: `${height + height * 0.05}px`,
+          }}
+        >
           {Array.from(new Array(pageTotal), (_, index) => (
             <Page
               //! key={`base_ordering_${index}`} Replace with crypto hash at creation?
-              width={200}
-              height={200}
+              width={width}
+              height={height}
               pageNumber={index + 1}
             />
           ))}
@@ -63,11 +74,26 @@ const PDF = ({
   );
 };
 
-const PDFViewer = ({ filePath }) => {
+const PDFViewer = ({
+  filePath,
+  dialogSize,
+  pageSize,
+}: {
+  filePath: string;
+  dialogSize: { width: number; height: number };
+  pageSize: { width: number; height: number };
+}) => {
   const [pdfStatus, setPdfStatus] = useState<LoadedPDF>({
     status: "uninitialized",
   });
   const { status } = pdfStatus;
+  const dialogStyle =
+    dialogSize?.width && dialogSize?.height
+      ? {
+          width: `${dialogSize.width}px`,
+          height: `${dialogSize.height}px`,
+        }
+      : undefined;
 
   function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
     setPdfStatus({
@@ -104,12 +130,14 @@ const PDFViewer = ({ filePath }) => {
   return (
     <Dialog>
       <DialogTrigger>View PDF Details</DialogTrigger>
-      <DialogContent>
+      <DialogContent style={dialogStyle}>
         <DialogHeader>
           <DialogTitle>PDF: </DialogTitle>
           <DialogDescription>See your pdf in detail.</DialogDescription>
         </DialogHeader>
         <PDF
+          width={pageSize.width}
+          height={pageSize.height}
           handleDocumentLoadSuccess={onDocumentLoadSuccess}
           filePath={filePath}
           pageTotal={pdfStatus?.pageTotal}
