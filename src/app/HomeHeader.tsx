@@ -18,7 +18,7 @@ export const HomeHeader = () => {
   return (
     <header className="flex justify-between w-screen p-4">
       <nav className="flex p-4 space-x-8 divide-x">
-        <Link href="/">
+        <Link href="/courses">
           <span className="flex items-center">
             <FaHouseChimney />
             Home
