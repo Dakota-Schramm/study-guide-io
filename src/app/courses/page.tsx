@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useContext, useEffect } from "react";
+import Link from "next/link";
 
 import { UserContext } from "@/contexts/UserContext";
 import { CourseCard } from "../_home/CourseCard";
@@ -8,6 +9,10 @@ import { RestrictedAccessUserConfig } from "@/classes/config/user/restricted-acc
 
 const CoursesPage = () => {
   const { user, reSyncCourses } = useContext(UserContext);
+
+  useEffect(() => {
+    reSyncCourses();
+  }, []);
 
   if (user?.config === undefined) {
     if (window) window.location.href = "/";
@@ -18,9 +23,22 @@ const CoursesPage = () => {
     return <div>User needs to download files to see courses</div>;
   }
 
-  useEffect(() => {
-    reSyncCourses();
-  }, []);
+  const noCourses = user?.courses?.length === 0;
+  if (noCourses) {
+    return (
+      <div>
+        <h1>No Courses</h1>
+        <p>It looks like you don't have any courses yet.</p>
+        <p>
+          Add courses at{" "}
+          <Link href="/courses">
+            <span className="text-blue-400 underline">/courses</span>
+          </Link>
+          .
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-3 gap-8">
