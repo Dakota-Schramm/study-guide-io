@@ -73,11 +73,15 @@ const CornellNotesCreatePage = ({
   params,
 }: { params: { courseName: string; fileName: string } }) => {
   const { user } = useContext(UserContext);
-  const { courseName, fileName } = params;
+
+  const { courseName } = params;
+  const fileName = decodeURIComponent(params.fileName);
+
   const [pdf, setPdf] = useState<File | undefined>(undefined);
 
   useEffect(() => {
     async function setup() {
+      console.log({ courseName, fileName });
       const fileHandle = user?.courses
         ?.find((course) => course.getName() === courseName)
         ?.files?.find((file) => file.name === fileName);
