@@ -1,12 +1,10 @@
-'use client'
+"use client";
 
-import React from 'react'
-import { PDFDocument, PDFEmbeddedPage, PDFFont, PDFPage, rgb } from 'pdf-lib'
-import fontkit from '@pdf-lib/fontkit'
+import React from "react";
+import { PDFDocument, PDFEmbeddedPage, PDFFont, PDFPage, rgb } from "pdf-lib";
+import fontkit from "@pdf-lib/fontkit";
 
-async function handleDownload(
-  fileName: string = "test.pdf",
-) {
+async function handleDownload(fileName = "test.pdf") {
   const cornellArrayBytes = await setupCornellNotes();
   const blob = new Blob([cornellArrayBytes], { type: "application/pdf" });
   const fileObjectUrl = URL.createObjectURL(blob);
@@ -18,13 +16,12 @@ async function handleDownload(
 }
 
 async function setupCornellNotes() {
-  const pdfDoc = await PDFDocument.create()
+  const pdfDoc = await PDFDocument.create();
 
-  const fontBytes = await (await fetch("./mullish.ttf"))
-    .arrayBuffer();
+  const fontBytes = await (await fetch("./mullish.ttf")).arrayBuffer();
 
-  pdfDoc.registerFontkit(fontkit)
-  const customFont = await pdfDoc.embedFont(fontBytes)
+  pdfDoc.registerFontkit(fontkit);
+  const customFont = await pdfDoc.embedFont(fontBytes);
 
   const sciencePdfBytes = await fetch("science.pdf").then((res) =>
     res.arrayBuffer(),
@@ -33,23 +30,40 @@ async function setupCornellNotes() {
 
   for (const page of sciencePdf.getPages()) {
     // Add a blank page to the document
-    const docPage = pdfDoc.addPage()
-    console.log({ width: page.getWidth(), height: page.getHeight() })
+    const docPage = pdfDoc.addPage();
+    console.log({ width: page.getWidth(), height: page.getHeight() });
 
     const embedPage = await pdfDoc.embedPage(page);
 
-    setupCornellPage(docPage, embedPage, customFont, [
-      { question: "What is the main idea of this text? Write out using the terms defined in the first class.", yPos: 750 },
-      { question: "What are the key details of this passage? How does it impact later events in the book?", yPos: 700 },
-      { question: "What are the key vocabulary words?", yPos: 650 },
-      { question: "What is the author's purpose? How does this help to define the direction of his storeis? How does it specifically affect this one?", yPos: 600 },
-    ], "This is a summary")
+    setupCornellPage(
+      docPage,
+      embedPage,
+      customFont,
+      [
+        {
+          question:
+            "What is the main idea of this text? Write out using the terms defined in the first class.",
+          yPos: 750,
+        },
+        {
+          question:
+            "What are the key details of this passage? How does it impact later events in the book?",
+          yPos: 700,
+        },
+        { question: "What are the key vocabulary words?", yPos: 650 },
+        {
+          question:
+            "What is the author's purpose? How does this help to define the direction of his storeis? How does it specifically affect this one?",
+          yPos: 600,
+        },
+      ],
+      "This is a summary",
+    );
   }
 
   // Serialize the PDFDocument to bytes (a Uint8Array)
-  const pdfBytes = await pdfDoc.save()
+  const pdfBytes = await pdfDoc.save();
   return pdfBytes;
-
 }
 
 async function setupCornellPage(
@@ -57,19 +71,19 @@ async function setupCornellPage(
   embeddedContent: PDFEmbeddedPage,
   font: PDFFont,
   questions: { question: string; yPos: number }[],
-  summary: string
+  summary: string,
 ) {
-  const { width, height } = page.getSize()
-  const questionColumnWidth = .3 * width;
-  const noteSectionWidth = .7 * width;
-  const contentHeight = .81 * height;
-  const summarySectionHeight = .19 * height;
+  const { width, height } = page.getSize();
+  const questionColumnWidth = 0.3 * width;
+  const noteSectionWidth = 0.7 * width;
+  const contentHeight = 0.81 * height;
+  const summarySectionHeight = 0.19 * height;
   const margin = 8;
 
   // const textWidth = customFont.widthOfTextAtSize(text, textSize)
   // const textHeight = customFont.heightAtSize(textSize)
 
-  const fontSize = 8
+  const fontSize = 8;
   const color = rgb(0, 0, 0);
 
   // SETUP BORDERS
@@ -80,7 +94,7 @@ async function setupCornellPage(
     height: contentHeight,
     borderColor: rgb(0, 0, 0),
     borderWidth: 1.5,
-  })
+  });
 
   page.drawRectangle({
     x: 0,
@@ -89,14 +103,14 @@ async function setupCornellPage(
     height: summarySectionHeight,
     borderColor: color,
     borderWidth: 1.5,
-  })
+  });
 
   page.drawPage(embeddedContent, {
     width: noteSectionWidth,
     height: contentHeight,
     x: questionColumnWidth,
-    y: 0,
-  })
+    y: summarySectionHeight,
+  });
 
   // SETUP QUESTIONS + SUMMARY
   questions.forEach(({ question, yPos }) => {
@@ -108,8 +122,8 @@ async function setupCornellPage(
       font: font,
       color: color,
       maxWidth: questionColumnWidth - margin,
-    })
-  })
+    });
+  });
 
   page.drawText(summary, {
     x: margin,
@@ -118,10 +132,9 @@ async function setupCornellPage(
     lineHeight: 8,
     font: font,
     color: color,
-    maxWidth: questionColumnWidth - (2 * margin),
-  })
+    maxWidth: questionColumnWidth - 2 * margin,
+  });
 }
-
 
 const page = () => {
   return (
@@ -129,8 +142,7 @@ const page = () => {
       <h1>page</h1>
       <button onClick={() => handleDownload()}>Click</button>
     </div>
-  )
-}
+  );
+};
 
-
-export default page
+export default page;
