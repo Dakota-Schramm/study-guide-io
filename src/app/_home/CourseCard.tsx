@@ -22,6 +22,7 @@ import { ExamEditListItem } from "./ExamEditListItem";
 import CourseActions from "./CourseActions";
 import { Course } from "@/classes/course/course";
 import DeleteButton from "./DeleteButton";
+import { UserContext } from "@/contexts/UserContext";
 
 const ExamEditList = ({ course }: { course: Course }) => {
   const [exams, setExams] = useState<string[][] | undefined>(undefined);
@@ -80,6 +81,8 @@ const EditPopover = ({ course }: { course: Course }) => {
 };
 
 export const CourseCard = ({ course }: { course: Course }) => {
+  const { user } = useContext(UserContext);
+
   const courseName = course.getName();
   const files = course.getCourseFiles();
   const type = course.type;
@@ -100,8 +103,14 @@ export const CourseCard = ({ course }: { course: Course }) => {
         <EditPopover course={course} />
         <DeleteButton
           courseName={courseName}
-          handleConfirm={() => {
-            course.courseHandle;
+          handleConfirm={async () => {
+            const parentHandle = user.config
+              ?.getCourseTypeHandles()
+              .find(([type, handle]) => type === course.type)?.[1] as
+              | FileSystemDirectoryHandle
+              | undefined;
+
+            await parentHandle?.removeEntry(courseName, { recursive: true });
           }}
         />
       </CardFooter>
