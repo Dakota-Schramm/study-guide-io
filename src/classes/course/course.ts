@@ -32,7 +32,7 @@ export class Course {
   static _id = 0;
   public id: number;
   private _type?: "STEM";
-  private courseHandle?: FileSystemDirectoryHandle;
+  private _handle?: FileSystemDirectoryHandle;
   private config?: CourseConfig;
   protected _files?: FileSystemFileHandle[];
 
@@ -41,7 +41,7 @@ export class Course {
     type: "STEM" = "STEM",
   ) {
     this.id = Course._id++;
-    this.courseHandle = courseHandle;
+    this._handle = courseHandle;
     this._type = type;
   }
 
@@ -64,7 +64,7 @@ export class Course {
   }
 
   public getName(): string | undefined {
-    return this.courseHandle?.name;
+    return this._handle?.name;
   }
 
   public toString(): string {
@@ -83,6 +83,14 @@ export class Course {
 
   get type(): "STEM" | undefined {
     return this._type;
+  }
+
+  get handle(): FileSystemDirectoryHandle | undefined {
+    return this._handle;
+  }
+
+  set handle(handle: FileSystemDirectoryHandle | undefined) {
+    this._handle = handle;
   }
 
   public getCourseFiles() {

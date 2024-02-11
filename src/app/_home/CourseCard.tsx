@@ -21,6 +21,7 @@ import { ExamDialog } from "./ExamDialog";
 import { ExamEditListItem } from "./ExamEditListItem";
 import CourseActions from "./CourseActions";
 import { Course } from "@/classes/course/course";
+import DeleteButton from "./DeleteButton";
 
 const ExamEditList = ({ course }: { course: Course }) => {
   const [exams, setExams] = useState<string[][] | undefined>(undefined);
@@ -97,12 +98,12 @@ export const CourseCard = ({ course }: { course: Course }) => {
       <CardFooter className="space-x-4">
         <CourseActions course={course} />
         <EditPopover course={course} />
-        <button
-          type="button"
-          className="p-2 text-white border border-solid border-gray-500 bg-red-500"
-        >
-          Delete
-        </button>
+        <DeleteButton
+          courseName={courseName}
+          handleConfirm={() => {
+            course.courseHandle;
+          }}
+        />
       </CardFooter>
     </Card>
   );
