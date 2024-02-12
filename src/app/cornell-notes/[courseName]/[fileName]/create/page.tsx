@@ -1,30 +1,31 @@
 "use client";
 
 import React, { useContext, useEffect, useState } from "react";
-import { PDFDocument } from "pdf-lib";
-import fontkit from "@pdf-lib/fontkit";
+import { Document, Page } from "react-pdf";
 
 import "react-pdf/dist/esm/Page/TextLayer.css";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 
-import { setupCornellPage } from "../../../setupCornellPage";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+
+import { setupCornellNotes } from "../../../setupCornellNotes";
 import PDFViewer, {
   LoadedPDF,
   PDFProps,
 } from "@/app/(guides)/_guide_creation/pdf/PdfViewer";
 import { UserContext } from "@/contexts/UserContext";
-import { Document, Page } from "react-pdf";
+import InteractablePage from "./InteractablePage";
+
+import type { Question } from "../../../setupCornellNotes";
 
 const PDF = ({
   handleDocumentLoadSuccess,
+  handleAddQuestion,
   filePath,
   pageTotal = 0,
-  width,
-  height,
-}: PDFProps) => {
+}: PDFProps & { handleAddQuestion: () => void }) => {
   if (!filePath) return;
-
-  console.log({ filePath, pageTotal });
 
   // TODO: Add better handling here for large pdfs
   // TODO: Add drag-and-drop support for reordering pages of pdf
@@ -36,16 +37,20 @@ const PDF = ({
       onLoadSuccess={handleDocumentLoadSuccess}
     >
       {Array.from(new Array(pageTotal), (_, index) => (
-        <Page
-          className="border border-black border-solid"
-          // onClick={(event) => console.log({ event })}
-          //! key={`base_ordering_${index}`} Replace with crypto hash at creation?
-          pageNumber={index + 1}
+        <InteractablePage
+          key={index}
+          index={index}
+          handleAddQuestion={handleAddQuestion}
         />
       ))}
     </Document>
   );
 };
+
+// TODO: Set up handler that takes page number, question and yPos
+// TODO: For each page, set up a handler that uses prev handler to add questions to pages
+// TODO: Combine state into single state object?
+// - Create hook for all of this?
 
 // Use with suspense??
 const CornellNotesCreatePage = ({
@@ -61,6 +66,14 @@ const CornellNotesCreatePage = ({
   const [pdfStatus, setPdfStatus] = useState<LoadedPDF>({
     status: "uninitialized",
   });
+  const [pdfQuestions, setPdfQuestions] = useState<Question[][] | undefined>(
+    undefined,
+  );
+
+  useEffect(() => {
+    if (pdfStatus.status !== "loaded") return;
+    setPdfQuestions(new Array(pdfStatus.pageTotal).fill([]));
+  }, [pdfStatus]);
 
   function handleDocumentLoadSuccess({ numPages }: { numPages: number }): void {
     setPdfStatus({
@@ -68,6 +81,22 @@ const CornellNotesCreatePage = ({
       currentPage: 1,
       pageTotal: numPages,
     });
+  }
+
+  function handleAddQuestion(question: Question, page: number) {
+    if (!pdfQuestions) return;
+
+    const newQuestions = [];
+
+    for (let pgNum = 0; pgNum < pdfQuestions.length; pgNum++) {
+      const questionPage = pdfQuestions[pgNum];
+
+      if (pgNum !== page) newQuestions.push(questionPage);
+      else newQuestions.push([...questionPage, question]);
+    }
+
+    console.log({ newQuestions });
+    setPdfQuestions(newQuestions);
   }
 
   useEffect(() => {
@@ -94,23 +123,29 @@ const CornellNotesCreatePage = ({
       <h1>
         Create Study Guide for file {fileName} from course {courseName}
       </h1>
-      <div className="row-span-8">
+      <ScrollArea className="row-span-8">
         <PDF
           filePath={pdf}
           pageTotal={pdfStatus?.pageTotal}
-          {...{ handleDocumentLoadSuccess }}
+          {...{ handleDocumentLoadSuccess, handleAddQuestion }}
         />
-      </div>
-      <button onClick={() => handleDownload(pdf)}>Click</button>
+      </ScrollArea>
+      <Button onClick={() => handleDownload(pdfQuestions, pdf)}>
+        Download Study Guide
+      </Button>
     </div>
   );
 };
 
 // TODO: DRY up with other handleDownload functions
-async function handleDownload(pdfFile?: File, fileName = "test.pdf") {
+async function handleDownload(
+  questions?: Question[][],
+  pdfFile?: File,
+  fileName = "test.pdf",
+) {
   if (!pdfFile) return;
 
-  const cornellArrayBytes = await setupCornellNotes(pdfFile);
+  const cornellArrayBytes = await setupCornellNotes(pdfFile, questions);
   const blob = new Blob([cornellArrayBytes], { type: "application/pdf" });
   const fileObjectUrl = URL.createObjectURL(blob);
 
@@ -118,52 +153,6 @@ async function handleDownload(pdfFile?: File, fileName = "test.pdf") {
   downloadEle.href = fileObjectUrl;
   downloadEle.download = fileName;
   downloadEle.click();
-}
-
-async function setupCornellNotes(originalPdf: File) {
-  const pdfDoc = await PDFDocument.create();
-
-  const fontBytes = await (await fetch("./mullish.ttf")).arrayBuffer();
-  pdfDoc.registerFontkit(fontkit);
-  const customFont = await pdfDoc.embedFont(fontBytes);
-
-  const bytes = await originalPdf.arrayBuffer();
-  const pdf = await PDFDocument.load(bytes);
-
-  for (const page of pdf.getPages()) {
-    const docPage = pdfDoc.addPage();
-    console.log({ width: page.getWidth(), height: page.getHeight() });
-
-    const embedPage = await pdfDoc.embedPage(page);
-
-    setupCornellPage(
-      docPage,
-      embedPage,
-      customFont,
-      [
-        {
-          question:
-            "What is the main idea of this text? Write out using the terms defined in the first class.",
-          yPos: 750,
-        },
-        {
-          question:
-            "What are the key details of this passage? How does it impact later events in the book?",
-          yPos: 700,
-        },
-        { question: "What are the key vocabulary words?", yPos: 650 },
-        {
-          question:
-            "What is the author's purpose? How does this help to define the direction of his storeis? How does it specifically affect this one?",
-          yPos: 600,
-        },
-      ],
-      "This is a summary",
-    );
-  }
-
-  const pdfBytes = await pdfDoc.save();
-  return pdfBytes;
 }
 
 export default CornellNotesCreatePage;

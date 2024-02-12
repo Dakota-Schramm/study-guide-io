@@ -1,6 +1,6 @@
 "use client";
 
-import { PDFEmbeddedPage, PDFFont, PDFPage, rgb } from "pdf-lib";
+import { PDFEmbeddedPage, PDFPage, rgb } from "pdf-lib";
 import { PDFDocument } from "pdf-lib";
 import fontkit from "@pdf-lib/fontkit";
 
@@ -13,6 +13,7 @@ export async function setupCornellNotes(
   originalPdf: File,
   questions?: Question[][],
 ) {
+  console.log({ questions });
   const pdfDoc = await PDFDocument.create();
 
   await setupFonts(pdfDoc);
@@ -109,7 +110,7 @@ async function setupCornellPage(
 }
 
 async function setupFonts(pdfDoc: PDFDocument) {
-  const response = await fetch("./mullish.ttf");
+  const response = await fetch("/mullish.ttf");
   const fontBytes = await response.arrayBuffer();
   pdfDoc.registerFontkit(fontkit);
   const customFont = await pdfDoc.embedFont(fontBytes);
