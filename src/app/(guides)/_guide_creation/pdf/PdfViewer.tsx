@@ -15,7 +15,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-type LoadedPDF =
+export type LoadedPDF =
   | {
       status: "uninitialized";
     }
@@ -25,7 +25,7 @@ type LoadedPDF =
       currentPage: number;
     };
 
-type PDFProps = {
+export type PDFProps = {
   filePath: File;
   handleDocumentLoadSuccess: (arg0: number) => void;
   currentPage?: number;
@@ -37,7 +37,6 @@ type PDFProps = {
 const PDF = ({
   filePath,
   handleDocumentLoadSuccess,
-  currentPage = 0,
   pageTotal = 0,
   width,
   height,

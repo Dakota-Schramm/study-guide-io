@@ -4,9 +4,107 @@ import React, { useContext, useEffect, useState } from "react";
 import { PDFDocument } from "pdf-lib";
 import fontkit from "@pdf-lib/fontkit";
 
+import "react-pdf/dist/esm/Page/TextLayer.css";
+import "react-pdf/dist/esm/Page/AnnotationLayer.css";
+
 import { setupCornellPage } from "../../../setupCornellPage";
-import PDFViewer from "@/app/(guides)/_guide_creation/pdf/PdfViewer";
+import PDFViewer, {
+  LoadedPDF,
+  PDFProps,
+} from "@/app/(guides)/_guide_creation/pdf/PdfViewer";
 import { UserContext } from "@/contexts/UserContext";
+import { Document, Page } from "react-pdf";
+
+const PDF = ({
+  handleDocumentLoadSuccess,
+  filePath,
+  pageTotal = 0,
+  width,
+  height,
+}: PDFProps) => {
+  if (!filePath) return;
+
+  console.log({ filePath, pageTotal });
+
+  // TODO: Add better handling here for large pdfs
+  // TODO: Add drag-and-drop support for reordering pages of pdf
+  // TODO: Keep widths and heights consistent between styles and page props
+  return (
+    <Document
+      className="flex flex-col space-y-8 justify-center items-center"
+      file={filePath}
+      onLoadSuccess={handleDocumentLoadSuccess}
+    >
+      {Array.from(new Array(pageTotal), (_, index) => (
+        <Page
+          className="border border-black border-solid"
+          // onClick={(event) => console.log({ event })}
+          //! key={`base_ordering_${index}`} Replace with crypto hash at creation?
+          pageNumber={index + 1}
+        />
+      ))}
+    </Document>
+  );
+};
+
+// Use with suspense??
+const CornellNotesCreatePage = ({
+  params,
+}: { params: { courseName: string; fileName: string } }) => {
+  const { user } = useContext(UserContext);
+  const { courses } = user;
+
+  const { courseName } = params;
+  const fileName = decodeURIComponent(params.fileName);
+
+  const [pdf, setPdf] = useState<File | undefined>(undefined);
+  const [pdfStatus, setPdfStatus] = useState<LoadedPDF>({
+    status: "uninitialized",
+  });
+
+  function handleDocumentLoadSuccess({ numPages }: { numPages: number }): void {
+    setPdfStatus({
+      status: "loaded",
+      currentPage: 1,
+      pageTotal: numPages,
+    });
+  }
+
+  useEffect(() => {
+    async function setup() {
+      const fileHandle = courses
+        ?.find((course) => course.getName() === courseName)
+        ?.files?.find((file) => file.name === fileName);
+
+      const file = await fileHandle?.getFile();
+      console.log({ courseName, fileName, fileHandle, file });
+      setPdf(file);
+    }
+    setup();
+  }, [courses]);
+
+  if (user?.courses === undefined) {
+    if (window) window.location.href = "/";
+  }
+
+  // if (!pdf) return <div>Loading...</div>
+
+  return (
+    <div className="grid grid-rows-10 w-full h-full container">
+      <h1>
+        Create Study Guide for file {fileName} from course {courseName}
+      </h1>
+      <div className="row-span-8">
+        <PDF
+          filePath={pdf}
+          pageTotal={pdfStatus?.pageTotal}
+          {...{ handleDocumentLoadSuccess }}
+        />
+      </div>
+      <button onClick={() => handleDownload(pdf)}>Click</button>
+    </div>
+  );
+};
 
 // TODO: DRY up with other handleDownload functions
 async function handleDownload(pdfFile?: File, fileName = "test.pdf") {
@@ -67,48 +165,5 @@ async function setupCornellNotes(originalPdf: File) {
   const pdfBytes = await pdfDoc.save();
   return pdfBytes;
 }
-
-// Use with suspense??
-const CornellNotesCreatePage = ({
-  params,
-}: { params: { courseName: string; fileName: string } }) => {
-  const { user } = useContext(UserContext);
-
-  const { courseName } = params;
-  const fileName = decodeURIComponent(params.fileName);
-
-  const [pdf, setPdf] = useState<File | undefined>(undefined);
-
-  useEffect(() => {
-    async function setup() {
-      console.log({ courseName, fileName });
-      const fileHandle = user?.courses
-        ?.find((course) => course.getName() === courseName)
-        ?.files?.find((file) => file.name === fileName);
-
-      const file = await fileHandle?.getFile();
-      setPdf(file);
-    }
-    setup();
-  }, []);
-
-  if (user?.courses === undefined) {
-    if (window) window.location.href = "/";
-  }
-
-  return (
-    <div>
-      <h1>page</h1>
-      {pdf && (
-        <PDFViewer
-          dialogSize={{ width: 800, height: 800 }}
-          pageSize={{ width: 800, height: 800 }}
-          filePath={pdf}
-        />
-      )}
-      <button onClick={() => handleDownload(pdf)}>Click</button>
-    </div>
-  );
-};
 
 export default CornellNotesCreatePage;
