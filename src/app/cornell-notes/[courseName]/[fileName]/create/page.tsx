@@ -104,6 +104,20 @@ const CornellNotesCreatePage = ({
     setPdfQuestions(newQuestions);
   }
 
+  // TODO: DRY up with other handleDownload functions
+  async function handleDownload(questions?: Question[][]) {
+    if (!pdf) return;
+
+    const cornellArrayBytes = await setupCornellNotes(pdf, questions);
+    const blob = new Blob([cornellArrayBytes], { type: "application/pdf" });
+    const [name, extension] = fileName.split(".");
+    const newFileName = `${name}-study-guide.${extension}`;
+    user?.config?.downloadBlobToFileSystem(blob, {
+      courseName,
+      fileName: newFileName,
+    });
+  }
+
   useEffect(() => {
     async function setup() {
       const fileHandle = courses
@@ -141,23 +155,5 @@ const CornellNotesCreatePage = ({
     </div>
   );
 };
-
-// TODO: DRY up with other handleDownload functions
-async function handleDownload(
-  questions?: Question[][],
-  pdfFile?: File,
-  fileName = "test.pdf",
-) {
-  if (!pdfFile) return;
-
-  const cornellArrayBytes = await setupCornellNotes(pdfFile, questions);
-  const blob = new Blob([cornellArrayBytes], { type: "application/pdf" });
-  const fileObjectUrl = URL.createObjectURL(blob);
-
-  const downloadEle = document.createElement("a");
-  downloadEle.href = fileObjectUrl;
-  downloadEle.download = fileName;
-  downloadEle.click();
-}
 
 export default CornellNotesCreatePage;

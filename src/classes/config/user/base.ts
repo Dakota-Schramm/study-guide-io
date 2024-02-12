@@ -111,20 +111,31 @@ export abstract class BaseUserConfig {
       });
   }
 
-  async downloadGuideToFileSystem(
+  public async downloadGuideToFileSystem(
     pdfFiles: PDFComponents["pdfFiles"],
     attachmentFiles: PDFComponents["attachmentFiles"],
     options: DownloadGuideOptions,
   ) {
-    const { courseName, fileName } = options;
     if (!pdfFiles || !attachmentFiles) return;
+
+    const pdfBlob = await createPdf(pdfFiles, attachmentFiles);
+    this.downloadBlobToFileSystem(pdfBlob, options);
+    // TODO: Fix so that doesn't require app reload after redirect
+    // Permission state doesnt stay after full page refresh
+    // window.location.href = "/";
+  }
+
+  public async downloadBlobToFileSystem(
+    pdfBlob: Blob,
+    options: DownloadGuideOptions,
+  ) {
+    const { courseName, fileName } = options;
 
     const courseHandle = await this.findCourseHandle("STEM", courseName, {
       create: true,
     });
     if (!courseHandle) return;
 
-    const pdfBlob = await createPdf(pdfFiles, attachmentFiles);
     const draftHandle = await courseHandle.getFileHandle(`${fileName}.pdf`, {
       create: true,
     });
@@ -135,9 +146,5 @@ export abstract class BaseUserConfig {
 
     // Close the file and write the contents to disk.
     await writable.close();
-
-    // TODO: Fix so that doesn't require app reload after redirect
-    // Permission state doesnt stay after full page refresh
-    // window.location.href = "/";
   }
 }
