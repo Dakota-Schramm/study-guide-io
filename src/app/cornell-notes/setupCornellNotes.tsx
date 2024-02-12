@@ -91,7 +91,7 @@ async function setupCornellPage(
   for (const { question, yPos } of questions) {
     page.drawText(question, {
       x: margin,
-      y: (yPos * .81) + summarySectionHeight + margin,
+      y: yPos * 0.81 + summarySectionHeight + margin,
       size: fontSize,
       lineHeight: 8,
       color: color,

@@ -24,7 +24,11 @@ const PDF = ({
   handleAddQuestion,
   filePath,
   pageTotal = 0,
-}: PDFProps & { handleAddQuestion: () => void }) => {
+  pdfQuestions,
+}: PDFProps & {
+  handleAddQuestion: () => void;
+  pdfQuestions: Question[][];
+}) => {
   if (!filePath) return;
 
   // TODO: Add better handling here for large pdfs
@@ -40,6 +44,7 @@ const PDF = ({
         <InteractablePage
           key={index}
           index={index}
+          pdfQuestions={pdfQuestions?.[index] ?? []}
           handleAddQuestion={handleAddQuestion}
         />
       ))}
@@ -127,7 +132,7 @@ const CornellNotesCreatePage = ({
         <PDF
           filePath={pdf}
           pageTotal={pdfStatus?.pageTotal}
-          {...{ handleDocumentLoadSuccess, handleAddQuestion }}
+          {...{ handleDocumentLoadSuccess, handleAddQuestion, pdfQuestions }}
         />
       </ScrollArea>
       <Button onClick={() => handleDownload(pdfQuestions, pdf)}>

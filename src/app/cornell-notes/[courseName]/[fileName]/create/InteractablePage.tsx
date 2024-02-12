@@ -6,6 +6,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import QuestionMarker from "./QuestionMarker";
 
 type ClickPos = {
   x: number;
@@ -17,15 +18,37 @@ type TopLeftCornerPos = {
   left: number;
 };
 
-type InteractablePageProps = {
+type CurrentPosState = {
   elementPos: ClickPos;
   cornerPos: TopLeftCornerPos;
 };
 
-const InteractablePage = ({ index, handleAddQuestion }) => {
-  const [currentPos, setCurrentPos] = useState<
-    InteractablePageProps | undefined
-  >(undefined);
+type InteractablePageProps = {
+  index: number;
+  handleAddQuestion: (
+    question: { question: string; yPos: number },
+    index: number,
+  ) => void;
+  pdfQuestions: { question: string; yPos: number }[];
+};
+
+// TODO: Add markers to show where questions have been placed
+// TODO: Auto move question markers below each other so they don't overlap
+const InteractablePage = ({
+  index,
+  handleAddQuestion,
+  pdfQuestions,
+}: InteractablePageProps) => {
+  const [currentPos, setCurrentPos] = useState<CurrentPosState | undefined>(
+    undefined,
+  );
+
+  // TODO: Make markers draggable?
+  // TODO: Add onhover to see question text, allow delete action
+  const questionMarkers = pdfQuestions.map((question, idx) => (
+    <QuestionMarker key={idx} question={question} idx={idx} />
+  ));
+  console.log(`InteractableDebug: ${questionMarkers.length}`);
 
   return (
     <div className="relative">
@@ -62,9 +85,6 @@ const InteractablePage = ({ index, handleAddQuestion }) => {
               onSubmit={(event) => {
                 event.preventDefault();
 
-                // calculate ypos from top of page
-
-                console.log("hit");
                 handleAddQuestion(
                   {
                     question: question.value,
@@ -81,6 +101,7 @@ const InteractablePage = ({ index, handleAddQuestion }) => {
                   type="text"
                   id="question"
                   name="question"
+                  autoComplete="off"
                   placeholder="What are the different states of matter?"
                 />
               </label>
@@ -89,6 +110,7 @@ const InteractablePage = ({ index, handleAddQuestion }) => {
           </div>
         </PopoverContent>
       </Popover>
+      {questionMarkers}
     </div>
   );
 };
