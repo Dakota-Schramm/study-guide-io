@@ -1,10 +1,50 @@
 "use client";
-import { PDFEmbeddedPage, PDFFont, PDFPage, rgb } from "pdf-lib";
 
-export async function setupCornellPage(
+import { PDFEmbeddedPage, PDFFont, PDFPage, rgb } from "pdf-lib";
+import { PDFDocument } from "pdf-lib";
+import fontkit from "@pdf-lib/fontkit";
+
+export type Question = {
+  question: string;
+  yPos: number;
+};
+
+export async function setupCornellNotes(
+  originalPdf: File,
+  questions?: Question[][],
+) {
+  const pdfDoc = await PDFDocument.create();
+
+  await setupFonts(pdfDoc);
+  const bytes = await originalPdf.arrayBuffer();
+  const pdf = await PDFDocument.load(bytes);
+
+  for (let i = 0; i < pdf.getPageCount(); i++) {
+    const docPage = pdfDoc.addPage();
+
+    const page = pdf.getPage(i);
+    const pageQuestions = questions?.[i].map((question) => ({
+      question: question.question,
+      yPos: page.getHeight() - question.yPos,
+    }));
+
+    const embedPage = await pdfDoc.embedPage(page);
+
+    setupCornellPage(
+      docPage,
+      embedPage,
+      pageQuestions ?? [],
+      "This is a summary",
+    );
+  }
+
+  const pdfBytes = await pdfDoc.save();
+  return pdfBytes;
+}
+
+async function setupCornellPage(
   page: PDFPage,
   embeddedContent: PDFEmbeddedPage,
-  font: PDFFont,
   questions: { question: string; yPos: number }[],
   summary: string,
 ) {
@@ -53,7 +93,6 @@ export async function setupCornellPage(
       y: yPos,
       size: fontSize,
       lineHeight: 8,
-      font: font,
       color: color,
       maxWidth: questionColumnWidth - margin,
     });
@@ -64,8 +103,14 @@ export async function setupCornellPage(
     y: summarySectionHeight - margin,
     size: fontSize,
     lineHeight: 8,
-    font: font,
     color: color,
     maxWidth: questionColumnWidth - 2 * margin,
   });
+}
+
+async function setupFonts(pdfDoc: PDFDocument) {
+  const response = await fetch("./mullish.ttf");
+  const fontBytes = await response.arrayBuffer();
+  pdfDoc.registerFontkit(fontkit);
+  const customFont = await pdfDoc.embedFont(fontBytes);
 }
