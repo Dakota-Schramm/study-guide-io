@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 
 import { TableCell, TableRow } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/tooltip";
 
 import { FaNotesMedical } from "react-icons/fa6";
-import Link from "next/link";
+import { OpenStudyGuideButton } from "./OpenStudyGuideButton";
 
 const CreateStudyGuideButton = ({
   courseName,
@@ -36,14 +36,22 @@ const CreateStudyGuideButton = ({
 };
 
 type FileTableRowProps = {
+  fileName: string;
   courseName: string;
   file: FileSystemFileHandle;
+  hasStudyGuide: boolean;
   idx: number;
 };
 
-export const FileTableRow = ({ courseName, file, idx }: FileTableRowProps) => {
-  const { name } = file;
-  const [fileName, extension] = name.split(".");
+export const FileTableRow = ({
+  fileName,
+  courseName,
+  file,
+  hasStudyGuide,
+  idx,
+}: FileTableRowProps) => {
+  console.log({ courseName, file, hasStudyGuide, idx });
+  const [handleName, extension] = file.name.split(".");
 
   return (
     <TableRow key={idx}>
@@ -52,6 +60,11 @@ export const FileTableRow = ({ courseName, file, idx }: FileTableRowProps) => {
       {extension === "pdf" ? (
         <TableCell>
           <CreateStudyGuideButton {...{ courseName, file }} />
+        </TableCell>
+      ) : undefined}
+      {hasStudyGuide ? (
+        <TableCell>
+          <OpenStudyGuideButton fileName={handleName} {...{ file }} />
         </TableCell>
       ) : undefined}
     </TableRow>

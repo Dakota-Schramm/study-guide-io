@@ -34,7 +34,7 @@ export type PDFProps = {
   height: number;
 };
 
-const PDF = ({
+export const PDF = ({
   filePath,
   handleDocumentLoadSuccess,
   pageTotal = 0,
