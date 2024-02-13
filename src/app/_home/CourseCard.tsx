@@ -101,6 +101,7 @@ export const CourseCard = ({ course }: { course: Course }) => {
       <CardFooter className="space-x-4">
         <CourseActions course={course} />
         <EditPopover course={course} />
+        {/* TODO: Rerender after delete action */}
         <DeleteButton
           courseName={courseName}
           handleConfirm={async () => {
