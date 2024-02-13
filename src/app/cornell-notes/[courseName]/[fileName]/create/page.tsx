@@ -18,6 +18,7 @@ import { UserContext } from "@/contexts/UserContext";
 import InteractablePage from "./InteractablePage";
 
 import type { Question } from "../../../setupCornellNotes";
+import { useRouter } from "next/navigation";
 
 const PDF = ({
   handleDocumentLoadSuccess,
@@ -67,6 +68,8 @@ const CornellNotesCreatePage = ({
   const { courseName } = params;
   const fileName = decodeURIComponent(params.fileName);
 
+  const router = useRouter();
+
   const [pdf, setPdf] = useState<File | undefined>(undefined);
   const [pdfStatus, setPdfStatus] = useState<LoadedPDF>({
     status: "uninitialized",
@@ -112,10 +115,11 @@ const CornellNotesCreatePage = ({
     const blob = new Blob([cornellArrayBytes], { type: "application/pdf" });
     const [name, extension] = fileName.split(".");
     const newFileName = `${name}-study-guide.${extension}`;
-    user?.config?.downloadBlobToFileSystem(blob, {
+    await user?.config?.downloadBlobToFileSystem(blob, {
       courseName,
       fileName: newFileName,
     });
+    router.push("/courses");
   }
 
   useEffect(() => {
@@ -125,11 +129,10 @@ const CornellNotesCreatePage = ({
         ?.files?.find((file) => file.name === fileName);
 
       const file = await fileHandle?.getFile();
-      console.log({ courseName, fileName, fileHandle, file });
       setPdf(file);
     }
     setup();
-  }, [courses]);
+  }, [courses, courseName, fileName]);
 
   if (user?.courses === undefined) {
     if (window) window.location.href = "/";
@@ -149,7 +152,7 @@ const CornellNotesCreatePage = ({
           {...{ handleDocumentLoadSuccess, handleAddQuestion, pdfQuestions }}
         />
       </ScrollArea>
-      <Button onClick={() => handleDownload(pdfQuestions, pdf)}>
+      <Button onClick={() => handleDownload(pdfQuestions)}>
         Download Study Guide
       </Button>
     </div>
