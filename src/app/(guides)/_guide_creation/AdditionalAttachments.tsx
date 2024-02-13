@@ -1,5 +1,10 @@
 "use client";
+
 import React, { forwardRef } from "react";
+
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 const AdditionalAttachments = forwardRef(function AdditionalAttachments(
   { rendered, hidden, handlePrevStep, handleNextStep },
@@ -11,22 +16,22 @@ const AdditionalAttachments = forwardRef(function AdditionalAttachments(
   return (
     <div className={hidden ? "invisible absolute" : undefined}>
       <h2>Add any additional attachments</h2>
-      <label>
+      <Label>
         Upload images:
-        <input
+        <Input
           ref={ref}
           name="attachments"
           type="file"
           accept=".png, .jpg"
           multiple
         />
-      </label>
-      <button type="button" onClick={handlePrevStep}>
+      </Label>
+      <Button type="button" onClick={handlePrevStep}>
         Previous
-      </button>
-      <button type="button" onClick={handleNextStep}>
+      </Button>
+      <Button type="button" onClick={handleNextStep}>
         Next
-      </button>
+      </Button>
     </div>
   );
 });

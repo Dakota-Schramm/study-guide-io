@@ -100,7 +100,6 @@ Rearchitect before too much further??
 Only use class for things made more than once
 
 useUser
-
 - check type and assign config
 - Full access
   - request permissions
@@ -124,7 +123,3 @@ Dark Mode
 NextJS Error Boundaries
 - Would be nice if can get to work for pages?
 - For now, just create a page component for error handling??
-
-TODO:
-- Declare roots on user config
-  - different depending on what fs used

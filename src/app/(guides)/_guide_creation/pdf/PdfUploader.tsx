@@ -2,6 +2,8 @@
 
 import React, { forwardRef, useState } from "react";
 import PDFViewer from "./PdfViewer";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 const PdfUploader = forwardRef(function PdfUploader(
   { rendered, hidden, handleNextStep },
@@ -17,9 +19,9 @@ const PdfUploader = forwardRef(function PdfUploader(
 
   return (
     <div className={hidden ? "invisible absolute" : undefined}>
-      <label>
+      <Label>
         Upload PDFs:
-        <input
+        <Input
           ref={ref}
           name="pdf"
           type="file"
@@ -30,7 +32,7 @@ const PdfUploader = forwardRef(function PdfUploader(
             if (filesExist) setUploaded(true);
           }}
         />
-      </label>
+      </Label>
       {uploaded && (
         <>
           <PDFViewer

@@ -5,6 +5,7 @@ import React, { useContext } from "react";
 import { UserContext } from "@/contexts/UserContext";
 import { FullAccessUserConfig } from "@/classes/config/user/full-access";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 export type PDFComponents = {
   pdfFiles: FileList;
@@ -57,12 +58,12 @@ export const Finalize = ({
     <div className={hidden ? "invisible" : undefined}>
       <h2>Finalize</h2>
       <p>Does this look good to you? If so, click "Complete"</p>
-      <button type="button" onClick={handlePrevStep}>
+      <Button type="button" onClick={handlePrevStep}>
         Previous
-      </button>
-      <button data-testid="downloadGuide" type="button" onClick={handleSubmit}>
+      </Button>
+      <Button data-testid="downloadGuide" type="button" onClick={handleSubmit}>
         Complete
-      </button>
+      </Button>
     </div>
   );
 };

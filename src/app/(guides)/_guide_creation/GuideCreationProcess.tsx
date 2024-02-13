@@ -5,14 +5,17 @@ import React, { useEffect, useRef, useState } from "react";
 import PdfUploader from "./pdf/PdfUploader";
 import { Finalize } from "./Finalize";
 import AdditionalAttachments from "./AdditionalAttachments";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 const Start = ({ hidden, handleNextStep }) => {
   return (
     <div hidden={hidden}>
       <h2>Start Your Study Guide</h2>
-      <button type="button" onClick={handleNextStep}>
+      <Button type="button" onClick={handleNextStep}>
         Start
-      </button>
+      </Button>
     </div>
   );
 };
@@ -26,15 +29,15 @@ const CourseInitialization = ({ rendered, hidden, handleNextStep }) => {
 
   return (
     <div hidden={hidden}>
-      <label>
+      <Label>
         Course Name
-        <input id="courseNameInput" placeholder="Mathematics" type="text" />
-      </label>
-      <label>
+        <Input id="courseNameInput" placeholder="Mathematics" type="text" />
+      </Label>
+      <Label>
         PDF Name
-        <input id="pdfNameInput" placeholder="Mathematics" type="text" />
-      </label>
-      <button
+        <Input id="pdfNameInput" placeholder="Mathematics" type="text" />
+      </Label>
+      <Button
         type="button"
         onClick={() => {
           const cName = document.getElementById("courseNameInput")?.value;
@@ -43,7 +46,7 @@ const CourseInitialization = ({ rendered, hidden, handleNextStep }) => {
         }}
       >
         Start
-      </button>
+      </Button>
     </div>
   );
 };
