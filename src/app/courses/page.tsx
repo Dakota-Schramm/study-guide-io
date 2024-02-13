@@ -2,6 +2,7 @@
 
 import React, { useContext, useEffect } from "react";
 import Link from "next/link";
+import { toast } from "sonner";
 
 import { UserContext } from "@/contexts/UserContext";
 import { CourseCard } from "../_home/CourseCard";
@@ -13,6 +14,24 @@ const CoursesPage = () => {
   useEffect(() => {
     reSyncCourses();
   }, []);
+
+  useEffect(() => {
+    async function checkStorage() {
+      if (user?.config instanceof RestrictedAccessUserConfig) {
+        const { percentage, quota } = await user.config.estimateStorage();
+        if (percentage < 80) return;
+
+        toast("Space is limited!", {
+          description: `You are using ${percentage}% of your ${quota} storage.`,
+          action: {
+            label: "OK",
+            onClick: () => {},
+          },
+        });
+      }
+    }
+    checkStorage();
+  }, [user.config]);
 
   if (user?.config === undefined) {
     if (window) window.location.href = "/";
