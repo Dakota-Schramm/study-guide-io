@@ -17,15 +17,27 @@ import { OpenStudyGuideButton } from "./OpenStudyGuideButton";
 const CreateStudyGuideButton = ({
   courseName,
   file,
+  hasStudyGuide,
 }: {
   courseName: string;
   file: FileSystemFileHandle;
+  hasStudyGuide: boolean;
 }) => {
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Link href={`/cornell-notes/${courseName}/${file.name}/create`}>
+          <Link
+            href={`/cornell-notes/${courseName}/${file.name}/create`}
+            onClick={(event) => {
+              if (hasStudyGuide) {
+                event.preventDefault();
+              }
+            }}
+            className={
+              hasStudyGuide ? "cursor-not-allowed text-gray-500" : undefined
+            }
+          >
             <FaNotesMedical />
           </Link>
         </TooltipTrigger>
@@ -59,7 +71,7 @@ export const FileTableRow = ({
       <TableCell>{extension}</TableCell>
       {extension === "pdf" ? (
         <TableCell>
-          <CreateStudyGuideButton {...{ courseName, file }} />
+          <CreateStudyGuideButton {...{ courseName, file, hasStudyGuide }} />
         </TableCell>
       ) : undefined}
       {hasStudyGuide ? (
