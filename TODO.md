@@ -10,6 +10,7 @@
 - Setup Github Actions
 - Factor PDF viewers into single component
 - Build design system
+  - Add references to design tokesn for js
 
 Add payment integration with stripe
 - spreadsheet for users
