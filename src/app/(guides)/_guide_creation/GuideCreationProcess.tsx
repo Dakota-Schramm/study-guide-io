@@ -5,72 +5,7 @@ import React, { useEffect, useRef, useState } from "react";
 import PdfUploader from "./pdf/PdfUploader";
 import { Finalize } from "./Finalize";
 import AdditionalAttachments from "./AdditionalAttachments";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-
-const Start = ({ hidden, handleNextStep }) => {
-  return (
-    <div hidden={hidden}>
-      <h2>Start Your Study Guide</h2>
-      <Button type="button" onClick={handleNextStep}>
-        Start
-      </Button>
-    </div>
-  );
-};
-
-// TODO: Change this to not show courseNameInput when just downloading file directly
-const CourseInitialization = ({ rendered, hidden, handleNextStep }) => {
-  if (!rendered) return;
-
-  // TODO: Add suggestions based on previous course names
-  // https://www.geeksforgeeks.org/how-to-display-suggestions-for-input-field-in-html/
-
-  return (
-    <div hidden={hidden}>
-      <Label>
-        Course Name
-        <Input id="courseNameInput" placeholder="Mathematics" type="text" />
-      </Label>
-      <Label>
-        PDF Name
-        <Input id="pdfNameInput" placeholder="Mathematics" type="text" />
-      </Label>
-      <Button
-        type="button"
-        onClick={() => {
-          const cName = document.getElementById("courseNameInput")?.value;
-          const pName = document.getElementById("pdfNameInput")?.value;
-          handleNextStep(cName, pName);
-        }}
-      >
-        Start
-      </Button>
-    </div>
-  );
-};
-
-const TOTAL_STEPS = 5;
-
-//? Maybe replace with https://ui.shadcn.com/docs/components/progress ?
-const StepStatus = ({
-  currentStep,
-  totalSteps,
-}: {
-  currentStep: number;
-  totalSteps: number;
-}) => {
-  return (
-    <>
-      {Array.from(new Array(totalSteps), (_, index) => (
-        <div className={index === currentStep ? "bg-red-700" : ""}>
-          {index + 1}
-        </div>
-      ))}
-    </>
-  );
-};
+import { CourseInitialization } from "./CourseInitialization";
 
 const GuideCreationProcess = () => {
   const [guideProgress, setGuideProgress] = useState({
