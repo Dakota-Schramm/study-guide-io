@@ -32,8 +32,11 @@ type InteractablePageProps = {
   pdfQuestions: { question: string; yPos: number }[];
 };
 
-// TODO: Add markers to show where questions have been placed
 // TODO: Auto move question markers below each other so they don't overlap
+// TODO: Make markers draggable
+/* Possible libraries 
+  - https://www.npmjs.com/package/react-draggable
+*/
 const InteractablePage = ({
   index,
   handleAddQuestion,
@@ -43,8 +46,7 @@ const InteractablePage = ({
     undefined,
   );
 
-  // TODO: Make markers draggable?
-  // TODO: Add onhover to see question text, allow delete action
+  // TODO: allow delete action
   const questionMarkers = pdfQuestions.map((question, idx) => (
     <QuestionMarker key={idx} question={question} idx={idx} />
   ));

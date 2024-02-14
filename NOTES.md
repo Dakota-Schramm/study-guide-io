@@ -18,18 +18,8 @@ Potential Features:
     - Sync with calendar?
       - Send reminders to user to review notes on particular days
 
-Make class for user type
-User methods
-- getCourses
-- saveToStorage
-  - canReaccess - boolean
-
 Do more research, reading so that can architect the app better going forward
 - once have bases covered, start design
-
-Rearchitect before too much further??
-- change professor to track? Courseload?
-- Plan to allow for diff types in future
 
 Check if Github Copilot can generate tests using Cypress?
 
