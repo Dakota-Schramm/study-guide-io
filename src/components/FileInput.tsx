@@ -7,11 +7,7 @@ type FileInputProps = {
   multiple?: boolean;
 };
 
-const FileInput = ({
-  fileList = [],
-  onChange,
-  ...props
-}: FileInputProps) => {
+const FileInput = ({ fileList = [], onChange, ...props }: FileInputProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {

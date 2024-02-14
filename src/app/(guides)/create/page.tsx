@@ -3,7 +3,14 @@
 import React, { useContext } from "react";
 
 import { UserContext } from "@/contexts/UserContext";
-import GuideCreationProcess from "../_guide_creation/GuideCreationProcess";
+import GuideCreationForm, {
+  FormProvider,
+} from "../_guide_creation/GuideCreationForm";
+import Start from "../_guide_creation/Start";
+import { CourseInitialization } from "../_guide_creation/CourseInitialization";
+import PdfUploader from "../_guide_creation/pdf/PdfUploader";
+import AdditionalAttachments from "../_guide_creation/AdditionalAttachments";
+import { Finalize } from "../_guide_creation/Finalize";
 
 // TODO: Add other course types in future
 // - Writing/Humanities?
@@ -18,7 +25,15 @@ export default function CreateContent() {
   return (
     <>
       <h1>Create Guide</h1>
-      <GuideCreationProcess />
+      <FormProvider>
+        <GuideCreationForm>
+          <Start />
+          <CourseInitialization />
+          <PdfUploader />
+          <AdditionalAttachments />
+          <Finalize />
+        </GuideCreationForm>
+      </FormProvider>
     </>
   );
 }

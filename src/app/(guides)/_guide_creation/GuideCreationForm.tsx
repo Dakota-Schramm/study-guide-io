@@ -1,4 +1,4 @@
-import React, { useContext, useState, Children } from "react";
+import React, { useContext, useState, Children, createContext } from "react";
 import { useRouter } from "next/navigation";
 
 import { FullAccessUserConfig } from "@/classes/config/user/full-access";
@@ -7,26 +7,61 @@ import { Button } from "@/components/ui/button";
 
 import { UserContext } from "@/contexts/UserContext";
 
-const GuideCreationForm = ({ children }) => {
-  const { user } = useContext(UserContext);
-  const [guideProgress, setGuideProgress] = useState({
+type FormState = {
+  step: number;
+  courseName?: string;
+  pdfName?: string;
+};
+
+type FormContextProps = {
+  form: FormState;
+  setForm: (form: FormState) => void;
+};
+
+export const FormContext = createContext<FormContextProps>({
+  form: {
+    step: 0,
+    courseName: undefined,
+    pdfName: undefined,
+  },
+  setForm: (form: FormState) => {},
+});
+
+/**
+ * The provider that handles globals for the app
+ */
+export const FormProvider = ({ children }: { children: ReactNode }) => {
+  const [form, setForm] = useState({
     step: 0,
     courseName: undefined,
     pdfName: undefined,
   });
-  const { step } = guideProgress;
+
+  return (
+    <FormContext.Provider value={{ form, setForm }}>
+      {children}
+    </FormContext.Provider>
+  );
+};
+
+// Use this link to build FileInputComponent
+// https://stackoverflow.com/questions/76103230/proper-way-to-create-a-controlled-input-type-file-element-in-react
+const GuideCreationForm = ({ children }) => {
+  const { user } = useContext(UserContext);
+  const { form, setForm } = useContext(FormContext);
+  const { step } = form;
 
   const router = useRouter();
 
   function handlePrevStep() {
-    setGuideProgress((s) => ({
+    setForm((s) => ({
       ...s,
       step: s.step - 1,
     }));
   }
 
   function handleNextStep() {
-    setGuideProgress((s) => ({
+    setForm((s) => ({
       ...s,
       step: s.step + 1,
     }));
@@ -65,9 +100,14 @@ const GuideCreationForm = ({ children }) => {
 function PrevButton({ step, onClick }) {
   if (step === 0) return undefined;
 
-  return <Button type="button" onClick={onClick}>Previous</Button>;
+  return (
+    <Button type="button" onClick={onClick}>
+      Previous
+    </Button>
+  );
 }
 
+// TODO: Add ability to disable button if form info is missing or invalid
 function NextButton({ step, onClick }) {
   let buttonText;
 
@@ -80,7 +120,7 @@ function NextButton({ step, onClick }) {
   }
 
   return (
-    <Button type='button' onClick={onClick}>
+    <Button type="button" onClick={onClick}>
       {buttonText}
     </Button>
   );
