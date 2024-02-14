@@ -8,8 +8,8 @@
 ## General
 
 - Setup Github Actions
-- Give RestrictedUser warning when close to memory limit
 - Factor PDF viewers into single component
+- Build design system
 
 Add payment integration with stripe
 - spreadsheet for users
