@@ -2,12 +2,14 @@
   "color": {
     "base": {
       "gray": {
-        "light" : { "value": "#CCCCCC" },
-        "medium": { "value": "#999999" },
-        "dark"  : { "value": "#111111" }
+        "main": { "value": "#615f60" }
       },
-      "red": { "value": "#FF0000" },
-      "green": { "value": "#00FF00" }
+      "blue": {
+        "main": { "value": "#7fd2f8" }
+      },
+      "purple": {
+        "main": { "value": "#6e41be"}
+      }
     }
   }
 }
