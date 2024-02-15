@@ -43,14 +43,14 @@ const SingleCoursePage = ({ params }: { params: { courseName: string } }) => {
   if (!course) notFound();
 
   return (
-    <div>
+    <>
       <h1>{course.getName()}</h1>
       <div className="container space-y-16">
         <FileSection {...{ files, courseName }} />
         <Separator />
         <ExamSection {...{ exams, courseName }} />
       </div>
-    </div>
+    </>
   );
 };
 

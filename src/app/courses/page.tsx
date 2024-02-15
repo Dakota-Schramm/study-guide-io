@@ -45,7 +45,7 @@ const CoursesPage = () => {
   const noCourses = user?.courses?.length === 0;
   if (noCourses) {
     return (
-      <div>
+      <>
         <h1>No Courses</h1>
         <p>It looks like you don't have any courses yet.</p>
         <p>
@@ -55,16 +55,16 @@ const CoursesPage = () => {
           </Link>
           .
         </p>
-      </div>
+      </>
     );
   }
 
   return (
-    <div className="grid grid-cols-3 gap-8">
+    <>
       {user?.courses?.map((course) => (
         <CourseCard key={course.id} course={course} />
       ))}
-    </div>
+    </>
   );
 };
 
