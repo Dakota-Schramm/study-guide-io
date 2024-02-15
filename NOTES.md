@@ -28,3 +28,5 @@ NextJS Error Boundaries
 - For now, just create a page component for error handling??
 
 Array.fromAsync not a function in safari
+
+Maybe add alert that says welcome on accepting permissions first time in session
