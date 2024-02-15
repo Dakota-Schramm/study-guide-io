@@ -17,3 +17,7 @@ Add payment integration with stripe
 Analytics?
 
 Add fallbacks for certain features??
+
+Potential Theming
+- Penguin
+  - Black, Gray, Purple?
