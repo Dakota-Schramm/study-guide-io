@@ -79,16 +79,24 @@ const GuideCreationForm = ({ children }) => {
     console.log({ form });
     e.preventDefault();
 
+    let isFormValid = true;
     if ((pdfs ?? []).length === 0) {
       alert("Must include pdfs in form");
+      isFormValid = false;
     }
 
     if (courseName === undefined) {
       alert("Must include courseName");
+      isFormValid = false;
     }
 
     if (pdfName === undefined) {
       alert("Must include fileName");
+      isFormValid = false;
+    }
+
+    if (!isFormValid) {
+      return;
     }
 
     await user?.config?.downloadGuideToFileSystem(pdfs, attachments, options);
@@ -107,6 +115,7 @@ const GuideCreationForm = ({ children }) => {
         })}
         <PrevButton onClick={handlePrevStep} {...{ step }} />
         <NextButton onClick={handleNextStep} {...{ step }} />
+        <SubmitButton {...{ step }} />
       </form>
       <StepStatus currentStep={step} totalSteps={TOTAL_STEPS} />
     </>
@@ -126,22 +135,25 @@ function PrevButton({ step, onClick }) {
 // TODO: Add ability to disable button if form info is missing or invalid
 function NextButton({ step, onClick }) {
   let buttonText;
-  let buttonType: "button" | "submit" = "button";
+  if (step === 4) return undefined;
 
   if (step === 0) {
     buttonText = "Start";
-  } else if (step === 4) {
-    buttonText = "Complete";
-    buttonType = "submit";
   } else {
     buttonText = "Next";
   }
 
   return (
-    <Button type={buttonType} onClick={onClick}>
+    <Button type="button" onClick={onClick}>
       {buttonText}
     </Button>
   );
+}
+
+function SubmitButton({ step }) {
+  if (step !== 4) return undefined;
+
+  return <Button type="submit">Complete</Button>;
 }
 
 const TOTAL_STEPS = 5;

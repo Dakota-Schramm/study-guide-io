@@ -14,7 +14,7 @@ const FileInput = ({ fileList = [], onChange, ...props }: FileInputProps) => {
   useEffect(() => {
     if (inputRef.current) {
       const dataTransfer = new DataTransfer();
-      fileList.forEach((file) => dataTransfer.items.add(file));
+      Array.from(fileList).forEach((file) => dataTransfer.items.add(file));
       inputRef.current.files = dataTransfer.files;
     }
   }, [fileList]);

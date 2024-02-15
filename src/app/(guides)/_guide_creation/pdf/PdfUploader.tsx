@@ -9,9 +9,10 @@ import PDFViewer from "./PdfViewer";
 import { FormContext } from "../GuideCreationForm";
 
 // TODO: Add better support for adding multiple files at once
-const PdfUploader = ({ files }) => {
+const PdfUploader = () => {
   const { form, setForm } = useContext(FormContext);
   const [uploaded, setUploaded] = useState(false);
+  const files = form.pdfs;
 
   return (
     <>
@@ -24,6 +25,7 @@ const PdfUploader = ({ files }) => {
           onChange={(files) => {
             const filesExist = 1 <= (files?.length ?? 0);
             if (filesExist) setUploaded(true);
+            console.log({ files });
             setForm((f) => ({ ...f, pdfs: files }));
           }}
         />

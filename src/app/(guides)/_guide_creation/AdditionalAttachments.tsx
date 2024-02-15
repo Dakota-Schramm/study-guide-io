@@ -7,8 +7,10 @@ import { Label } from "@/components/ui/label";
 import FileInput from "@/components/FileInput";
 import { FormContext } from "./GuideCreationForm";
 
-const AdditionalAttachments = ({ files }) => {
-  const { setForm } = useContext(FormContext);
+const AdditionalAttachments = () => {
+  const { form, setForm } = useContext(FormContext);
+  const files = form.attachments;
+
   // TODO: Allow more file types in input[name="attachments"]
   return (
     <>
