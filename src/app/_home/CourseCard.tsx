@@ -17,6 +17,7 @@ import { Course } from "@/classes/course/course";
 import DeleteButton from "./DeleteButton";
 import { UserContext } from "@/contexts/UserContext";
 
+// Fix courseName page showing config file in SingleCourse view after fresh creation of course??
 export const CourseCard = ({ course }: { course: Course }) => {
   const { user } = useContext(UserContext);
 
