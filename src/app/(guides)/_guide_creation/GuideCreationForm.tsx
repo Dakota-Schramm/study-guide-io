@@ -83,9 +83,9 @@ const GuideCreationForm = ({ children }) => {
   return (
     <>
       <form id="pdf-create" className="flex flex-col" onSubmit={handleSubmit}>
-        {Children.map(children, (_, idx) => {
+        {Children.map(children, (child, idx) => {
           if (idx === step) {
-            return children[idx];
+            return child;
           }
           return undefined;
         })}
