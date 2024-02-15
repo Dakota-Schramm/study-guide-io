@@ -1,11 +1,13 @@
 "use client";
 
-import { useContext } from "react";
+import React, { useContext } from "react";
 
-import GuideCreationProcess from "../_guide_creation/GuideCreationProcess";
 import { UserContext } from "@/contexts/UserContext";
+import GuideCreationProcess from "../_guide_creation/GuideCreationProcess";
 
-const STEM = () => {
+// TODO: Add other course types in future
+// - Writing/Humanities?
+export default function CreateContent() {
   const { user } = useContext(UserContext);
 
   // TODO: Move into middleware?
@@ -15,10 +17,8 @@ const STEM = () => {
 
   return (
     <>
-      <h1>STEM</h1>
+      <h1>Create Guide</h1>
       <GuideCreationProcess />
     </>
   );
-};
-
-export default STEM;
+}
