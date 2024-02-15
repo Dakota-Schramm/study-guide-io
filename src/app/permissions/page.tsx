@@ -11,6 +11,7 @@ import { FaLockOpen } from "react-icons/fa6";
 import { UserContext } from "@/contexts/UserContext";
 import { sitePath } from "@/lib/utils";
 
+// TODO: Only show alert if user is fullaccess
 const Permissions = () => {
   const { user, reSyncCourses } = useContext(UserContext);
   if (user.config === null)
