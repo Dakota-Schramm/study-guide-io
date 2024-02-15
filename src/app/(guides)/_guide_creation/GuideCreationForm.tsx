@@ -1,8 +1,6 @@
 import React, { useContext, useState, Children, createContext } from "react";
 import { useRouter } from "next/navigation";
 
-import { FullAccessUserConfig } from "@/classes/config/user/full-access";
-
 import { Button } from "@/components/ui/button";
 
 import { UserContext } from "@/contexts/UserContext";
@@ -11,6 +9,8 @@ type FormState = {
   step: number;
   courseName?: string;
   pdfName?: string;
+  pdfs: FileList;
+  attachments: FileList;
 };
 
 type FormContextProps = {
@@ -23,8 +23,10 @@ export const FormContext = createContext<FormContextProps>({
     step: 0,
     courseName: undefined,
     pdfName: undefined,
+    pdfs: [],
+    attachments: [],
   },
-  setForm: (form: FormState) => {},
+  setForm: (form) => {},
 });
 
 /**
@@ -35,6 +37,8 @@ export const FormProvider = ({ children }: { children: ReactNode }) => {
     step: 0,
     courseName: undefined,
     pdfName: undefined,
+    pdfs: [],
+    attachments: [],
   });
 
   return (
@@ -44,8 +48,6 @@ export const FormProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-// Use this link to build FileInputComponent
-// https://stackoverflow.com/questions/76103230/proper-way-to-create-a-controlled-input-type-file-element-in-react
 const GuideCreationForm = ({ children }) => {
   const { user } = useContext(UserContext);
   const { form, setForm } = useContext(FormContext);
@@ -67,16 +69,30 @@ const GuideCreationForm = ({ children }) => {
     }));
   }
 
-  async function handleSubmit() {
-    if (user?.config instanceof FullAccessUserConfig) {
-      await user?.config.downloadGuideToFileSystem(files, courseName, fileName);
-    } else {
-      await user?.config?.downloadGuideToFileSystem(
-        components?.pdfFiles,
-        components?.attachmentFiles,
-        { courseName, fileName },
-      );
+  // TODO: Move validations into form steps
+  // Add stepIsValid boolean that returns whether inputs on page are valid
+  // Use to allow going to next step
+  async function handleSubmit(e) {
+    const { pdfs, attachments, courseName, pdfName } = form;
+    const options = { courseName, fileName: pdfName };
+
+    console.log({ form });
+    e.preventDefault();
+
+    if ((pdfs ?? []).length === 0) {
+      alert("Must include pdfs in form");
     }
+
+    if (courseName === undefined) {
+      alert("Must include courseName");
+    }
+
+    if (pdfName === undefined) {
+      alert("Must include fileName");
+    }
+
+    await user?.config?.downloadGuideToFileSystem(pdfs, attachments, options);
+
     router.push("/courses");
   }
 
@@ -110,17 +126,19 @@ function PrevButton({ step, onClick }) {
 // TODO: Add ability to disable button if form info is missing or invalid
 function NextButton({ step, onClick }) {
   let buttonText;
+  let buttonType: "button" | "submit" = "button";
 
   if (step === 0) {
     buttonText = "Start";
-  } else if (step === 5) {
-    buttonText = "Finish";
+  } else if (step === 4) {
+    buttonText = "Complete";
+    buttonType = "submit";
   } else {
     buttonText = "Next";
   }
 
   return (
-    <Button type="button" onClick={onClick}>
+    <Button type={buttonType} onClick={onClick}>
       {buttonText}
     </Button>
   );
