@@ -7,6 +7,7 @@ type FileInputProps = {
   multiple?: boolean;
 };
 
+// From https://stackoverflow.com/questions/76103230/proper-way-to-create-a-controlled-input-type-file-element-in-react
 const FileInput = ({ fileList = [], onChange, ...props }: FileInputProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
