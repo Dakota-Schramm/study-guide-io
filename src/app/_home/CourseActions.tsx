@@ -10,6 +10,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Course } from "@/classes/course/course";
 import { UserContext } from "@/contexts/UserContext";
+import { Button } from "@/components/ui/button";
+import { ExamDialog } from "./ExamDialog";
 
 const CourseActions = ({ course }: { course: Course }) => {
   const { user } = useContext(UserContext);
@@ -26,12 +28,20 @@ const CourseActions = ({ course }: { course: Course }) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button type="button" className="bg-green-500">
-          Actions
-        </button>
+        <Button type="button" className="bg-green-500">
+          Exam Actions
+        </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuLabel>Exam Actions</DropdownMenuLabel>
+        <DropdownMenuLabel>Add</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>
+          <ExamDialog
+            courseName={course.getName()}
+            files={course.getCourseFiles()}
+          />
+        </DropdownMenuItem>
+        <DropdownMenuLabel>Download</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {exams.map((exam, idx) => (
           <DropdownMenuItem onClick={() => handleDownload(course, exam)}>
@@ -43,6 +53,19 @@ const CourseActions = ({ course }: { course: Course }) => {
         >
           Download Final Exam
         </DropdownMenuItem>
+        <DropdownMenuLabel>Remove</DropdownMenuLabel>
+        {exams.map((exam, idx) => (
+          <DropdownMenuItem
+            key={idx}
+            onClick={async () => {
+              const remainingExams = await course.deleteExam(idx);
+              setExams(remainingExams);
+            }}
+          >
+            Delete Exam {idx + 1}
+          </DropdownMenuItem>
+        ))}
+        <DropdownMenuSeparator />
       </DropdownMenuContent>
     </DropdownMenu>
   );
