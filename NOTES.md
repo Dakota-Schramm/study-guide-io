@@ -26,3 +26,5 @@ Check if Github Copilot can generate tests using Cypress?
 NextJS Error Boundaries
 - Would be nice if can get to work for pages?
 - For now, just create a page component for error handling??
+
+Array.fromAsync not a function in safari
