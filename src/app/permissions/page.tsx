@@ -19,8 +19,6 @@ import { UserContext } from "@/contexts/UserContext";
 import { sitePath } from "@/lib/utils";
 import { FullAccessUserConfig } from "@/classes/config/user/full-access";
 
-// TODO: Only show alert if user is fullaccess
-
 const FullUserAlert = () => (
   <Alert className="bg-red-700 text-white relative">
     <GoAlertFill className="absolute left-0 fill-white text-[26px] " />
