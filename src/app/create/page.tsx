@@ -9,7 +9,7 @@ export default function CreateContent() {
 
   // TODO: Move into middleware?
   if (user?.config === undefined) {
-    if (window) window.location.href = "/";
+    if (window) window.location.href = "/permissions";
   }
 
   return (

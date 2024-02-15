@@ -33,7 +33,7 @@ const SingleCoursePage = ({ params }: { params: { courseName: string } }) => {
   }, []);
 
   if (user?.courses === undefined) {
-    if (window) window.location.href = "/";
+    if (window) window.location.href = "/permissions";
   }
 
   const course = user.courses?.find(

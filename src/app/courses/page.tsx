@@ -34,7 +34,7 @@ const CoursesPage = () => {
   }, [user.config]);
 
   if (user?.config === undefined) {
-    if (window) window.location.href = "/";
+    if (window) window.location.href = "/permissions";
   } else if (
     user?.config instanceof RestrictedAccessUserConfig &&
     user?.courses === undefined

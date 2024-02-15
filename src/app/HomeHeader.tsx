@@ -1,17 +1,16 @@
 "use client";
 
-import { DarkModeToggle } from "@/components/DarkModeToggle";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { FaHouseChimney } from "react-icons/fa6";
-import { FaGear } from "react-icons/fa6";
-import { FaFileCirclePlus } from "react-icons/fa6";
+import { DarkModeToggle } from "@/components/DarkModeToggle";
+
+import { FaHouseChimney, FaGear, FaFileCirclePlus } from "react-icons/fa6";
 
 export const HomeHeader = () => {
   const pathName = usePathname();
 
-  if (pathName.endsWith("/")) {
+  if (pathName.endsWith("/permissions")) {
     return;
   }
 

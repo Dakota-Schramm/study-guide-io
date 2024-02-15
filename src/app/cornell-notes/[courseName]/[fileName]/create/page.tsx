@@ -135,7 +135,7 @@ const CornellNotesCreatePage = ({
   }, [courses, courseName, fileName]);
 
   if (user?.courses === undefined) {
-    if (window) window.location.href = "/";
+    if (window) window.location.href = "/permissions";
   }
 
   // if (!pdf) return <div>Loading...</div>
