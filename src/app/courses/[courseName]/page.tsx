@@ -44,8 +44,8 @@ const SingleCoursePage = ({ params }: { params: { courseName: string } }) => {
 
   return (
     <>
-      <h1>{course.getName()}</h1>
-      <div className="container space-y-16">
+      <h1 className="col-span-2 lg:col-span-4">{course.getName()}</h1>
+      <div className="container space-y-16 col-span-2 lg:col-span-4">
         <FileSection {...{ files, courseName }} />
         <Separator />
         <ExamSection {...{ exams, courseName }} />
