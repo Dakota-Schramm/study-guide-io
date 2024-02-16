@@ -5,6 +5,8 @@ import React, { useContext } from "react";
 import { Button } from "@/components/ui/button";
 
 import { UserContext } from "@/contexts/UserContext";
+import { ButtonContent } from "./ButtonContent";
+import DeleteAppDataButton from "./DeleteAppDataButton";
 
 // TODO: Add button for full user to choose a new home directory
 // TODO: Add button to delete all user data
@@ -13,14 +15,14 @@ export default function SettingsContent() {
 
   return (
     <>
-      <Button className="flex flex-col" onClick={() => reSyncCourses()}>
-        <span className="font-bold">Setup directory</span>
-        <ul className="opacity-50">
-          <li className="text-white text-sm text-muted-foreground">
-            Reinitialize your courses as if you're logging in
-          </li>
-        </ul>
+      <Button onClick={() => reSyncCourses()} className="flex flex-col">
+        <ButtonContent
+          title="Setup directory"
+          description="Reinitialize your courses as if you're logging in"
+        />
       </Button>
+
+      <DeleteAppDataButton />
     </>
   );
 }
