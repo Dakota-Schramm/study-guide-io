@@ -19,5 +19,11 @@ Analytics?
 Add fallbacks for certain features??
 
 Potential Theming
+
 - Penguin
   - Black, Gray, Purple?
+
+Add dialog to show when app is loading?
+
+- Add least disable buttons when app is loading
+  - Single Course page

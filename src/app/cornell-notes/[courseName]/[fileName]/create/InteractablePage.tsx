@@ -7,6 +7,8 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import QuestionMarker from "./QuestionMarker";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 type ClickPos = {
   x: number;
@@ -37,6 +39,7 @@ type InteractablePageProps = {
 /* Possible libraries 
   - https://www.npmjs.com/package/react-draggable
 */
+// TODO: Change so that popover position depends on part of screen clicked?
 const InteractablePage = ({
   index,
   handleAddQuestion,
@@ -82,34 +85,35 @@ const InteractablePage = ({
           />
         </PopoverTrigger>
         <PopoverContent asChild>
-          <div className="absolute p-4" style={currentPos?.cornerPos}>
-            <form
-              onSubmit={(event) => {
-                event.preventDefault();
+          <form
+            className="absolute p-4 space-y-8"
+            style={currentPos?.cornerPos}
+            onSubmit={(event) => {
+              event.preventDefault();
 
-                handleAddQuestion(
-                  {
-                    question: question.value,
-                    yPos: currentPos?.elementPos.y,
-                  },
-                  index,
-                );
-                setCurrentPos(undefined);
-              }}
-            >
-              <label>
-                Question
-                <input
-                  type="text"
-                  id="question"
-                  name="question"
-                  autoComplete="off"
-                  placeholder="What are the different states of matter?"
-                />
-              </label>
-              <button type="submit">Submit</button>
-            </form>
-          </div>
+              handleAddQuestion(
+                {
+                  question: question.value,
+                  yPos: currentPos?.elementPos.y,
+                },
+                index,
+              );
+              setCurrentPos(undefined);
+            }}
+          >
+            <Label>
+              Question
+              <textarea
+                id="question"
+                name="question"
+                autoComplete="off"
+                cols={30}
+                rows={5}
+                placeholder="What are the different states of matter?"
+              />
+            </Label>
+            <Button type="submit">Submit</Button>
+          </form>
         </PopoverContent>
       </Popover>
       {questionMarkers}
