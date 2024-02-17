@@ -35,9 +35,23 @@ export default function CreateContent() {
 
     const courseName = formValues.get("course-name");
     const fileName = formValues.get("pdf-name");
-    let options: DownloadGuideOptions | undefined;
-    if (courseName && fileName) {
-      options = { courseName, fileName };
+    if (!courseName) {
+      alert("No course name provided!");
+      return
+    } else if (!fileName) {
+      alert("No filename provided");
+      return;
+    }
+    const options = { courseName, fileName };
+
+    if (!pdfs || pdfs.length < 1) {
+      alert("PDFs provided not sufficient");
+      return;
+    }
+
+    if (!attachments || attachments.length < 1) {
+      alert("Attachmentss provided not sufficient");
+      return;
     }
 
     await user?.config?.downloadGuideToFileSystem(pdfs, attachments, options);
