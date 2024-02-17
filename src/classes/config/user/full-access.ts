@@ -10,7 +10,7 @@ export class FullAccessUserConfig extends BaseUserConfig {
 
   private async getHomeDirectory() {
     const handles = await getAppHandlesFromDB();
-    console.log({ handles });
+
     let root = handles?.find((h) => h.name === sitePath);
     if (!root) {
       root = await this.initializeHomeDirectory();
