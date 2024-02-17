@@ -1,30 +1,61 @@
 "use client";
 
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 import { UserContext } from "@/contexts/UserContext";
 
-type DownloadGuideOptions = {
-  courseName: string;
-  pdfName: string;
-};
+// SUBMIT BUTTON STATES
+// User has no config
+//   - Give user option to allow permissions
+//   - Download into downloads folder
+// User has config
+//   - Download into storage
+//   - Download into downloads folder
+const SubmitButton = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const { user, } = useContext(UserContext);
+
+  let primaryBtn;
+  if (user.config === undefined) {
+    primaryBtn = "permit-and-add";
+  } else {
+    primaryBtn = "add";
+  }
+
+  // TODO: Make these a radio btn?
+  return (
+    <Popover open={isOpen}>
+      <PopoverTrigger asChild>
+        <Button>Submit</Button>
+      </PopoverTrigger>
+      <PopoverContent>
+        <Button onClick={() => {
+          setIsOpen(false)
+        }}></Button>
+        <Button onClick={() => {
+        }}>Download</Button>
+      </PopoverContent>
+    </Popover>
+  )
+}
 
 // TODO: Add other course types in future
 // - Writing/Humanities?
+// ? Maybe make the file inputs just icon btns?
 export default function CreateContent() {
   const { user } = useContext(UserContext);
 
   const router = useRouter();
-
-  // TODO: Move into middleware?
-  if (user?.config === undefined) {
-    if (window) window.location.href = "/permissions";
-  }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -32,6 +63,29 @@ export default function CreateContent() {
 
     const pdfs = formValues.get("pdfs");
     const attachments = formValues.get("attachments");
+
+    if (!pdfs || pdfs.length < 1) {
+      alert("PDFs provided not sufficient");
+      return;
+    }
+
+    if (!attachments || attachments.length < 1) {
+      alert("Attachmentss provided not sufficient");
+      return;
+    }
+
+    const downloadType = formValues.get('download-type');
+    if (!downloadType) {
+      alert("Download type not provided")
+      return;
+    } else if (downloadType === "download") {
+      user?.config?.download(pdfs, attachments);
+      return;
+    }
+
+    if (downloadType === "permit-and-add") {
+      // determine config and init
+    }
 
     const courseName = formValues.get("course-name");
     const fileName = formValues.get("pdf-name");
@@ -44,16 +98,6 @@ export default function CreateContent() {
       return;
     }
     const options = { courseName, fileName };
-
-    if (!pdfs || pdfs.length < 1) {
-      alert("PDFs provided not sufficient");
-      return;
-    }
-
-    if (!attachments || attachments.length < 1) {
-      alert("Attachmentss provided not sufficient");
-      return;
-    }
 
     await user?.config?.downloadGuideToFileSystem(pdfs, attachments, options);
     router.push("/courses");
@@ -95,7 +139,7 @@ export default function CreateContent() {
           Upload images:{" "}
           <Input name="attachments" type="file" accept=".png, .jpg" multiple />
         </Label>
-        <Button>Submit</Button>
+        <SubmitButton />
       </form>
     </>
   );
