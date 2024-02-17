@@ -10,9 +10,9 @@ import { Button } from "@/components/ui/button";
 import { UserContext } from "@/contexts/UserContext";
 
 type DownloadGuideOptions = {
-  courseName: string,
-  pdfName: string,
-}
+  courseName: string;
+  pdfName: string;
+};
 
 // TODO: Add other course types in future
 // - Writing/Humanities?
@@ -37,8 +37,9 @@ export default function CreateContent() {
     const fileName = formValues.get("pdf-name");
     if (!courseName) {
       alert("No course name provided!");
-      return
-    } else if (!fileName) {
+      return;
+    }
+    if (!fileName) {
       alert("No filename provided");
       return;
     }
@@ -61,7 +62,11 @@ export default function CreateContent() {
   return (
     <>
       <h1>Create Guide</h1>
-      <form id="pdf-create" className="flex flex-col space-y-4" onSubmit={handleSubmit}>
+      <form
+        id="pdf-create"
+        className="flex flex-col space-y-4"
+        onSubmit={handleSubmit}
+      >
         <Label>
           Course Name
           <Input
