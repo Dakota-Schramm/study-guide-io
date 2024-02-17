@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  ReactNode,
-  createContext,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import { ReactNode, createContext, useCallback, useState } from "react";
 import { toast } from "sonner";
 
 import { FullAccessUserConfig } from "@/classes/config/user/full-access";
@@ -98,9 +92,9 @@ function useUser() {
 type UserContext = {
   user: IUser;
   setUser: (user: IUser) => void;
-  setupPermissions: () => void;
-  reSyncCourses: (userConfig?: BaseUserConfig | null) => void;
-  addExamToCourse: (courseName: string, exams: string[]) => void;
+  setupPermissions: () => Promise<void>;
+  reSyncCourses: (userConfig?: BaseUserConfig | null) => Promise<void>;
+  addExamToCourse: (courseName: string, exams: string[]) => Promise<void>;
 };
 
 export const UserContext = createContext<UserContext>({
@@ -108,10 +102,10 @@ export const UserContext = createContext<UserContext>({
     config: undefined,
     courses: undefined,
   },
-  setupPermissions: () => {},
   setUser: (user: IUser) => {},
-  reSyncCourses: () => {},
-  addExamToCourse: () => {},
+  setupPermissions: async () => {},
+  reSyncCourses: async () => {},
+  addExamToCourse: async () => {},
 });
 
 /**
