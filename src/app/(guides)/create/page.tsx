@@ -61,7 +61,7 @@ export default function CreateContent() {
   return (
     <>
       <h1>Create Guide</h1>
-      <form id="pdf-create" className="flex flex-col" onSubmit={handleSubmit}>
+      <form id="pdf-create" className="flex flex-col space-y-4" onSubmit={handleSubmit}>
         <Label>
           Course Name
           <Input
