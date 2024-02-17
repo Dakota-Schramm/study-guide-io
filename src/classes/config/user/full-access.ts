@@ -12,15 +12,17 @@ export class FullAccessUserConfig extends BaseUserConfig {
     const handles = await getAppHandlesFromDB();
 
     let root = handles?.find((h) => h.name === sitePath);
+    let isPermitted;
     if (!root) {
       root = await this.initializeHomeDirectory();
     } else {
-      await root.requestPermission({
-        mode: "readwrite",
-      });
+      isPermitted =
+        (await root.requestPermission({
+          mode: "readwrite",
+        })) === "granted";
     }
 
-    return root;
+    return isPermitted ? root : null;
   }
 
   /**

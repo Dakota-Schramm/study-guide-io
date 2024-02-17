@@ -43,6 +43,7 @@ export abstract class BaseUserConfig {
     }
 
     this.handles = handles;
+    this.permitted = true;
   }
 
   public getRoot(): Nullable<FileSystemDirectoryHandle> {

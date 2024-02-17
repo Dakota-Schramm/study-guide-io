@@ -7,6 +7,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import { toast } from "sonner";
 
 import { FullAccessUserConfig } from "@/classes/config/user/full-access";
 import { RestrictedAccessUserConfig } from "@/classes/config/user/restricted-access";
@@ -33,6 +34,26 @@ function useUser() {
     courses: undefined,
   });
   const { courses } = user;
+  const router = useRouter();
+
+  const setupPermissions = useCallback(async () => {
+    await user?.config?.initialize();
+
+    if (!user?.config?.permitted) {
+      toast("Permissions need to be accepted", {
+        description: "You can accept permissions at /settings later.",
+        action: {
+          label: "Accept",
+          onClick: async () => {
+            await user?.config?.initialize();
+            if (user?.config?.permitted) {
+              router.push("/courses");
+            }
+          },
+        },
+      });
+    }
+  }, [user?.config]);
 
   const reSyncCourses = useCallback(async () => {
     if (!user?.config) {
@@ -44,8 +65,8 @@ function useUser() {
 
     showDebugInfo(courses);
 
-    setUser(prev => ({ ...prev, courses }));
-  }, []);
+    setUser((prev) => ({ ...prev, courses }));
+  }, [user?.config]);
 
   // TODO: Add requirement that courseNames are unique
   const addExamToCourse = useCallback(
@@ -68,6 +89,7 @@ function useUser() {
   return {
     user,
     setUser,
+    setupPermissions,
     reSyncCourses,
     addExamToCourse,
   };
@@ -76,6 +98,7 @@ function useUser() {
 type UserContext = {
   user: IUser;
   setUser: (user: IUser) => void;
+  setupPermissions: () => void;
   reSyncCourses: (userConfig?: BaseUserConfig | null) => void;
   addExamToCourse: (courseName: string, exams: string[]) => void;
 };
@@ -85,6 +108,7 @@ export const UserContext = createContext<UserContext>({
     config: undefined,
     courses: undefined,
   },
+  setupPermissions: () => {},
   setUser: (user: IUser) => {},
   reSyncCourses: () => {},
   addExamToCourse: () => {},
@@ -111,4 +135,3 @@ function showDebugInfo(courses) {
     window.log.debug(course);
   }
 }
-

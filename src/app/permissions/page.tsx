@@ -32,16 +32,16 @@ const FullUserAlert = () => (
 );
 
 const SetupCard = () => {
-  const { user, setUser } = useContext(UserContext);
+  const { user, setUser, setupPermissions } = useContext(UserContext);
   const router = useRouter();
 
   useEffect(() => {
     const userConfig = determineUserConfig();
-    setUser(prev => ({ ...prev, config: userConfig }));
-  }, [])
+    setUser((prev) => ({ ...prev, config: userConfig }));
+  }, []);
 
-  async function setupUserPermissions() {
-    await user?.config?.initialize();
+  async function handleClick() {
+    await setupPermissions();
 
     if (user?.config?.permitted) {
       router.push("/courses");
@@ -59,7 +59,7 @@ const SetupCard = () => {
         <div>Placeholder image...</div>
       </CardContent>
       <CardFooter>
-        <Button onClick={setupUserPermissions}>
+        <Button onClick={handleClick}>
           <FaLockOpen className="mr-4" />
           Setup permissions
         </Button>
