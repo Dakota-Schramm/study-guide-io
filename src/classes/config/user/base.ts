@@ -21,8 +21,13 @@ type UserFileSystemHandles = {
 
 export abstract class BaseUserConfig {
   protected handles?: UserFileSystemHandles;
+  protected _permitted?: boolean;
 
   async initialize(root: FileSystemDirectoryHandle) {
+    if (!root) {
+      this.permitted = false;
+      return;
+    }
     const handles = { root };
 
     try {
@@ -42,6 +47,14 @@ export abstract class BaseUserConfig {
 
   public getRoot(): Nullable<FileSystemDirectoryHandle> {
     return this.handles?.root;
+  }
+
+  get permitted(): boolean | undefined {
+    return this._permitted;
+  }
+
+  set permitted(newValue: boolean) {
+    this._permitted = newValue;
   }
 
   public getCourseTypeHandles(): [string, FileSystemDirectoryHandle[]] {

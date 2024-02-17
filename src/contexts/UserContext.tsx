@@ -19,12 +19,11 @@ import { useRouter } from "next/navigation";
  * @param config a User's associated app configuration
  *  - FullAccessUserConfig => user has accepted on full access browser
  *  - RestrictedAccessUserConfig => using a restricted access browser
- *  - null => user has rejected access on full access browser
  *  - undefined => user is uninitialized
  *
  */
 export type IUser = {
-  config?: FullAccessUserConfig | RestrictedAccessUserConfig | null;
+  config?: FullAccessUserConfig | RestrictedAccessUserConfig;
   courses?: Course[];
 };
 
@@ -34,35 +33,19 @@ function useUser() {
     courses: undefined,
   });
   const { courses } = user;
-  const router = useRouter();
 
-  useEffect(function setUpConfig() {
-    async function initConfig() {
-      const config = determineUserConfig();
-      setUser((prev) => ({ ...prev, config }));
+  const reSyncCourses = useCallback(async () => {
+    if (!user?.config) {
+      throw new Error("Config must be init'd");
     }
-    initConfig();
+    const courseFactory = new CourseFactory(user?.config);
+    await courseFactory.initialize();
+    const courses = courseFactory.courses;
+
+    showDebugInfo(courses);
+
+    setUser(prev => ({ ...prev, courses }));
   }, []);
-
-  const reSyncCourses = useCallback(
-    async (userConfig = determineUserConfig()) => {
-      await userConfig.initialize();
-
-      const courseFactory = new CourseFactory(userConfig);
-      await courseFactory.initialize();
-      const courses = courseFactory.courses;
-
-      showDebugInfo(courses);
-
-      const newUserState: IUser = {
-        config: userConfig,
-        courses,
-      };
-      setUser(newUserState);
-      router.push("/courses");
-    },
-    [],
-  );
 
   // TODO: Add requirement that courseNames are unique
   const addExamToCourse = useCallback(
@@ -129,27 +112,3 @@ function showDebugInfo(courses) {
   }
 }
 
-function determineUserConfig() {
-  const config =
-    determineUserAppAccess() === "FullAccessUser"
-      ? new FullAccessUserConfig()
-      : new RestrictedAccessUserConfig();
-
-  return config;
-}
-
-function determineUserAppAccess() {
-  const isMozillaBrowser = /mozilla/i.test(navigator.userAgent);
-  const isSafariBrowser = checkIfSafari();
-
-  function checkIfSafari() {
-    const ua = navigator.userAgent.toLowerCase();
-    return ua.includes("safari") && !ua.includes("chrome");
-  }
-
-  const isIncompatibleBrowser = isMozillaBrowser || isSafariBrowser;
-  const isAppBroken =
-    isIncompatibleBrowser && window.showDirectoryPicker === undefined;
-
-  return isAppBroken ? "RestrictedAccessUser" : "FullAccessUser";
-}

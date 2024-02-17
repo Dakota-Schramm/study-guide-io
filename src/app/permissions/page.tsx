@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -15,9 +16,10 @@ import {
 import { GoAlertFill } from "react-icons/go";
 import { FaLockOpen } from "react-icons/fa6";
 
+import { FullAccessUserConfig } from "@/classes/config/user/full-access";
+import { RestrictedAccessUserConfig } from "@/classes/config/user/restricted-access";
 import { UserContext } from "@/contexts/UserContext";
 import { sitePath } from "@/lib/utils";
-import { FullAccessUserConfig } from "@/classes/config/user/full-access";
 
 const FullUserAlert = () => (
   <Alert className="bg-red-700 text-white relative">
@@ -30,7 +32,21 @@ const FullUserAlert = () => (
 );
 
 const SetupCard = () => {
-  const { user, reSyncCourses } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
+  const router = useRouter();
+
+  useEffect(() => {
+    const userConfig = determineUserConfig();
+    setUser(prev => ({ ...prev, config: userConfig }));
+  }, [])
+
+  async function setupUserPermissions() {
+    await user?.config?.initialize();
+
+    if (user?.config?.permitted) {
+      router.push("/courses");
+    }
+  }
 
   return (
     <Card className="flex flex-col items-center">
@@ -43,7 +59,7 @@ const SetupCard = () => {
         <div>Placeholder image...</div>
       </CardContent>
       <CardFooter>
-        <Button onClick={() => reSyncCourses(user?.config)}>
+        <Button onClick={setupUserPermissions}>
           <FaLockOpen className="mr-4" />
           Setup permissions
         </Button>
@@ -53,7 +69,7 @@ const SetupCard = () => {
 };
 const Permissions = () => {
   const { user } = useContext(UserContext);
-  if (user.config === null)
+  if (user?.config?.permitted === false)
     throw new Error("RestrictedAccessUserConfig::PermissionRejected");
 
   return (
@@ -65,5 +81,30 @@ const Permissions = () => {
     </>
   );
 };
+
+function determineUserConfig() {
+  const config =
+    determineUserAppAccess() === "FullAccessUser"
+      ? new FullAccessUserConfig()
+      : new RestrictedAccessUserConfig();
+
+  return config;
+}
+
+function determineUserAppAccess() {
+  const isMozillaBrowser = /mozilla/i.test(navigator.userAgent);
+  const isSafariBrowser = checkIfSafari();
+
+  function checkIfSafari() {
+    const ua = navigator.userAgent.toLowerCase();
+    return ua.includes("safari") && !ua.includes("chrome");
+  }
+
+  const isIncompatibleBrowser = isMozillaBrowser || isSafariBrowser;
+  const isAppBroken =
+    isIncompatibleBrowser && window.showDirectoryPicker === undefined;
+
+  return isAppBroken ? "RestrictedAccessUser" : "FullAccessUser";
+}
 
 export default Permissions;
