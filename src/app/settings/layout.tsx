@@ -3,5 +3,5 @@ export default function SettingsLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <main className="flex flex-col space-y-16 mx-20">{children}</main>;
+  return <main className="flex flex-col space-y-16 container">{children}</main>;
 }
