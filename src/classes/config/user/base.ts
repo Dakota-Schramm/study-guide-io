@@ -14,6 +14,7 @@ export abstract class BaseUserConfig {
   protected _permitted?: boolean;
 
   async initialize(root: FileSystemDirectoryHandle) {
+    window.log.info("Initializing BaseUserConfig")
     if (!root) {
       this.permitted = false;
       return;
@@ -34,6 +35,7 @@ export abstract class BaseUserConfig {
 
     this.handles = handles;
     this.permitted = true;
+    window.log.info("BaseUserConfig initialized")
   }
 
   public getRoot(): Nullable<FileSystemDirectoryHandle> {

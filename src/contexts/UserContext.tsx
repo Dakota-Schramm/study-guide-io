@@ -30,27 +30,41 @@ function useUser() {
   const { courses } = user;
   const router = useRouter();
 
-  const setupPermissions = useCallback(async () => {
-    await user?.config?.initialize();
+  const setupPermissions = useCallback(
+    async (
+      config: FullAccessUserConfig | RestrictedAccessUserConfig | undefined = user?.config
+    ) => {
+      await config?.initialize();
 
-    const isPermitted = user?.config?.permitted;
-    if (!isPermitted) {
-      toast("Permissions need to be accepted", {
-        description: "You can accept permissions at /settings later.",
-        action: {
-          label: "Accept",
-          onClick: async () => {
-            await user?.config?.initialize();
-            if (user?.config?.permitted) {
-              router.push("/courses");
-            }
+      const isPermitted = user?.config?.permitted;
+      if (!isPermitted) {
+        toast("Permissions need to be accepted", {
+          description: "You can accept permissions at /settings later.",
+          action: {
+            label: "Accept",
+            onClick: async () => {
+              await user?.config?.initialize();
+              if (user?.config?.permitted) {
+                router.push("/courses");
+              }
+            },
           },
-        },
-      });
-    }
+        });
+      }
+      return;
+    },
+    [user?.config]
+  );
 
-    return;
-  }, [user?.config]);
+  const setupConfig = useCallback(
+    () => {
+      const userConfig = determineUserConfig();
+      const newUser = { ...user, config: userConfig };
+      setUser(newUser);
+      return newUser
+    },
+    [user?.config]
+  );
 
   const reSyncCourses = useCallback(async () => {
     if (!user?.config) {
@@ -87,6 +101,7 @@ function useUser() {
     user,
     setUser,
     setupPermissions,
+    setupConfig,
     reSyncCourses,
     addExamToCourse,
   };
@@ -95,7 +110,9 @@ function useUser() {
 type UserContext = {
   user: IUser;
   setUser: (user: IUser) => void;
-  setupPermissions: () => Promise<void>;
+  setupPermissions: (
+    config: FullAccessUserConfig | RestrictedAccessUserConfig | undefined) => Promise<void>;
+  setupConfig: () => IUser | void;
   reSyncCourses: (userConfig?: BaseUserConfig | null) => Promise<void>;
   addExamToCourse: (courseName: string, exams: string[]) => Promise<void>;
 };
@@ -107,6 +124,7 @@ export const UserContext = createContext<UserContext>({
   },
   setUser: (user: IUser) => {},
   setupPermissions: async () => {},
+  setupConfig: () => {},
   reSyncCourses: async () => {},
   addExamToCourse: async () => {},
 });
@@ -131,4 +149,29 @@ function showDebugInfo(courses) {
   for (const course of courses) {
     window.log.debug(course);
   }
+}
+
+function determineUserConfig() {
+  const config =
+    determineUserAppAccess() === "FullAccessUser"
+      ? new FullAccessUserConfig()
+      : new RestrictedAccessUserConfig();
+
+  return config;
+}
+
+function determineUserAppAccess() {
+  const isMozillaBrowser = /mozilla/i.test(navigator.userAgent);
+  const isSafariBrowser = checkIfSafari();
+
+  function checkIfSafari() {
+    const ua = navigator.userAgent.toLowerCase();
+    return ua.includes("safari") && !ua.includes("chrome");
+  }
+
+  const isIncompatibleBrowser = isMozillaBrowser || isSafariBrowser;
+  const isAppBroken =
+    isIncompatibleBrowser && window.showDirectoryPicker === undefined;
+
+  return isAppBroken ? "RestrictedAccessUser" : "FullAccessUser";
 }

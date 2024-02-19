@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext, useState } from "react";
+import React, { useCallback, useContext, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { Label } from "@/components/ui/label";
@@ -19,14 +19,16 @@ import {
 } from "@/lib/browserDownloadHelpers";
 
 const PermissionsButton = ({ onClick }) => {
-  const { user, setupPermissions } = useContext(UserContext);
+  const { user, setupPermissions, setupConfig, } = useContext(UserContext);
 
   return (
     <Button
       type="button"
-      onClick={async () => {
-        await setupPermissions();
-        await onClick();
+      onClick={() => {
+        const newUser = setupConfig();
+        setupPermissions(newUser.config)
+          .then(onClick)
+          .catch(() => {});
       }}
     >
       Setup Permissions
@@ -51,37 +53,47 @@ const AddToCoursesButton = ({ onClick }) => (
 // Add isOpen state to open and close popovers
 // TODO: Figure out how to handle when attachments aren't present
 const SubmitButton = ({ formData }) => {
+  const [isOpen, setIsOpen] = useState(formData !== undefined);
   const { user } = useContext(UserContext);
 
   const router = useRouter();
 
-  async function handlePrimaryAction() {
-    const pdfs = formData.getAll("pdfs");
-    const attachments = formData.getAll("attachments");
-    const courseName = formData.get("course-name");
-    const fileName = formData.get("pdf-name");
+  const handlePrimaryAction = useCallback(
+    async () => {
+      setIsOpen(false);
 
-    const courseHandle = await user?.config?.findCourseHandle(
-      "STEM",
-      courseName,
-      {
-        create: true,
-      },
-    );
-    if (!courseHandle) throw new Error("Course handle not found");
+      const pdfs = formData.getAll("pdfs");
+      const attachments = formData.getAll("attachments");
+      const courseName = formData.get("course-name");
+      const fileName = formData.get("pdf-name");
 
-    const files = { pdfFiles: pdfs, attachmentFiles: attachments };
-    const options = { courseName, fileName };
-    await downloadGuideToFileSystem(courseHandle, files, options);
+      const courseHandle = await user?.config?.findCourseHandle(
+        "STEM",
+        courseName,
+        {
+          create: true,
+        },
+      );
+      if (!courseHandle) throw new Error(`Course handle not found: ${courseName}`);
 
-    router.push("/courses");
-  }
+      const files = { pdfFiles: pdfs, attachmentFiles: attachments };
+      const options = { courseName, fileName };
+      await downloadGuideToFileSystem(courseHandle, files, options);
 
-  function handleDownload() {
-    const pdfs = formData.getAll("pdfs");
-    const attachments = formData.getAll("attachments");
-    downloadToBrowser(pdfs, attachments);
-  }
+      router.push("/courses");
+    },
+    [user?.config, formData],
+  )
+  
+  const handleDownload = useCallback(
+    () => {
+      setIsOpen(false);
+      const pdfs = formData.getAll("pdfs");
+      const attachments = formData.getAll("attachments");
+      downloadToBrowser(pdfs, attachments);
+    },
+    [formData],
+  )
 
   let primaryBtn;
   if (user.config === undefined) {
@@ -92,9 +104,13 @@ const SubmitButton = ({ formData }) => {
 
   // TODO: Make these a radio btn?
   return (
-    <Popover open={formData !== undefined}>
+    <Popover open={isOpen}>
       <PopoverTrigger asChild>
-        <Button type="submit">Submit</Button>
+        <Button type="submit" onClick={(event) => {
+          if (formData !== undefined) event.preventDefault();
+          if (!formData) return;
+          setIsOpen((prev) => !prev)
+        }}>Submit</Button>
       </PopoverTrigger>
       <PopoverContent>
         {primaryBtn}
