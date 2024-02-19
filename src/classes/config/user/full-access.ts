@@ -4,8 +4,10 @@ import { getAppHandlesFromDB, saveAppHandlesToDB } from "@/lib/idbUtils";
 
 export class FullAccessUserConfig extends BaseUserConfig {
   async initialize() {
+    window.log.info("Initializing FullAccessUserConfig");
     const root = await this.getHomeDirectory();
     await super.initialize(root);
+    window.log.info("FullAccessUserConfig initialized");
   }
 
   private async getHomeDirectory() {

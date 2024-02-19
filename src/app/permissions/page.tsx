@@ -17,7 +17,6 @@ import { GoAlertFill } from "react-icons/go";
 import { FaLockOpen } from "react-icons/fa6";
 
 import { FullAccessUserConfig } from "@/classes/config/user/full-access";
-import { RestrictedAccessUserConfig } from "@/classes/config/user/restricted-access";
 import { UserContext } from "@/contexts/UserContext";
 import { sitePath } from "@/lib/utils";
 
@@ -32,12 +31,11 @@ const FullUserAlert = () => (
 );
 
 const SetupCard = () => {
-  const { user, setUser, setupPermissions } = useContext(UserContext);
+  const { user, setupPermissions, setupConfig } = useContext(UserContext);
   const router = useRouter();
 
   useEffect(() => {
-    const userConfig = determineUserConfig();
-    setUser((prev) => ({ ...prev, config: userConfig }));
+    setupConfig();
   }, []);
 
   async function handleClick() {
@@ -81,30 +79,5 @@ const Permissions = () => {
     </>
   );
 };
-
-function determineUserConfig() {
-  const config =
-    determineUserAppAccess() === "FullAccessUser"
-      ? new FullAccessUserConfig()
-      : new RestrictedAccessUserConfig();
-
-  return config;
-}
-
-function determineUserAppAccess() {
-  const isMozillaBrowser = /mozilla/i.test(navigator.userAgent);
-  const isSafariBrowser = checkIfSafari();
-
-  function checkIfSafari() {
-    const ua = navigator.userAgent.toLowerCase();
-    return ua.includes("safari") && !ua.includes("chrome");
-  }
-
-  const isIncompatibleBrowser = isMozillaBrowser || isSafariBrowser;
-  const isAppBroken =
-    isIncompatibleBrowser && window.showDirectoryPicker === undefined;
-
-  return isAppBroken ? "RestrictedAccessUser" : "FullAccessUser";
-}
 
 export default Permissions;
