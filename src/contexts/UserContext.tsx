@@ -8,13 +8,13 @@ import {
   useState,
 } from "react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 import { FullAccessUserConfig } from "@/classes/config/user/full-access";
 import { RestrictedAccessUserConfig } from "@/classes/config/user/restricted-access";
 import { BaseUserConfig } from "@/classes/config/user/base";
 import { CourseFactory } from "@/classes/course/factory";
 import { Course } from "@/classes/course/course";
-import { useRouter } from "next/navigation";
 
 /**
  * @param config a User's associated app configuration
@@ -33,7 +33,6 @@ function useUser() {
     config: undefined,
     courses: undefined,
   });
-  const { courses } = user;
   const router = useRouter();
 
   const setupPermissions = useCallback(async () => {
@@ -68,30 +67,11 @@ function useUser() {
     setUser((prev) => ({ ...prev, courses }));
   }, [user?.config]);
 
-  // TODO: Add requirement that courseNames are unique
-  const addExamToCourse = useCallback(
-    async (courseName: string, exams: string[]) => {
-      const course = courses?.find((c) => c.getName() === courseName);
-      if (!course) {
-        throw new Error(
-          `Course could not be found with courseName: ${courseName}`,
-        );
-      }
-
-      window.log.info(
-        `Creating exam for ${course.getName()} with files: ${exams.join(", ")}`,
-      );
-      await course.assignFilesToExam(exams);
-    },
-    [JSON.stringify(courses)],
-  );
-
   return {
     user,
     setUser,
     setupPermissions,
     reSyncCourses,
-    addExamToCourse,
   };
 }
 
@@ -100,7 +80,6 @@ type UserContext = {
   setUser: (user: IUser) => void;
   setupPermissions: () => void;
   reSyncCourses: (userConfig?: BaseUserConfig | null) => void;
-  addExamToCourse: (courseName: string, exams: string[]) => void;
 };
 
 export const UserContext = createContext<UserContext>({
@@ -111,7 +90,6 @@ export const UserContext = createContext<UserContext>({
   setupPermissions: () => {},
   setUser: (user: IUser) => {},
   reSyncCourses: () => {},
-  addExamToCourse: () => {},
 });
 
 /**

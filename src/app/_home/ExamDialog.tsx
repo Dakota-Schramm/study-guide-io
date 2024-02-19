@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { z } from "zod";
 
 import { Label } from "@/components/ui/label";
@@ -14,6 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+
 import { UserContext } from "@/contexts/UserContext";
 
 const formSchema = z.object({
@@ -23,23 +24,38 @@ const formSchema = z.object({
 type ExamDialogProps = {
   courseName: string;
   files: FileSystemFileHandle[];
+  status: string;
+  handleClick: () => void;
 };
 
-export const ExamDialog = ({ courseName, files }: ExamDialogProps) => {
-  const { addExamToCourse } = useContext(UserContext);
+export const ExamDialog = ({ courseName, files, handleClick }: ExamDialogProps) => {
+  const { user } = useContext(UserContext);
+  const { courses } = user;
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
     const examsToAdd = Array.from(formData.values());
 
-    addExamToCourse(courseName, examsToAdd);
+    // TODO: Add requirement that courseNames are unique
+    const course = courses?.find((c) => c.getName() === courseName);
+    if (!course) {
+      throw new Error(
+        `Course could not be found with courseName: ${courseName}`,
+      );
+    }
+
+    window.log.info(
+      `Creating exam for ${course.getName()} with files: ${examsToAdd.join(", ")}`,
+    );
+    await course.assignFilesToExam(examsToAdd);
   }
 
+  // Dialog included inparent component
   return (
-    <Dialog>
-      <DialogTrigger>Add Exam</DialogTrigger>
+    <>
+      <DialogTrigger onClick={handleClick}>Add Exam</DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Add an Exam</DialogTitle>
@@ -60,7 +76,7 @@ export const ExamDialog = ({ courseName, files }: ExamDialogProps) => {
           </DialogClose>
         </form>
       </DialogContent>
-    </Dialog>
+    </>
   );
 };
 

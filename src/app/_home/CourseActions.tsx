@@ -8,12 +8,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
 import { Course } from "@/classes/course/course";
 import { UserContext } from "@/contexts/UserContext";
 import { Button } from "@/components/ui/button";
 import { ExamDialog } from "./ExamDialog";
+import { Dialog } from "@/components/ui/dialog";
+
+type MenuStatus = "menu" | "add-exam" | undefined;
 
 const CourseActions = ({ course }: { course: Course }) => {
+  const [menuStatus, setMenuStatus] = useState<MenuStatus>(undefined);
   const { user } = useContext(UserContext);
   const [exams, setExams] = useState<string[][]>([]);
 
@@ -25,49 +30,68 @@ const CourseActions = ({ course }: { course: Course }) => {
     getExams();
   }, [course]);
 
+  useEffect(() => {
+    console.log({ menuStatus })
+  }, [menuStatus])
+
+  function openExamDialog() {
+    if (menuStatus !== "add-exam") setMenuStatus("add-exam")
+    else setMenuStatus(undefined)
+  }
+  
+
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button type="button" className="bg-green-500">
-          Exam Actions
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuLabel>Add</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <ExamDialog
-            courseName={course.getName()}
-            files={course.getCourseFiles()}
-          />
-        </DropdownMenuItem>
-        <DropdownMenuLabel>Download</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        {exams.map((exam, idx) => (
-          <DropdownMenuItem onClick={() => handleDownload(course, exam)}>
-            Download Exam {idx + 1}
+    <Dialog
+      open={menuStatus === 'add-exam'}
+      onOpenChange={(isOpen) => {
+        if (!isOpen) setMenuStatus(undefined)
+        else setMenuStatus('add-exam')
+      }}
+    >
+      <DropdownMenu open={menuStatus === "menu"} >
+        <DropdownMenuTrigger asChild>
+          <Button type="button" className="bg-green-500" onClick={() => setMenuStatus("menu")}>
+            Exam Actions
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuLabel>Add</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem>
+            <ExamDialog
+              handleClick={openExamDialog}
+              courseName={course.getName()}
+              files={course.getCourseFiles()}
+            />
           </DropdownMenuItem>
-        ))}
-        <DropdownMenuItem
-          onClick={() => handleFinalDownload(user?.config, course)}
-        >
-          Download Final Exam
-        </DropdownMenuItem>
-        <DropdownMenuLabel>Remove</DropdownMenuLabel>
-        {exams.map((exam, idx) => (
+          <DropdownMenuLabel>Download</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          {exams.map((exam, idx) => (
+            <DropdownMenuItem onClick={() => handleDownload(course, exam)}>
+              Download Exam {idx + 1}
+            </DropdownMenuItem>
+          ))}
           <DropdownMenuItem
-            key={idx}
-            onClick={async () => {
-              const remainingExams = await course.deleteExam(idx);
-              setExams(remainingExams);
-            }}
+            onClick={() => handleFinalDownload(user?.config, course)}
           >
-            Delete Exam {idx + 1}
+            Download Final Exam
           </DropdownMenuItem>
-        ))}
-        <DropdownMenuSeparator />
-      </DropdownMenuContent>
-    </DropdownMenu>
+          <DropdownMenuLabel>Remove</DropdownMenuLabel>
+          {exams.map((exam, idx) => (
+            <DropdownMenuItem
+              key={idx}
+              onClick={async () => {
+                const remainingExams = await course.deleteExam(idx);
+                setExams(remainingExams);
+              }}
+            >
+              Delete Exam {idx + 1}
+            </DropdownMenuItem>
+          ))}
+          <DropdownMenuSeparator />
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </Dialog>
   );
 };
 
