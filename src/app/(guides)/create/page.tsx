@@ -17,6 +17,7 @@ import {
   downloadGuideToFileSystem,
   downloadToBrowser,
 } from "@/lib/browserDownloadHelpers";
+import TextInput from "./TextInput";
 
 const PermissionsButton = ({ onClick }) => {
   const { user, setupPermissions } = useContext(UserContext);
@@ -124,28 +125,16 @@ export default function CreateContent() {
           setFormData(new FormData(e.target));
         }}
       >
-        <Label>
-          Course Name
-          <Input
-            id="course-name"
-            name="course-name"
-            placeholder="Mathematics"
-            type="text"
-            required
-            minLength={2}
-          />
-        </Label>
-        <Label>
-          PDF Name
-          <Input
-            id="pdf-name"
-            name="pdf-name"
-            placeholder="lecture-1"
-            type="text"
-            required
-            minLength={2}
-          />
-        </Label>
+        <TextInput
+          labelText="Course Name"
+          name="course-name"
+          placeholder="Mathematics"
+        />
+        <TextInput
+          labelText="PDF Name"
+          name="pdf-name"
+          placeholder="lecture-1"
+        />
         <Label>
           Upload PDFs:
           <Input
