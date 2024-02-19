@@ -40,8 +40,8 @@ const SetupCard = () => {
     setUser((prev) => ({ ...prev, config: userConfig }));
   }, []);
 
-  function handleClick() {
-    setupPermissions();
+  async function handleClick() {
+    await setupPermissions();
 
     if (user?.config?.permitted) {
       router.push("/courses");

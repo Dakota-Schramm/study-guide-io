@@ -33,7 +33,8 @@ function useUser() {
   const setupPermissions = useCallback(async () => {
     await user?.config?.initialize();
 
-    if (!user?.config?.permitted) {
+    const isPermitted = user?.config?.permitted;
+    if (!isPermitted) {
       toast("Permissions need to be accepted", {
         description: "You can accept permissions at /settings later.",
         action: {
@@ -47,6 +48,8 @@ function useUser() {
         },
       });
     }
+
+    return;
   }, [user?.config]);
 
   const reSyncCourses = useCallback(async () => {
