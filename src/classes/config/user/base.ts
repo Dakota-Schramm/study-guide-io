@@ -1,15 +1,5 @@
-import { PDFComponents } from "@/app/(guides)/_guide_creation/Finalize";
-import {
-  createFileObjectUrl,
-  createPdf,
-} from "@/app/(guides)/_guide_creation/pdf/createPdf";
 import { ensureError } from "@/lib/utils";
 // TODO: Implement base class for Full Access and Restricted users
-
-type DownloadGuideOptions = {
-  courseName: string;
-  fileName: string;
-};
 
 type FindCourseHandleOptions = {
   create: boolean;
@@ -97,68 +87,5 @@ export abstract class BaseUserConfig {
     }
 
     return courseHandle;
-  }
-
-  // TODO: Use cookie to track file download
-  // https://stackoverflow.com/questions/1106377/detect-when-a-browser-receives-a-file-download
-  // Move this off of config so can be used when user is not init'd
-  public download(
-    pdfFiles: PDFComponents["pdfFiles"],
-    attachmentFiles: PDFComponents["attachmentFiles"],
-  ) {
-    let pdfUrl: string;
-
-    createFileObjectUrl(pdfFiles, attachmentFiles)
-      .then((fileObjectUrl) => {
-        const downloadEle = document.createElement("a");
-        downloadEle.href = fileObjectUrl;
-        downloadEle.download = "test.pdf";
-        downloadEle.click();
-
-        window.log.info("Download succeeded");
-        pdfUrl = fileObjectUrl;
-      })
-      .catch((err) => window.log.error({ err }))
-      .finally(() => {
-        if (pdfUrl) URL.revokeObjectURL(pdfUrl);
-        window.log.info("exiting");
-      });
-  }
-
-  public async downloadGuideToFileSystem(
-    pdfFiles: PDFComponents["pdfFiles"],
-    attachmentFiles: PDFComponents["attachmentFiles"],
-    options: DownloadGuideOptions,
-  ) {
-    if (!pdfFiles || !attachmentFiles) return;
-
-    const pdfBlob = await createPdf(pdfFiles, attachmentFiles);
-    this.downloadBlobToFileSystem(pdfBlob, options);
-    // TODO: Fix so that doesn't require app reload after redirect
-    // Permission state doesnt stay after full page refresh
-    // window.location.href = "/";
-  }
-
-  public async downloadBlobToFileSystem(
-    pdfBlob: Blob,
-    options: DownloadGuideOptions,
-  ) {
-    const { courseName, fileName } = options;
-
-    const courseHandle = await this.findCourseHandle("STEM", courseName, {
-      create: true,
-    });
-    if (!courseHandle) return;
-
-    const draftHandle = await courseHandle.getFileHandle(`${fileName}.pdf`, {
-      create: true,
-    });
-    const writable = await draftHandle.createWritable();
-
-    // Write the contents of the file to the stream.
-    await writable.write(pdfBlob);
-
-    // Close the file and write the contents to disk.
-    await writable.close();
   }
 }
