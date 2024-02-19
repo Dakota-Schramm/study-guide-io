@@ -18,6 +18,8 @@ import {
   downloadToBrowser,
 } from "@/lib/browserDownloadHelpers";
 import TextInput from "./TextInput";
+import UploadPDFButton from "./UploadPDFButton";
+import UploadAttachmentsButton from "./UploadAttachmentsButton";
 
 const PermissionsButton = ({ onClick }) => {
   const { user, setupPermissions } = useContext(UserContext);
@@ -135,27 +137,8 @@ export default function CreateContent() {
           name="pdf-name"
           placeholder="lecture-1"
         />
-        <Label>
-          Upload PDFs:
-          <Input
-            id="pdfs"
-            name="pdfs"
-            type="file"
-            accept=".pdf"
-            multiple
-            required
-          />
-        </Label>
-        <Label>
-          Upload images:{" "}
-          <Input
-            id="attachments"
-            name="attachments"
-            type="file"
-            accept=".png, .jpg"
-            multiple
-          />
-        </Label>
+        <UploadPDFButton />
+        <UploadAttachmentsButton />
         <SubmitButton {...{ formData }} />
       </form>
     </>
