@@ -3,14 +3,21 @@
 import React, { useContext, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+
 
 import { UserContext } from "@/contexts/UserContext";
 import {
@@ -97,7 +104,7 @@ const SubmitButton = ({ formData }) => {
   return (
     <Popover open={formData !== undefined}>
       <PopoverTrigger asChild>
-        <Button type="submit">Submit</Button>
+        <Button className="w-full" type="submit">Submit</Button>
       </PopoverTrigger>
       <PopoverContent>
         {primaryBtn}
@@ -117,30 +124,39 @@ export default function CreateContent() {
   const [formData, setFormData] = useState<FormData | undefined>(undefined);
 
   return (
-    <>
-      <h1>Create Guide</h1>
+    <Card className="border-4 border-solid py-8 px-16">
+      <CardHeader>
+        <CardTitle>Create Guide</CardTitle>
+        <CardDescription>...</CardDescription>
+      </CardHeader>
       <form
-        id="pdf-create"
-        className="flex flex-col space-y-4"
+        id='pdf-create'
+        className='flex flex-col space-y-4 w-full h-full'
         onSubmit={(e) => {
           e.preventDefault();
           setFormData(new FormData(e.target));
         }}
       >
-        <TextInput
-          labelText="Course Name"
-          name="course-name"
-          placeholder="Mathematics"
-        />
-        <TextInput
-          labelText="PDF Name"
-          name="pdf-name"
-          placeholder="lecture-1"
-        />
-        <UploadPDFButton />
-        <UploadAttachmentsButton />
-        <SubmitButton {...{ formData }} />
+        <CardContent>
+          <TextInput
+            labelText='Course Name'
+            name='course-name'
+            placeholder='Mathematics'
+          />
+          <TextInput
+            labelText='PDF Name'
+            name='pdf-name'
+            placeholder='lecture-1'
+          />
+        </CardContent>
+        <CardFooter className="grid grid-cols-4 gap-8">
+          <UploadPDFButton />
+          <UploadAttachmentsButton />
+          <div className="col-span-2">
+            <SubmitButton {...{ formData }} />
+          </div>
+        </CardFooter>
       </form>
-    </>
+    </Card>
   );
 }
