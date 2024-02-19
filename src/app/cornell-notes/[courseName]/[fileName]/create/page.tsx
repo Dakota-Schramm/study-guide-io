@@ -2,6 +2,7 @@
 
 import React, { useContext, useEffect, useState } from "react";
 import { Document, Page } from "react-pdf";
+import { useRouter } from "next/navigation";
 
 import "react-pdf/dist/esm/Page/TextLayer.css";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
@@ -18,7 +19,7 @@ import { UserContext } from "@/contexts/UserContext";
 import InteractablePage from "./InteractablePage";
 
 import type { Question } from "../../../setupCornellNotes";
-import { useRouter } from "next/navigation";
+import { downloadBlobToFileSystem } from "@/lib/browserDownloadHelpers";
 
 const PDF = ({
   handleDocumentLoadSuccess,
@@ -115,7 +116,15 @@ const CornellNotesCreatePage = ({
     const blob = new Blob([cornellArrayBytes], { type: "application/pdf" });
     const [name, extension] = fileName.split(".");
     const newFileName = `${name}-study-guide.${extension}`;
-    await user?.config?.downloadBlobToFileSystem(blob, {
+
+    const courseHandle = await user?.config?.findCourseHandle(
+      "STEM",
+      courseName,
+      { create: true },
+    );
+    if (!courseHandle) throw new Error("Course handle not found");
+
+    await downloadBlobToFileSystem(courseHandle, blob, {
       courseName,
       fileName: newFileName,
     });

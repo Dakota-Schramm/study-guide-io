@@ -8,10 +8,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+
 import { Course } from "@/classes/course/course";
 import { UserContext } from "@/contexts/UserContext";
-import { Button } from "@/components/ui/button";
 import { ExamDialog } from "./ExamDialog";
+import { downloadToBrowser } from "@/lib/browserDownloadHelpers";
 
 const CourseActions = ({ course }: { course: Course }) => {
   const { user } = useContext(UserContext);
@@ -100,7 +102,7 @@ async function handleDownload(course, exam) {
     return;
   }
 
-  user.config?.download(pdfFiles, attachmentFiles);
+  downloadToBrowser(pdfFiles, attachmentFiles);
 }
 
 async function handleFinalDownload(userConfig, course) {
@@ -130,7 +132,7 @@ async function handleFinalDownload(userConfig, course) {
     return;
   }
 
-  userConfig.download(pdfFiles, attachmentFiles);
+  downloadToBrowser(pdfFiles, attachmentFiles);
 }
 
 export default CourseActions;

@@ -13,6 +13,10 @@ import {
 } from "@/components/ui/popover";
 
 import { UserContext } from "@/contexts/UserContext";
+import {
+  downloadGuideToFileSystem,
+  downloadToBrowser,
+} from "@/lib/browserDownloadHelpers";
 
 const PermissionsButton = ({ onClick }) => {
   const { user, setupPermissions } = useContext(UserContext);
@@ -57,8 +61,18 @@ const SubmitButton = ({ formData }) => {
     const courseName = formData.get("course-name");
     const fileName = formData.get("pdf-name");
 
+    const courseHandle = await user?.config?.findCourseHandle(
+      "STEM",
+      courseName,
+      {
+        create: true,
+      },
+    );
+    if (!courseHandle) throw new Error("Course handle not found");
+
+    const files = { pdfFiles: pdfs, attachmentFiles: attachments };
     const options = { courseName, fileName };
-    await user?.config?.downloadGuideToFileSystem(pdfs, attachments, options);
+    await downloadGuideToFileSystem(courseHandle, files, options);
 
     router.push("/courses");
   }
@@ -66,7 +80,7 @@ const SubmitButton = ({ formData }) => {
   function handleDownload() {
     const pdfs = formData.getAll("pdfs");
     const attachments = formData.getAll("attachments");
-    user?.config?.download(pdfs, attachments);
+    downloadToBrowser(pdfs, attachments);
   }
 
   let primaryBtn;
