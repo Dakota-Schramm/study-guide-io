@@ -13,7 +13,8 @@ export async function createFileObjectUrl(pdfs: FileList, images: FileList) {
 export async function createPdf(pdfs: FileList, images: FileList) {
   const pdfDoc = await PDFDocument.create();
   await copyPages(pdfDoc, pdfs);
-  if (images) {
+  const imagesPresent = images?.filter((file) => file.name !== "");
+  if (imagesPresent) {
     await embedImages(pdfDoc, images);
   }
   const pdfBytes = await pdfDoc.save();

@@ -30,3 +30,6 @@ NextJS Error Boundaries
 Array.fromAsync not a function in safari
 
 Maybe add alert that says welcome on accepting permissions first time in session
+
+Move add exam action back into own button?
+Reorganize action buttons?

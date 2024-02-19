@@ -14,6 +14,28 @@ import {
 
 import { UserContext } from "@/contexts/UserContext";
 
+const PermissionsButton = ({ onClick }) => {
+  const { user, setupPermissions } = useContext(UserContext);
+
+  return (
+    <Button
+      type="button"
+      onClick={async () => {
+        await setupPermissions();
+        await onClick();
+      }}
+    >
+      Setup Permissions
+    </Button>
+  );
+};
+
+const AddToCoursesButton = ({ onClick }) => (
+  <Button type="button" {...{ onClick }}>
+    Add to Courses
+  </Button>
+);
+
 // SUBMIT BUTTON STATES
 // User has no config
 //   - Give user option to allow permissions
@@ -21,87 +43,61 @@ import { UserContext } from "@/contexts/UserContext";
 // User has config
 //   - Download into storage
 //   - Download into downloads folder
-const SubmitButton = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const { user, } = useContext(UserContext);
 
-  let primaryBtn;
-  if (user.config === undefined) {
-    primaryBtn = "permit-and-add";
-  } else {
-    primaryBtn = "add";
-  }
-
-  // TODO: Make these a radio btn?
-  return (
-    <Popover open={isOpen}>
-      <PopoverTrigger asChild>
-        <Button>Submit</Button>
-      </PopoverTrigger>
-      <PopoverContent>
-        <Button onClick={() => {
-          setIsOpen(false)
-        }}></Button>
-        <Button onClick={() => {
-        }}>Download</Button>
-      </PopoverContent>
-    </Popover>
-  )
-}
-
-// TODO: Add other course types in future
-// - Writing/Humanities?
-// ? Maybe make the file inputs just icon btns?
-export default function CreateContent() {
+// Add isOpen state to open and close popovers
+// TODO: Figure out how to handle when attachments aren't present
+const SubmitButton = ({ formData }) => {
   const { user } = useContext(UserContext);
 
   const router = useRouter();
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-    const formValues = new FormData(e.target);
+  async function handlePrimaryAction() {
+    const pdfs = formData.getAll("pdfs");
+    const attachments = formData.getAll("attachments");
+    const courseName = formData.get("course-name");
+    const fileName = formData.get("pdf-name");
 
-    const pdfs = formValues.get("pdfs");
-    const attachments = formValues.get("attachments");
-
-    if (!pdfs || pdfs.length < 1) {
-      alert("PDFs provided not sufficient");
-      return;
-    }
-
-    if (!attachments || attachments.length < 1) {
-      alert("Attachmentss provided not sufficient");
-      return;
-    }
-
-    const downloadType = formValues.get('download-type');
-    if (!downloadType) {
-      alert("Download type not provided")
-      return;
-    } else if (downloadType === "download") {
-      user?.config?.download(pdfs, attachments);
-      return;
-    }
-
-    if (downloadType === "permit-and-add") {
-      // determine config and init
-    }
-
-    const courseName = formValues.get("course-name");
-    const fileName = formValues.get("pdf-name");
-    if (!courseName) {
-      alert("No course name provided!");
-      return;
-    }
-    if (!fileName) {
-      alert("No filename provided");
-      return;
-    }
     const options = { courseName, fileName };
-
     await user?.config?.downloadGuideToFileSystem(pdfs, attachments, options);
+
     router.push("/courses");
   }
+
+  function handleDownload() {
+    const pdfs = formData.getAll("pdfs");
+    const attachments = formData.getAll("attachments");
+    user?.config?.download(pdfs, attachments);
+  }
+
+  let primaryBtn;
+  if (user.config === undefined) {
+    primaryBtn = <PermissionsButton onClick={handlePrimaryAction} />;
+  } else {
+    primaryBtn = <AddToCoursesButton onClick={handlePrimaryAction} />;
+  }
+
+  // TODO: Make these a radio btn?
+  return (
+    <Popover open={formData !== undefined}>
+      <PopoverTrigger asChild>
+        <Button type="submit">Submit</Button>
+      </PopoverTrigger>
+      <PopoverContent>
+        {primaryBtn}
+        <Button type="button" onClick={handleDownload}>
+          Download
+        </Button>
+      </PopoverContent>
+    </Popover>
+  );
+};
+
+// TODO: Add other course types in future
+// - Writing/Humanities?
+// ? Maybe make the file inputs just icon btns?
+// Add additional validation check to see if pdfname already exists
+export default function CreateContent() {
+  const [formData, setFormData] = useState<FormData | undefined>(undefined);
 
   return (
     <>
@@ -109,11 +105,15 @@ export default function CreateContent() {
       <form
         id="pdf-create"
         className="flex flex-col space-y-4"
-        onSubmit={handleSubmit}
+        onSubmit={(e) => {
+          e.preventDefault();
+          setFormData(new FormData(e.target));
+        }}
       >
         <Label>
           Course Name
           <Input
+            id="course-name"
             name="course-name"
             placeholder="Mathematics"
             type="text"
@@ -124,6 +124,7 @@ export default function CreateContent() {
         <Label>
           PDF Name
           <Input
+            id="pdf-name"
             name="pdf-name"
             placeholder="lecture-1"
             type="text"
@@ -133,13 +134,26 @@ export default function CreateContent() {
         </Label>
         <Label>
           Upload PDFs:
-          <Input name="pdfs" type="file" accept=".pdf" multiple />
+          <Input
+            id="pdfs"
+            name="pdfs"
+            type="file"
+            accept=".pdf"
+            multiple
+            required
+          />
         </Label>
         <Label>
           Upload images:{" "}
-          <Input name="attachments" type="file" accept=".png, .jpg" multiple />
+          <Input
+            id="attachments"
+            name="attachments"
+            type="file"
+            accept=".png, .jpg"
+            multiple
+          />
         </Label>
-        <SubmitButton />
+        <SubmitButton {...{ formData }} />
       </form>
     </>
   );

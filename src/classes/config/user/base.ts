@@ -101,11 +101,11 @@ export abstract class BaseUserConfig {
 
   // TODO: Use cookie to track file download
   // https://stackoverflow.com/questions/1106377/detect-when-a-browser-receives-a-file-download
+  // Move this off of config so can be used when user is not init'd
   public download(
     pdfFiles: PDFComponents["pdfFiles"],
     attachmentFiles: PDFComponents["attachmentFiles"],
   ) {
-    window.log.info({ pdfFiles, attachmentFiles });
     let pdfUrl: string;
 
     createFileObjectUrl(pdfFiles, attachmentFiles)

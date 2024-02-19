@@ -2,13 +2,13 @@
 
 import { ReactNode, createContext, useCallback, useState } from "react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 import { FullAccessUserConfig } from "@/classes/config/user/full-access";
 import { RestrictedAccessUserConfig } from "@/classes/config/user/restricted-access";
 import { BaseUserConfig } from "@/classes/config/user/base";
 import { CourseFactory } from "@/classes/course/factory";
 import { Course } from "@/classes/course/course";
-import { useRouter } from "next/navigation";
 
 /**
  * @param config a User's associated app configuration
