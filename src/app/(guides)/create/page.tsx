@@ -126,7 +126,7 @@ export default function CreateContent() {
   const [formData, setFormData] = useState<FormData | undefined>(undefined);
 
   return (
-    <Card className="border-4 border-solid py-8 px-16">
+    <Card className="border-4 border-solid py-8 px-16 w-10/12 h-full">
       <CardHeader>
         <CardTitle>Create Guide</CardTitle>
         <CardDescription>...</CardDescription>
