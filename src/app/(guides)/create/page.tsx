@@ -120,6 +120,7 @@ const SubmitButton = ({ formData }) => {
 // - Writing/Humanities?
 // ? Maybe make the file inputs just icon btns?
 // Add additional validation check to see if pdfname already exists
+// TODO: Change buttons to fill svg color based on state
 export default function CreateContent() {
   const [formData, setFormData] = useState<FormData | undefined>(undefined);
 
