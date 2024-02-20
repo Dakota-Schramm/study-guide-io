@@ -16,8 +16,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-
+} from "@/components/ui/card";
 
 import { UserContext } from "@/contexts/UserContext";
 import {
@@ -104,7 +103,9 @@ const SubmitButton = ({ formData }) => {
   return (
     <Popover open={formData !== undefined}>
       <PopoverTrigger asChild>
-        <Button className="w-full" type="submit">Submit</Button>
+        <Button className="w-full" type="submit">
+          Submit
+        </Button>
       </PopoverTrigger>
       <PopoverContent>
         {primaryBtn}
@@ -131,8 +132,8 @@ export default function CreateContent() {
         <CardDescription>...</CardDescription>
       </CardHeader>
       <form
-        id='pdf-create'
-        className='flex flex-col space-y-4 w-full h-full'
+        id="pdf-create"
+        className="flex flex-col space-y-4 w-full h-full"
         onSubmit={(e) => {
           e.preventDefault();
           setFormData(new FormData(e.target));
@@ -140,14 +141,14 @@ export default function CreateContent() {
       >
         <CardContent>
           <TextInput
-            labelText='Course Name'
-            name='course-name'
-            placeholder='Mathematics'
+            labelText="Course Name"
+            name="course-name"
+            placeholder="Mathematics"
           />
           <TextInput
-            labelText='PDF Name'
-            name='pdf-name'
-            placeholder='lecture-1'
+            labelText="PDF Name"
+            name="pdf-name"
+            placeholder="lecture-1"
           />
         </CardContent>
         <CardFooter className="grid grid-cols-4 gap-8">
