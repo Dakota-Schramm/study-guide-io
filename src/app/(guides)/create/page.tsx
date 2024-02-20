@@ -21,6 +21,7 @@ import {
 } from "@/lib/browserDownloadHelpers";
 import { useRouter } from "next/navigation";
 import { UserContext } from "@/contexts/UserContext";
+import CourseNameInput from "./CourseNameInput";
 
 // TODO: Add other course types in future
 // - Writing/Humanities?
@@ -84,11 +85,7 @@ export default function CreatePage() {
         onSubmit={handleSubmit}
       >
         <CardContent>
-          <TextInput
-            labelText="Course Name"
-            name="course-name"
-            placeholder="Mathematics"
-          />
+          <CourseNameInput />
           <TextInput
             labelText="PDF Name"
             name="pdf-name"
