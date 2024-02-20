@@ -14,37 +14,38 @@ const UploadPDFButton = () => {
     ? inputRef.current?.files
       ? "valid"
       : "invalid"
-    : "uninitialized"
+    : "uninitialized";
 
-  const buttonVariant = buttonState === "uninitialized"
-    ? undefined 
-    : buttonState === "valid"
-      ? "success"
-      : "destructive";
+  const buttonVariant =
+    buttonState === "uninitialized"
+      ? undefined
+      : buttonState === "valid"
+        ? "success"
+        : "destructive";
 
   return (
-    <Button
-      variant={buttonVariant}
-      type="button"
-      onClick={() => {
-        setFirstInteraction(true);
-        inputRef.current?.click();
-      }}
-    >
-      <GrDocumentPdf className={buttonVariant && buttonVariant === "success" ? "fill-success" : "fill-destructive"}/>
-      <Label className="hidden">
-        Upload PDFs:
-        <Input
-          ref={inputRef}
-          id="pdfs"
-          name="pdfs"
-          type="file"
-          accept=".pdf"
-          multiple
-          required
-        />
-      </Label>
-    </Button>
+    <Label className="group">
+      <span className="hidden"> Upload PDFs: </span>
+      <Input
+        className="hidden"
+        ref={inputRef}
+        id="pdfs"
+        name="pdfs"
+        type="file"
+        accept=".pdf"
+        multiple
+        required
+      />
+      <Button
+        className="group-has-[:invalid]:bg-destructive group-has-[:valid]:bg-green-500 w-full"
+        type="button"
+        onClick={() => {
+          inputRef.current?.click();
+        }}
+      >
+        <GrDocumentPdf />
+      </Button>
+    </Label>
   );
 };
 
