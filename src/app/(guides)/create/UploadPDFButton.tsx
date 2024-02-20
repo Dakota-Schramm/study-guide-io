@@ -1,27 +1,15 @@
 import React, { useRef, useState } from "react";
+import clsx from "clsx";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 import { GrDocumentPdf } from "react-icons/gr";
-import { Button } from "@/components/ui/button";
 
 const UploadPDFButton = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [firstInteraction, setFirstInteraction] = useState(false);
-
-  const buttonState = firstInteraction
-    ? inputRef.current?.files
-      ? "valid"
-      : "invalid"
-    : "uninitialized";
-
-  const buttonVariant =
-    buttonState === "uninitialized"
-      ? undefined
-      : buttonState === "valid"
-        ? "success"
-        : "destructive";
 
   return (
     <Label className="group">
@@ -37,9 +25,14 @@ const UploadPDFButton = () => {
         required
       />
       <Button
-        className="group-has-[:invalid]:bg-destructive group-has-[:valid]:bg-green-500 w-full"
+        className={clsx(
+          "w-full", {
+            "group-has-[:invalid]:bg-destructive  group-has-[:valid]:bg-green-500 w-full": firstInteraction,
+          }
+        )}
         type="button"
         onClick={() => {
+          setFirstInteraction(true);
           inputRef.current?.click();
         }}
       >
