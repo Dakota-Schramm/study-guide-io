@@ -20,6 +20,7 @@
     "lint": "biome lint ./src",
     "lint:fix": "biome lint --apply ./src",
     "prepare": "husky install",
+    "tailwind-config-viewer": "tailwind-config-viewer -o",
     "test:run": "pnpm exec playwright test",
     "test:ui": "pnpm exec playwright test --ui",
     "test:debug": "pnpm exec playwright test --debug",
@@ -78,6 +79,7 @@
     "jest": "^29.7.0",
     "lint-staged": "^15.2.0",
     "postcss": "^8",
+    "tailwind-config-viewer": "^1.7.3",
     "tailwindcss": "^3.3.0",
     "ts-node": "^10.9.2",
     "typescript": "^5"
