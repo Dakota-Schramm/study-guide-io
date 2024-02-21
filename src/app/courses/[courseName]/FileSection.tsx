@@ -50,7 +50,7 @@ export const FileSection = ({ courseName, files }) => {
   }
 
   return (
-    <Table className="bg-red-500 dark:bg-red-900">
+    <Table className="bg-red-500 dark:bg-red-900 h-full">
       <TableCaption>A list of all files for {courseName}.</TableCaption>
       <TableHeader>
         <TableRow>

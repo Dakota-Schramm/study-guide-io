@@ -45,10 +45,14 @@ const SingleCoursePage = ({ params }: { params: { courseName: string } }) => {
   return (
     <>
       <h1 className="col-span-2 lg:col-span-4">{course.getName()}</h1>
-      <div className="container space-y-16 col-span-2 lg:col-span-4">
-        <FileSection {...{ files, courseName }} />
-        <Separator />
-        <ExamSection {...{ exams, courseName }} />
+      <div className="flex flex-col lg:flex-row space-y-16 lg:space-y-0 col-span-2 lg:col-span-4 space-x-0 lg:space-x-4">
+        <div className="w-1/2">
+          <FileSection {...{ files, courseName }} />
+        </div>
+        <Separator orientation="vertical" />
+        <div className="w-1/2">
+          <ExamSection {...{ exams, courseName }} />
+        </div>
       </div>
     </>
   );
