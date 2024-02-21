@@ -85,12 +85,14 @@ export default function CreatePage() {
         onSubmit={handleSubmit}
       >
         <CardContent>
-          <CourseNameInput />
-          <TextInput
-            labelText="PDF Name"
-            name="pdf-name"
-            placeholder="lecture-1"
-          />
+          <div className="flex items-center justify-between">
+            <CourseNameInput />
+            <TextInput
+              labelText="PDF Name"
+              name="pdf-name"
+              placeholder="lecture-1"
+            />
+          </div>
         </CardContent>
         <CardFooter className="grid grid-cols-4 gap-8">
           <UploadPDFButton />

@@ -33,3 +33,5 @@ Maybe add alert that says welcome on accepting permissions first time in session
 
 Move add exam action back into own button?
 Reorganize action buttons?
+
+Opt tailwind in to only using what is explicitly used in config
