@@ -26,7 +26,7 @@ const UploadPDFButton = () => {
       />
       <Button
         className={clsx("w-full", {
-          "group-has-[:invalid]:bg-destructive  group-has-[:valid]:bg-green-500 w-full":
+          "group-has-[:invalid]:bg-destructive  group-has-[:valid]:bg-green-500 text-white":
             firstInteraction,
         })}
         type="button"
@@ -35,7 +35,7 @@ const UploadPDFButton = () => {
           inputRef.current?.click();
         }}
       >
-        <GrDocumentPdf />
+        <GrDocumentPdf className="fill-current" />
       </Button>
     </Label>
   );

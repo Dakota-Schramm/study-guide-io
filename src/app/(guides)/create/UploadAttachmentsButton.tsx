@@ -29,7 +29,7 @@ const UploadAttachmentsButton = () => {
           inputRef.current?.click();
         }}
       >
-        <GrDocumentImage />
+        <GrDocumentImage className="fill-current" />
       </Button>
     </Label>
   );
