@@ -25,11 +25,10 @@ const UploadPDFButton = () => {
         required
       />
       <Button
-        className={clsx(
-          "w-full", {
-            "group-has-[:invalid]:bg-destructive  group-has-[:valid]:bg-green-500 w-full": firstInteraction,
-          }
-        )}
+        className={clsx("w-full", {
+          "group-has-[:invalid]:bg-destructive  group-has-[:valid]:bg-green-500 w-full":
+            firstInteraction,
+        })}
         type="button"
         onClick={() => {
           setFirstInteraction(true);

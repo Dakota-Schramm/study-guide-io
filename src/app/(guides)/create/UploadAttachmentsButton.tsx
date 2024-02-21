@@ -10,21 +10,21 @@ const UploadAttachmentsButton = () => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   return (
-    <Label className='group'>
-      <span className='hidden'>Upload buttons</span>
+    <Label className="group">
+      <span className="hidden">Upload buttons</span>
       <Input
-        className='hidden'
+        className="hidden"
         ref={inputRef}
-        id='attachments'
-        name='attachments'
-        type='file'
-        accept='.png, .jpg'
+        id="attachments"
+        name="attachments"
+        type="file"
+        accept=".png, .jpg"
         multiple
         required
       />
       <Button
-        className='bg-secondary group-has-[:valid]:bg-accent w-full'
-        type='button'
+        className="bg-secondary group-has-[:valid]:bg-accent w-full"
+        type="button"
         onClick={() => {
           inputRef.current?.click();
         }}
