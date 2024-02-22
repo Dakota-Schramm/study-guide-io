@@ -1,6 +1,8 @@
 "use client";
-import React, { useContext } from "react";
+
+import React, { forwardRef, useContext, useState } from "react";
 import { useRouter } from "next/navigation";
+
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -12,28 +14,7 @@ import {
   downloadGuideToFileSystem,
   downloadToBrowser,
 } from "@/lib/browserDownloadHelpers";
-
-const PermissionsButton = ({ onClick }) => {
-  const { user, setupPermissions } = useContext(UserContext);
-
-  return (
-    <Button
-      type="button"
-      onClick={async () => {
-        await setupPermissions();
-        await onClick();
-      }}
-    >
-      Setup Permissions
-    </Button>
-  );
-};
-
-const AddToCoursesButton = ({ onClick }) => (
-  <Button type="button" {...{ onClick }}>
-    Add to Courses
-  </Button>
-);
+import { Input } from "@/components/ui/input";
 
 // SUBMIT BUTTON STATES
 // User has no config
@@ -44,69 +25,39 @@ const AddToCoursesButton = ({ onClick }) => (
 //   - Download into downloads folder
 
 export type SubmitButtonProps = {
-  formData?: FormData;
-  isValid?: boolean;
+  isValid?: boolean | "open" | "close";
+  setIsValid?: React.Dispatch<
+    React.SetStateAction<"open" | "close" | undefined>
+  >;
 };
 
 // Add isOpen state to open and close popovers
 // TODO: Change button color based on formValidity
-export const SubmitButton = ({ formData, isValid }: SubmitButtonProps) => {
+export const SubmitButton = ({ isValid, setIsValid }: SubmitButtonProps) => {
   const { user } = useContext(UserContext);
-
-  const router = useRouter();
-
-  async function handlePrimaryAction() {
-    const pdfs = formData.getAll("pdfs");
-    const attachments = formData.getAll("attachments");
-    const courseName = formData.get("course-name");
-    const fileName = formData.get("pdf-name");
-
-    const courseHandle = await user?.config?.findCourseHandle(
-      "STEM",
-      courseName,
-      {
-        create: true,
-      },
-    );
-    if (!courseHandle) throw new Error("Course handle not found");
-
-    const files = { pdfFiles: pdfs, attachmentFiles: attachments };
-    const options = { courseName, fileName };
-    await downloadGuideToFileSystem(courseHandle, files, options);
-
-    router.push("/courses");
-  }
-
-  function handleDownload() {
-    const pdfs = formData.getAll("pdfs");
-    const attachments = formData.getAll("attachments");
-    downloadToBrowser(pdfs, attachments);
-  }
 
   let primaryBtn;
   if (user.config === undefined) {
-    primaryBtn = <PermissionsButton onClick={handlePrimaryAction} />;
+    primaryBtn = (
+      <input form="pdf-create" type="submit" value="Setup Permissions" />
+    );
   } else {
-    primaryBtn = <AddToCoursesButton onClick={handlePrimaryAction} />;
+    primaryBtn = (
+      <input form="pdf-create" type="submit" value="Add to Courses" />
+    );
   }
 
-  // TODO: Make these a radio btn?
+  // Changew to use dialog instead of popover
   return (
-    <Popover open={formData !== undefined}>
+    <Popover>
       <PopoverTrigger asChild>
-        <Button
-          variant={isValid === false ? "destructive" : undefined}
-          className="w-full"
-          type="submit"
-        >
+        <Button type="button" className="w-full">
           Submit
         </Button>
       </PopoverTrigger>
       <PopoverContent>
         {primaryBtn}
-        <Button type="button" onClick={handleDownload}>
-          Download
-        </Button>
+        <input form="pdf-create" type="submit" value="Download" />
       </PopoverContent>
     </Popover>
   );

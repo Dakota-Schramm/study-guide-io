@@ -64,7 +64,7 @@ export const OpenStudyGuideButton = ({
         <TooltipTrigger>
           <Dialog>
             <DialogTrigger asChild>
-              <Button onClick={handleClick}>
+              <Button onClick={handleClick} size="icon">
                 <PiFileMagnifyingGlass />
               </Button>
             </DialogTrigger>
