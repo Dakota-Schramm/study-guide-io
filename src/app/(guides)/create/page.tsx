@@ -1,14 +1,7 @@
 "use client";
 
-import React, { useContext, useState } from "react";
-import { useRouter } from "next/navigation";
+import React, { useContext, useEffect, useRef, useState } from "react";
 
-import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import {
   Card,
   CardContent,
@@ -18,111 +11,17 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import { UserContext } from "@/contexts/UserContext";
-import {
-  downloadGuideToFileSystem,
-  downloadToBrowser,
-} from "@/lib/browserDownloadHelpers";
 import TextInput from "./TextInput";
 import UploadPDFButton from "./UploadPDFButton";
 import UploadAttachmentsButton from "./UploadAttachmentsButton";
-
-const PermissionsButton = ({ onClick }) => {
-  const { user, setupPermissions } = useContext(UserContext);
-
-  return (
-    <Button
-      type="button"
-      onClick={async () => {
-        await setupPermissions();
-        await onClick();
-      }}
-    >
-      Setup Permissions
-    </Button>
-  );
-};
-
-const AddToCoursesButton = ({ onClick }) => (
-  <Button type="button" {...{ onClick }}>
-    Add to Courses
-  </Button>
-);
-
-// SUBMIT BUTTON STATES
-// User has no config
-//   - Give user option to allow permissions
-//   - Download into downloads folder
-// User has config
-//   - Download into storage
-//   - Download into downloads folder
-
-// Add isOpen state to open and close popovers
-// TODO: Figure out how to handle when attachments aren't present
-const SubmitButton = ({ formData }) => {
-  const { user } = useContext(UserContext);
-
-  const router = useRouter();
-
-  async function handlePrimaryAction() {
-    const pdfs = formData.getAll("pdfs");
-    const attachments = formData.getAll("attachments");
-    const courseName = formData.get("course-name");
-    const fileName = formData.get("pdf-name");
-
-    const courseHandle = await user?.config?.findCourseHandle(
-      "STEM",
-      courseName,
-      {
-        create: true,
-      },
-    );
-    if (!courseHandle) throw new Error("Course handle not found");
-
-    const files = { pdfFiles: pdfs, attachmentFiles: attachments };
-    const options = { courseName, fileName };
-    await downloadGuideToFileSystem(courseHandle, files, options);
-
-    router.push("/courses");
-  }
-
-  function handleDownload() {
-    const pdfs = formData.getAll("pdfs");
-    const attachments = formData.getAll("attachments");
-    downloadToBrowser(pdfs, attachments);
-  }
-
-  let primaryBtn;
-  if (user.config === undefined) {
-    primaryBtn = <PermissionsButton onClick={handlePrimaryAction} />;
-  } else {
-    primaryBtn = <AddToCoursesButton onClick={handlePrimaryAction} />;
-  }
-
-  // TODO: Make these a radio btn?
-  return (
-    <Popover open={formData !== undefined}>
-      <PopoverTrigger asChild>
-        <Button className="w-full" type="submit">
-          Submit
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent>
-        {primaryBtn}
-        <Button type="button" onClick={handleDownload}>
-          Download
-        </Button>
-      </PopoverContent>
-    </Popover>
-  );
-};
+import { SubmitButton } from "./SubmitButton";
 
 // TODO: Add other course types in future
 // - Writing/Humanities?
 // ? Maybe make the file inputs just icon btns?
 // Add additional validation check to see if pdfname already exists
 // TODO: Change buttons to fill svg color based on state
-export default function CreateContent() {
+export default function CreatePage() {
   const [formData, setFormData] = useState<FormData | undefined>(undefined);
 
   return (
