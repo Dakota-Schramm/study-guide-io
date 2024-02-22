@@ -39,11 +39,11 @@ export const SubmitButton = ({ isValid, setIsValid }: SubmitButtonProps) => {
   let primaryBtn;
   if (user.config === undefined) {
     primaryBtn = (
-      <input form="pdf-create" type="submit" value="Setup Permissions" />
+      <Input form="pdf-create" type="submit" value="Setup Permissions" />
     );
   } else {
     primaryBtn = (
-      <input form="pdf-create" type="submit" value="Add to Courses" />
+      <Input form="pdf-create" type="submit" value="Add to Courses" />
     );
   }
 
@@ -57,7 +57,7 @@ export const SubmitButton = ({ isValid, setIsValid }: SubmitButtonProps) => {
       </PopoverTrigger>
       <PopoverContent>
         {primaryBtn}
-        <input form="pdf-create" type="submit" value="Download" />
+        <Input form="pdf-create" type="submit" value="Download" />
       </PopoverContent>
     </Popover>
   );
