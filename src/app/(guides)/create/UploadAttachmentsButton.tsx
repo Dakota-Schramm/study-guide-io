@@ -20,7 +20,6 @@ const UploadAttachmentsButton = () => {
         type="file"
         accept=".png, .jpg"
         multiple
-        required
       />
       <Button
         className="bg-secondary group-has-[:valid]:bg-accent w-full"
