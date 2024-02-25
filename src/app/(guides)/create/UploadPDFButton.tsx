@@ -25,7 +25,7 @@ const UploadPDFButton = () => {
         required
       />
       <Button
-        className={clsx("w-full", {
+        className={clsx("w-full bg-secondary", {
           "group-has-[:invalid]:bg-destructive  group-has-[:valid]:bg-green-500 text-white":
             firstInteraction,
         })}

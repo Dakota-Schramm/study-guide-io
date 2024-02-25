@@ -5,9 +5,11 @@ import { Label } from "@/components/ui/label";
 
 import { GrDocumentImage } from "react-icons/gr";
 import { Button } from "@/components/ui/button";
+import clsx from "clsx";
 
 const UploadAttachmentsButton = () => {
   const inputRef = useRef<HTMLInputElement>(null);
+  const hasFiles = inputRef.current?.files?.length > 0 ?? false;
 
   return (
     <Label className="group">
@@ -22,7 +24,9 @@ const UploadAttachmentsButton = () => {
         multiple
       />
       <Button
-        className="bg-secondary group-has-[:valid]:bg-accent w-full"
+        className={clsx("w-full", {
+          "bg-accent": hasFiles,
+        })}
         type="button"
         onClick={() => {
           inputRef.current?.click();

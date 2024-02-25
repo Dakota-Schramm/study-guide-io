@@ -55,7 +55,7 @@ export const SubmitButton = ({ isValid, setIsValid }: SubmitButtonProps) => {
           Submit
         </Button>
       </PopoverTrigger>
-      <PopoverContent>
+      <PopoverContent className="*:cursor-pointer">
         {primaryBtn}
         <Input form="pdf-create" type="submit" value="Download" />
       </PopoverContent>
