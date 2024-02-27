@@ -16,14 +16,18 @@ const CourseNameComboBox = () => {
         });
 
   return (
-    <Combobox value={filteredCourses}>
+    <Combobox as="div" className="relative" value={filteredCourses}>
       <Combobox.Input
+        className="border border-solid border-red-500 w-full h-full"
+        as="input"
+        type="text"
         name="course-name"
         placeholder="Mathematics"
         onChange={(event) => setQuery(event.target.value)}
         value={query}
+        autocomplete="off"
       />
-      <Combobox.Options>
+      <Combobox.Options className="absolute w-full border border-solid border-blue-500 p-4 bg-gray-500 text-white dark:bg-white dark:text-gray-800">
         {filteredCourses.map((course) => (
           <Combobox.Option
             key={course.id}
